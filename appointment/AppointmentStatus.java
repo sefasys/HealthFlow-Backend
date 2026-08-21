@@ -1,6 +1,8 @@
 package appointment;
 
 public enum AppointmentStatus {
-    BOOKED,
-    AVAILABLE
+    SCHEDULED,
+    COMPLETED,
+    CANCELLED,
+    NO_SHOW
 }

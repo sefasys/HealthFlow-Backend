@@ -2,7 +2,7 @@ package user;
 
 public class NationalId {
     private String nationalId;
-
+    //NOT: Burada record kullanmak da oldukça mantıklı valueObjectlerde record her zaman işe yarar bir yöntem olmuştur.
     public NationalId(String nationalId) {
         if (nationalId == null) {
             throw new IllegalArgumentException("National ID cannot be null");
@@ -25,5 +25,9 @@ public class NationalId {
         }
 
         this.nationalId = nationalId;
+    }
+
+    public String getValue(){
+        return nationalId;
     }
 }

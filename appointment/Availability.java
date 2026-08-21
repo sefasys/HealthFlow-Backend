@@ -2,14 +2,51 @@ package appointment;
 
 import user.staff.Clinician;
 
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Availability {
 
     private Clinician clinician;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private AvailabilityStatus status;
+    private LocalDate date;
+    private TimeRange timeRange;
+
+    public Availability(
+            Clinician clinician,
+            LocalDate date,
+            TimeRange timeRange
+    ) {
+        this.clinician = clinician;
+        this.date = date;
+        this.timeRange = timeRange;
+    }
+
+    public List<AppointmentSlot> generateSlots(
+            Duration slotDuration,
+            List<Appointment> appointments
+    ) {
+        return timeRange.split(slotDuration)
+                .stream()
+                .map(range -> {
+                    boolean booked = appointments.stream()
+                            .filter(a -> a.getStatus() == AppointmentStatus.SCHEDULED)
+                            .anyMatch(a ->
+                                    a.getDate().equals(date)
+                                            && a.getTimeRange().overlaps(range)
+                            );
+
+                    return new AppointmentSlot(
+                            range,
+                            booked
+                                    ? SlotStatus.BOOKED
+                                    : SlotStatus.AVAILABLE
+                    );
+                })
+                .toList();
+    }
+
 
 
 }

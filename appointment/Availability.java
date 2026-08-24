@@ -47,6 +47,17 @@ public class Availability {
                 .toList();
     }
 
+    public Clinician getClinician() {
+        return clinician;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public TimeRange getTimeRange() {
+        return timeRange;
+    }
 
 
 }

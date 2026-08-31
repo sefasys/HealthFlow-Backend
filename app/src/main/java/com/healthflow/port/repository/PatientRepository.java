@@ -1,4 +1,4 @@
-package com.healthflow.repository.patient;
+package com.healthflow.port.repository;
 
 import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.patient.Patient;
@@ -94,4 +94,4 @@ public class PatientRepository {
                     || patient.getUser().getSurname().toLowerCase().contains(normalizedQuery)))
         .toList();
   }
-}//tag yap git'ten
+}//tag yap git'ten her adım sonunda.

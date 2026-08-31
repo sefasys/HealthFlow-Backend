@@ -1,4 +1,4 @@
-package com.healthflow.repository.patient;
+package com.healthflow.port.repository;
 
 public enum PatientSortType {
   NAME_ASC,

@@ -7,6 +7,7 @@ import java.time.LocalDate;
 
 public class Appointment {
 
+  private Long uniqueId;
   private AppointmentStatus status;
   private Patient patient;
   private Clinician clinician;
@@ -15,11 +16,16 @@ public class Appointment {
   private LocalDate date;
 
   public Appointment(
+      Long uniqueId,
       Patient patient,
       Clinician clinician,
       LocalDate date,
       TimeRange timeRange,
       ClinicalDepartment clinicalDepartment) {
+
+    if (uniqueId == null) {
+      throw new IllegalArgumentException("Unique ID cannot be null");
+    }
     if (patient == null) {
       throw new IllegalArgumentException("Patient cannot be null");
     }
@@ -38,7 +44,7 @@ public class Appointment {
     if (clinicalDepartment == null) {
       throw new IllegalArgumentException("Clinical department cannot be null");
     }
-
+    this.uniqueId = uniqueId;
     this.patient = patient;
     this.clinician = clinician;
     this.date = date;
@@ -53,6 +59,10 @@ public class Appointment {
 
   public Patient getPatient() {
     return patient;
+  }
+
+  public Long getUniqueId() {
+    return uniqueId;
   }
 
   public Clinician getClinician() {

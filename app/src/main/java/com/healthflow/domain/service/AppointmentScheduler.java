@@ -11,6 +11,7 @@ import java.util.List;
 public class AppointmentScheduler {
 
   public Appointment schedule(
+      Long uniqueId,
       Patient patient,
       Clinician clinician,
       Availability availability,
@@ -42,7 +43,7 @@ public class AppointmentScheduler {
       }
     }
     return new Appointment(
-        patient, clinician, availability.getDate(), requestedRange, clinician.getDepartment());
+        uniqueId, patient, clinician, availability.getDate(), requestedRange, clinician.getDepartment());
     // ileride bu clinician getDepartment'ı çıkar. constructordan
   }
 }

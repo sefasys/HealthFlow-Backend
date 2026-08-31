@@ -1,6 +1,5 @@
 package com.healthflow.domain.model.user.staff;
 
-import com.healthflow.appointment.*;
 import com.healthflow.domain.model.appointment.*;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.domain.service.AppointmentScheduler;
@@ -17,6 +16,7 @@ public class ClinicRegistrar {
   }
 
   public Appointment createAppointment(
+      Long uniqueId,
       Patient patient,
       Clinician clinician,
       Availability availability,
@@ -25,7 +25,7 @@ public class ClinicRegistrar {
 
     Appointment appointment =
         appointmentScheduler.schedule(
-            patient, clinician, availability, requestedRange, appointments);
+            uniqueId, patient, clinician, availability, requestedRange, appointments);
     appointments.add(appointment);
     patient.addAppointment(appointment);
     return appointment;
@@ -66,6 +66,7 @@ public class ClinicRegistrar {
         appointments.stream().filter(appointment -> !appointment.equals(oldAppointment)).toList();
     Appointment newAppointment =
         appointmentScheduler.schedule(
+            oldAppointment.getUniqueId(),
             oldAppointment.getPatient(),
             oldAppointment.getClinician(),
             newAvailability,

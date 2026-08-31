@@ -1,5 +1,7 @@
 package com.healthflow.domain.model.user;
 
+import java.util.Objects;
+
 public class NationalId {
   private String nationalId;
 
@@ -27,7 +29,20 @@ public class NationalId {
     this.nationalId = nationalId;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+    NationalId that = (NationalId) o;
+    return Objects.equals(nationalId, that.nationalId);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(nationalId);
+  }
+
   public String getValue() {
     return nationalId;
   }
+
 }

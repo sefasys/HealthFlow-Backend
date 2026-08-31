@@ -9,7 +9,7 @@ import java.util.List;
 public class SortPatientsUseCase {
     private final PatientRepository patientRepository;
 
-    SortPatientsUseCase(PatientRepository patientRepository){
+    public SortPatientsUseCase(PatientRepository patientRepository){
         this.patientRepository = patientRepository;
     }
 

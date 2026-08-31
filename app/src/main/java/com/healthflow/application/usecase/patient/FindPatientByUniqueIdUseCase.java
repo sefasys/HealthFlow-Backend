@@ -8,7 +8,7 @@ import java.util.Optional;
 public class FindPatientByUniqueIdUseCase {
     private final PatientRepository patientRepository;
 
-    FindPatientByUniqueIdUseCase(PatientRepository patientRepository){
+    public FindPatientByUniqueIdUseCase(PatientRepository patientRepository){
         this.patientRepository = patientRepository;
     }
 

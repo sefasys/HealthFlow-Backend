@@ -1,5 +1,6 @@
 package com.healthflow.appointment;
 
+import com.healthflow.domain.model.appointment.TimeRange;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;

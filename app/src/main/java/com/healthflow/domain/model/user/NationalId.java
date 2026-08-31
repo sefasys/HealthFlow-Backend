@@ -3,7 +3,7 @@ package com.healthflow.domain.model.user;
 import java.util.Objects;
 
 public class NationalId {
-  private String nationalId;
+  private final String nationalId;
 
   // NOT: Burada record kullanmak da oldukça mantıklı valueObjectlerde record her zaman işe yarar
   // bir yöntem olmuştur.
@@ -44,5 +44,4 @@ public class NationalId {
   public String getValue() {
     return nationalId;
   }
-
 }

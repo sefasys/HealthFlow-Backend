@@ -5,9 +5,9 @@ import com.healthflow.domain.model.user.User;
 import java.util.List;
 
 public class Patient {
-  private User user;
-  private BloodType bloodType;
-  private List<Appointment> appointments;
+  private final User user;
+  private final BloodType bloodType;
+  private final List<Appointment> appointments;
 
   public Patient(User user, BloodType bloodType, List<Appointment> appointments) {
 

@@ -6,11 +6,11 @@ import java.util.List;
 
 public abstract class AbstractClinicalDepartment implements ClinicalDepartment {
 
-  private String departmentName;
-  private String departmentCode;
-  private String description;
-  private boolean activity;
-  private List<Clinician> clinicians = new ArrayList<>();
+  private final String departmentName;
+  private final String departmentCode;
+  private final String description;
+  private final boolean activity;
+  private final List<Clinician> clinicians = new ArrayList<>();
 
   protected AbstractClinicalDepartment(
       String departmentName, String departmentCode, String description, boolean activity) {

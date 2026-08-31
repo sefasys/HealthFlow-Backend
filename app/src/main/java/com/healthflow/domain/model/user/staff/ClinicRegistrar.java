@@ -3,12 +3,11 @@ package com.healthflow.domain.model.user.staff;
 import com.healthflow.domain.model.appointment.*;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.domain.service.AppointmentScheduler;
-
 import java.util.List;
 
 public class ClinicRegistrar {
-  private Staff staff;
-  private AppointmentScheduler appointmentScheduler;
+  private final Staff staff;
+  private final AppointmentScheduler appointmentScheduler;
 
   public ClinicRegistrar(Staff staff, AppointmentScheduler appointmentScheduler) {
     this.staff = staff;

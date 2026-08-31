@@ -6,21 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Clinician {
-  Staff staff;
-  ClinicalDepartment department;
-  List<Availability> availabilities;
+  private final Staff staff;
+  private final ClinicalDepartment department;
+  private final List<Availability> availabilities;
 
-  public Staff getStaff() {
-    return staff;
-  }
-
-  public ClinicalDepartment getDepartment() {
-    return department;
-  }
-
-  public List<Availability> getAvailabilities() {
-    return availabilities;
-  }
 
   public Clinician(Staff staff, ClinicalDepartment department) {
 
@@ -82,4 +71,16 @@ public class Clinician {
 
     availabilities.set(indexOfOldAvailability, newAvailability);
   }
+  public Staff getStaff() {
+    return staff;
+  }
+
+  public ClinicalDepartment getDepartment() {
+    return department;
+  }
+
+  public List<Availability> getAvailabilities() {
+    return availabilities;
+  }
+
 }

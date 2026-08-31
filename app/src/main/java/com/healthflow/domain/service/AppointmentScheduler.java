@@ -43,7 +43,12 @@ public class AppointmentScheduler {
       }
     }
     return new Appointment(
-        uniqueId, patient, clinician, availability.getDate(), requestedRange, clinician.getDepartment());
+        uniqueId,
+        patient,
+        clinician,
+        availability.getDate(),
+        requestedRange,
+        clinician.getDepartment());
     // ileride bu clinician getDepartment'ı çıkar. constructordan
   }
 }

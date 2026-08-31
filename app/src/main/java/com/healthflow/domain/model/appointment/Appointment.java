@@ -7,13 +7,13 @@ import java.time.LocalDate;
 
 public class Appointment {
 
-  private Long uniqueId;
+  private final Long uniqueId;
   private AppointmentStatus status;
-  private Patient patient;
-  private Clinician clinician;
-  private TimeRange timeRange;
-  private ClinicalDepartment clinicalDepartment;
-  private LocalDate date;
+  private final Patient patient;
+  private final Clinician clinician;
+  private final TimeRange timeRange;
+  private final ClinicalDepartment clinicalDepartment;
+  private final LocalDate date;
 
   public Appointment(
       Long uniqueId,

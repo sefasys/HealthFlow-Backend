@@ -7,9 +7,9 @@ import java.util.List;
 
 public class Availability {
 
-  private Clinician clinician;
-  private LocalDate date;
-  private TimeRange timeRange;
+  private final Clinician clinician;
+  private final LocalDate date;
+  private final TimeRange timeRange;
 
   public Availability(Clinician clinician, LocalDate date, TimeRange timeRange) {
     this.clinician = clinician;

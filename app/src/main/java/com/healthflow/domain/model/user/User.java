@@ -5,14 +5,14 @@ import java.util.List;
 
 public class User {
 
-  private Long uniqueID;
-  private NationalId nationalId;
-  private String name;
-  private String surname;
-  private LocalDate birthDate;
-  private String email;
-  private String phoneNumber;
-  private List<UserRole> userRoleList;
+  private final Long uniqueID;
+  private final NationalId nationalId;
+  private final String name;
+  private final String surname;
+  private final LocalDate birthDate;
+  private final String email;
+  private final String phoneNumber;
+  private final List<UserRole> userRoleList;
 
   public User(
       Long uniqueID,

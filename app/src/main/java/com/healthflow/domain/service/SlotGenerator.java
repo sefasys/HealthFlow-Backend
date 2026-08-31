@@ -1,7 +1,6 @@
 package com.healthflow.domain.service;
 
 import com.healthflow.domain.model.appointment.*;
-
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;

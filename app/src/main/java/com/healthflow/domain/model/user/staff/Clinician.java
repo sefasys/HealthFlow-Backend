@@ -10,7 +10,6 @@ public class Clinician {
   private final ClinicalDepartment department;
   private final List<Availability> availabilities;
 
-
   public Clinician(Staff staff, ClinicalDepartment department) {
 
     if (staff == null) throw new IllegalArgumentException("Staff information can not be null");
@@ -71,6 +70,7 @@ public class Clinician {
 
     availabilities.set(indexOfOldAvailability, newAvailability);
   }
+
   public Staff getStaff() {
     return staff;
   }
@@ -82,5 +82,4 @@ public class Clinician {
   public List<Availability> getAvailabilities() {
     return availabilities;
   }
-
 }

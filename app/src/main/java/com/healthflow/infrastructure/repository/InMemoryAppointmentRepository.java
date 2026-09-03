@@ -4,7 +4,6 @@ import com.healthflow.domain.model.appointment.Appointment;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.domain.model.user.staff.Clinician;
 import com.healthflow.port.repository.AppointmentRepository;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,8 +14,11 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
   public InMemoryAppointmentRepository(List<Appointment> appointments) {
     if (appointments == null) throw new IllegalArgumentException("Appointments can not be null");
 
-    this.appointments = new ArrayList<>(appointments); //Bu tarz işlemler de this.appointments = appointments; kullanılmaz bu tehlikelidir ve dışarıdan birisi falan değiştirebilir.
-                                      // Onun yerine this.appointments = new ArrayList<>(appointments); şeklinde yazılabilir.
+    this.appointments =
+        new ArrayList<>(
+            appointments); // Bu tarz işlemler de this.appointments = appointments; kullanılmaz bu
+    // tehlikelidir ve dışarıdan birisi falan değiştirebilir.
+    // Onun yerine this.appointments = new ArrayList<>(appointments); şeklinde yazılabilir.
   }
 
   @Override

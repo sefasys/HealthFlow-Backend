@@ -4,7 +4,6 @@ import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.port.repository.PatientRepository;
 import com.healthflow.port.repository.PatientSortType;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;

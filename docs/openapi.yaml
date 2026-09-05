@@ -1,0 +1,293 @@
+openapi: 3.1.0
+info:
+  title:  HealthFlow
+  description: Hospital Appointment System
+  version: 1.0.0
+servers:
+  - url: 'https://localhost:8080'
+    description: Local Development Server
+paths:
+    /patients:
+          get:
+            summary: Returns a list of all patients
+            description: Returns all registered patients in the database.
+            operationId: listPatients
+            responses:
+              "200": #status code OK
+                  description: A JSON array of patients
+                  content:
+                      application/json:
+                        schema:
+                          type: array
+                          items:
+                              $ref: '#/components/schemas/PatientResponse'
+                        example:
+                          - id : 25
+                            name: Ahmet
+                            surname: Soydaş
+                            birthDate: 1986-04-03
+                          - id : 26
+                            name: Sefa
+                            surname: Soysal
+                            birthDate: 2004-08-02
+              "500": #status code error
+                    description: Internal Server Error
+                    content:
+                      application/json:
+                        schema:
+                          $ref: '#/components/schemas/ErrorResponse'
+                        example:
+                          status: 500
+                          code: INTERNAL_SERVER_ERROR
+                          message: An unexpected server side error occurred.
+                          timestamp: '2026-09-05T17:30:00Z'
+          post:
+            summary: Adds new patient to the database.
+            requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/CreatePatientRequest'
+                    example:
+                        name: Mehmet
+                        surname: Yaşaroğlu
+                        birthDate: 1978-07-23
+            responses:
+              '201': #status code created
+                description: Patient created successfully.
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/PatientResponse'
+              '400': # bad request means something is missing.
+                description: Needed user info is missing.
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/ErrorResponse'
+                    example:
+                      status: 400
+                      code: BAD_REQUEST_ERROR
+                      message: Needed user info is missing.
+                      timestamp: '2023-05-14T17:30:00Z'
+              '409': #Conflict for example you try to register someone with the same national id. it must not be possible.
+                description: A patient with the same national ID exists.
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/ErrorResponse'
+                    example:
+                      status: 409
+                      code: PATIENT_ALREADY_EXISTS
+                      message: A patient with the same national ID already exists.
+                      timestamp: '2023-05-14T17:30:00Z'
+              '500': # Server side error
+                description: Server side error occurred.
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/ErrorResponse'
+                    example:
+                      status: 500
+                      code: INTERNAL_SERVER_ERROR
+                      message: Internal server error occurred.
+                      timestamp: '2023-05-14T17:30:00Z'
+
+    /patients/{uniqueId}:
+        get:
+          parameters:
+            - name: uniqueId
+              in: path
+              required: true
+              description: The unique ID of the patient.
+              schema:
+                type: integer
+                format: int64
+          summary: Returns the patient with unique id number.
+          description: Returns the patient with unique id number.
+          operationId: findPatientWithUniqueId
+          responses:
+            '200': #OK
+                description: Patient with the unique ID returned successfully.
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/PatientResponse'
+                    example:
+                        id: 25
+                        name: Ahmet
+                        surname: Soydaş
+                        birthDate: 1986-04-03
+            '400':
+              description: The search request is invalid or the unique ID is missing.
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/ErrorResponse'
+                  example:
+                    status: 400
+                    code: BAD_REQUEST_ERROR
+                    message: The search request is invalid or the unique ID is missing.
+                    timestamp: '2023-05-14T17:30:00Z'
+            '404': #Not Found Error
+                description: There is no patient with this ID.
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/ErrorResponse'
+                    example:
+                      status: 404
+                      code: ID_NOT_FOUND_ERROR
+                      message: There is no patient with this ID.
+                      timestamp: '2023-05-14T17:30:00Z'
+            '500': #Internal Server Error
+                description: There is an internal server error.
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/ErrorResponse'
+                    example:
+                      status: 500
+                      code: INTERNAL_SERVER_ERROR
+                      message: There is an internal server error.
+                      timestamp: '2023-05-14T17:30:00Z'
+            #Buraya 400 de eklenebilir.
+    /patients/search:
+        post:
+          summary: Returns the patient with matching national ID.
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/PatientSearchRequest'
+
+          responses:
+            '200':
+              description: Patient with the matching national ID successfully returned.
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/PatientResponse'
+                    example:
+                        id: 26
+                        name: Sefa
+                        surname: Soysal
+                        birthDate: 2004-08-02
+            '400':
+              description: The search request is invalid or the national ID is missing.
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/ErrorResponse'
+                  example:
+                      status: 400
+                      code: BAD_REQUEST_ERROR
+                      message: The search request is invalid or the national ID is missing.
+                      timestamp: '2023-05-14T17:30:00Z'
+            '404':
+              description: No patient was found with the provided national ID.
+              content: # bu kısmı bu arada tam şu anda swagger üzerinden düşünerek de kodlayabiliriz. application/json ile ne yaptığımız oldukça açık gibi
+                application/x-yaml:
+                  schema:
+                    $ref: '#/components/schemas/ErrorResponse'
+                  example:
+                    status: 404
+                    code: NOT_FOUND_ERROR
+                    message: No patient was found with the provided national ID.
+                    timestamp: '2023-05-14T17:30:00Z'
+            '500':
+              description: An unexpected server side error occurred.
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/ErrorResponse'
+                  example:
+                      status: 500
+                      code: INTERNAL_SERVER_ERROR
+                      message: An unexpected server side error occurred.
+                      timestamp: '2023-05-14T17:30:00Z'
+                application/x-yaml:
+                  schema:
+                    $ref: '#/components/schemas/ErrorResponse'
+                  example:
+                    status: 500
+                    code: INTERNAL_SERVER_ERROR
+                    message: An unexpected server side error occurred.
+                    timestamp: '2023-05-14T17:30:00Z'
+
+
+
+
+
+
+
+
+components:
+  schemas:
+    PatientResponse:
+      type: object
+      required:
+        - id
+        - name
+        - surname
+        - birthDate
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          example: Mehmet
+        surname:
+          type: string
+          example: Yaşaroğlu
+        birthDate:
+          type: string
+          format: date
+          example: 1978-07-23
+    ErrorResponse:
+      type: object
+      required:
+        - status
+        - code
+        - message
+        - timestamp
+      properties:
+        status:
+          type: integer
+        code:
+          type: string
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    CreatePatientRequest:
+      type: object
+      required:
+        - name
+        - surname
+        - birthDate
+      properties:
+        name:
+          type: string
+        surname:
+          type: string
+        birthDate:
+          type: string
+          format: date
+    NationalId:
+      type: string
+      description: National identification number of the patient.
+      example: '22222222222'
+    PatientSearchRequest:
+      type: object
+      required:
+        - nationalId
+      properties:
+        nationalId:
+          $ref: '#/components/schemas/NationalId'
+
+  

@@ -59,3 +59,24 @@ Eksileri: Yönetim açısından zaman ve maddi olarak maliyetlidir. Performans a
 ## KARAR: RESTful API kullanacağız. 
 
 
+
+## Contract-First vs Code-First
+
+
+**Neden Contract-First tercih edildi?**
+
+* API sözleşmesi implementasyondan önce netleşir.
+* Frontend ve backend ekipleri aynı contract üzerinden paralel çalışabilir.
+* Request/response yapıları ve hata kodları daha kontrollü tasarlanır.
+* API dokümantasyonu koddan bağımsız, merkezi bir kaynak olur.
+
+**Code-First neden tercih edilmedi?**
+
+* API tasarımı implementation detaylarına fazla bağımlı hale gelebilir.
+* Contract değişiklikleri daha geç fark edilebilir.
+* Ekipler arası entegrasyonda tutarsızlık riski artabilir.
+
+## KARAR: Contract-First yaklaşımı tercih edildi.
+
+
+

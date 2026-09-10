@@ -12,6 +12,9 @@ plugins {
     id("com.diffplug.spotless") version "7.0.2"
     id("com.github.spotbugs") version "6.0.26"
     id("info.solidsoft.pitest") version "1.15.0"
+    id("org.springframework.boot") version "4.1.1"
+    // Dependencyler tek başına Spring Boot tarafından yönetilmiyor. Dependency versionların uyumlu bir şekilde çalışması için dependency-management plugin'ini kullanmak gerekiyor.
+    id("io.spring.dependency-management") version "1.1.7"
 }
 
 repositories {
@@ -27,6 +30,12 @@ dependencies {
 
     // This dependency is used by the application.
     implementation(libs.guava)
+
+    // Spring Boot Dependencies
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+
 }
 
 dependencyLocking {

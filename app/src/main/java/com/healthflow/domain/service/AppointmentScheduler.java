@@ -7,11 +7,12 @@ import com.healthflow.domain.model.appointment.TimeRange;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.domain.model.user.staff.Clinician;
 import java.util.List;
+import java.util.UUID;
 
 public class AppointmentScheduler {
 
   public Appointment schedule(
-      Long uniqueId,
+      UUID uniqueId,
       Patient patient,
       Clinician clinician,
       Availability availability,

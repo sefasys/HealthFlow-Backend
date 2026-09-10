@@ -17,10 +17,10 @@ Diğer API'lar daha çok request-response işlemleri sırasında veriyi uygun ş
 
 Ayrıca bahsetmemiz gereken diğer özellikleri ise RESTful API stateless, cacheable bir yapı sunmasıdır.
 
-Stateless: Her request-response işlemi içerisinde tuttuğu değer aynı olsa dahi birbirinden bağımsız şekilde gerçekleşir.
+**Stateless:** Her request-response işlemi içerisinde tuttuğu değer aynı olsa dahi birbirinden bağımsız şekilde gerçekleşir.
 Stateless olduğu için de aynı zamanda request response işlemi sırasında gereken tüm bilgileri HTTP request ve response taşır.
 
-Cacheable: Önbellekleme özelliği sunar. Birçok yazılım şirketi, CDN serverları ile ağ'a gelen istekleri cacheleyerek hız ve veri transferini optimize eder.
+**Cacheable:** Önbellekleme özelliği sunar. Birçok yazılım şirketi, CDN serverları ile ağ'a gelen istekleri cacheleyerek hız ve veri transferini optimize eder.
 CDN server'da bu istekler tutulur ve eğer son girilen zamana göre o web sayfasında bir değişiklik olmamışsa CDN server önbellekteki isteğe göre aynı URL'yi response olarak gönderir.
 HTTP status code olarak ise 200 OK yerine 304 Not Modified kodu döner. Bu önbellektenn alındığını gösterir.
 

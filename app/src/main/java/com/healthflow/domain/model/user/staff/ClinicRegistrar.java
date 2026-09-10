@@ -4,6 +4,7 @@ import com.healthflow.domain.model.appointment.*;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.domain.service.AppointmentScheduler;
 import java.util.List;
+import java.util.UUID;
 
 public class ClinicRegistrar {
   private final Staff staff;
@@ -15,7 +16,7 @@ public class ClinicRegistrar {
   }
 
   public Appointment createAppointment(
-      Long uniqueId,
+      UUID uniqueId,
       Patient patient,
       Clinician clinician,
       Availability availability,

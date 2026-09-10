@@ -10,9 +10,8 @@ import java.util.*;
 public class InMemoryPatientRepository implements PatientRepository {
   private final List<Patient> patients;
 
-  public InMemoryPatientRepository(List<Patient> patients) {
-    if (patients != null) this.patients = new ArrayList<>(patients);
-    else throw new IllegalArgumentException("Patient list cannot be instantiated null.");
+  public InMemoryPatientRepository() {
+    patients = new ArrayList<>();
   }
 
   public List<Patient> getPatients() {

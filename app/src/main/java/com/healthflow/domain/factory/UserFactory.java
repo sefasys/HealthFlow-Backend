@@ -10,7 +10,7 @@ import java.util.UUID;
 public class UserFactory {
 
     public User createUser(
-            String nationalId,
+            NationalId nationalId,
             String name,
             String surname,
             LocalDate birthDate,
@@ -18,8 +18,8 @@ public class UserFactory {
             String phoneNumber,
             UserRole userRole
     ) {
-        NationalId nationalIdObject = new NationalId(nationalId);
-        User user = new User(UUID.randomUUID(), nationalIdObject, name, surname, birthDate, email, phoneNumber, new ArrayList<>());
+
+        User user = new User(UUID.randomUUID(), nationalId, name, surname, birthDate, email, phoneNumber, new ArrayList<>());
         user.setUserRole(userRole);
         return user;
     }

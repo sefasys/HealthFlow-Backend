@@ -4,6 +4,7 @@ import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.patient.Patient;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface PatientRepository {
 
@@ -13,7 +14,7 @@ public interface PatientRepository {
 
   List<Patient> sort(PatientSortType sortType);
 
-  Optional<Patient> findByUniqueId(Long uniqueId);
+  Optional<Patient> findByUniqueId(UUID uniqueId);
 
   Optional<Patient> findByNationalId(NationalId nationalId);
 

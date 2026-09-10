@@ -7,8 +7,11 @@ servers:
   - url: 'https://localhost:8080'
     description: Local Development Server
 paths:
+
     /patients:
           get:
+            tags:
+              - Patients
             summary: Returns a list of all patients
             description: Returns all registered patients in the database.
             operationId: listPatients
@@ -22,7 +25,7 @@ paths:
                           items:
                               $ref: '#/components/schemas/PatientResponse'
                         example:
-                          - id : 25
+                          - id: 25
                             name: Ahmet
                             surname: Soydaş
                             birthDate: 1986-04-03
@@ -42,6 +45,8 @@ paths:
                           message: An unexpected server side error occurred.
                           timestamp: '2026-09-05T17:30:00Z'
           post:
+            tags:
+              - Patients
             summary: Adds new patient to the database.
             requestBody:
                 required: true
@@ -50,9 +55,12 @@ paths:
                     schema:
                       $ref: '#/components/schemas/CreatePatientRequest'
                     example:
+                        nationalId: '22222222222'
                         name: Mehmet
                         surname: Yaşaroğlu
                         birthDate: 1978-07-23
+                        email: mehmet.yasaroglu@gmail.com
+                        phoneNumber: '+905554123233'
             responses:
               '201': #status code created
                 description: Patient created successfully.
@@ -96,6 +104,8 @@ paths:
 
     /patients/{uniqueId}:
         get:
+          tags:
+            - Patients
           parameters:
             - name: uniqueId
               in: path
@@ -155,6 +165,8 @@ paths:
             #Buraya 400 de eklenebilir.
     /patients/search:
         post:
+          tags:
+            - Patients
           summary: Returns the patient with matching national ID.
           requestBody:
             required: true
@@ -267,9 +279,12 @@ components:
     CreatePatientRequest:
       type: object
       required:
+        - nationalId
         - name
         - surname
         - birthDate
+        - email
+        - phoneNumber
       properties:
         name:
           type: string
@@ -278,6 +293,12 @@ components:
         birthDate:
           type: string
           format: date
+        nationalId:
+          $ref: '#/components/schemas/NationalId'
+        email:
+            type: string
+        phoneNumber:
+            type: string
     NationalId:
       type: string
       description: National identification number of the patient.

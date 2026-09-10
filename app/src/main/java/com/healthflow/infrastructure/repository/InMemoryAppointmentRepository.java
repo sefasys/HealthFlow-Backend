@@ -7,6 +7,7 @@ import com.healthflow.port.repository.AppointmentRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class InMemoryAppointmentRepository implements AppointmentRepository {
   List<Appointment> appointments;
@@ -27,7 +28,7 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
   }
 
   @Override
-  public Optional<Appointment> findByUniqueId(Long uniqueId) {
+  public Optional<Appointment> findByUniqueId(UUID uniqueId) {
     return appointments.stream()
         .filter(appointment -> appointment.getUniqueId().equals(uniqueId))
         .findFirst();

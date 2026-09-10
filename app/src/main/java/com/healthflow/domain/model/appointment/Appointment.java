@@ -4,10 +4,11 @@ import com.healthflow.domain.model.clinicaldepartment.ClinicalDepartment;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.domain.model.user.staff.Clinician;
 import java.time.LocalDate;
+import java.util.UUID;
 
 public class Appointment {
 
-  private final Long uniqueId;
+  private final UUID uniqueId;
   private AppointmentStatus status;
   private final Patient patient;
   private final Clinician clinician;
@@ -16,7 +17,7 @@ public class Appointment {
   private final LocalDate date;
 
   public Appointment(
-      Long uniqueId,
+      UUID uniqueId,
       Patient patient,
       Clinician clinician,
       LocalDate date,
@@ -61,7 +62,7 @@ public class Appointment {
     return patient;
   }
 
-  public Long getUniqueId() {
+  public UUID getUniqueId() {
     return uniqueId;
   }
 

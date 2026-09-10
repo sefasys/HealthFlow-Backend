@@ -2,37 +2,44 @@ package com.healthflow.domain.model.user.patient;
 
 import com.healthflow.domain.model.appointment.Appointment;
 import com.healthflow.domain.model.user.User;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Patient {
   private final User user;
-  private final BloodType bloodType;
-  private final List<Appointment> appointments;
+  private BloodType bloodType;
+  private final List<Appointment> appointments = new ArrayList<>();
 
-  public Patient(User user, BloodType bloodType, List<Appointment> appointments) {
+  public Patient(User user) {
 
     if (user == null) {
       throw new IllegalArgumentException("User must be set.");
     }
-    if (bloodType == null) {
-      throw new IllegalArgumentException("Blood type must be set.");
-    }
-    if (appointments == null) {
-      throw new IllegalArgumentException("Appointments must be set.");
-    }
 
-    this.appointments = appointments;
     this.user = user;
-    this.bloodType = bloodType;
+    bloodType = BloodType.UNKNOWN;
   }
 
   public User getUser() {
     return user;
   }
 
-  public BloodType getBloodType() {
+
+
+  public void updateBloodType(BloodType bloodType){
+    if(bloodType == null)
+      throw new IllegalArgumentException(
+              "Blood Type can not be null"
+      );
+
+    this.bloodType = bloodType;
+  }
+
+  public BloodType getBloodType(){
     return bloodType;
   }
+
 
   public List<Appointment> getAppointments() {
     return appointments;

@@ -5,11 +5,12 @@ import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.domain.model.user.staff.Clinician;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface AppointmentRepository {
   void addAppointment(Appointment appointment);
 
-  Optional<Appointment> findByUniqueId(Long uniqueId);
+  Optional<Appointment> findByUniqueId(UUID uniqueId);
 
   List<Appointment> getAppointments();
 

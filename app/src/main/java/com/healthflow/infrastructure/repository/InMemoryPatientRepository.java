@@ -4,10 +4,8 @@ import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.port.repository.PatientRepository;
 import com.healthflow.port.repository.PatientSortType;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 
 public class InMemoryPatientRepository implements PatientRepository {
   private final List<Patient> patients;
@@ -66,7 +64,7 @@ public class InMemoryPatientRepository implements PatientRepository {
 
   // GPT güzel bir öneri verdi dönüş tipini optional yap bence dedi çünkü aradığın find metotlarında
   // aradığın kullanıcı bulunamayabilir de.
-  public Optional<Patient> findByUniqueId(Long uniqueId) {
+  public Optional<Patient> findByUniqueId(UUID uniqueId) {
     if (uniqueId != null) {
       return patients.stream()
           .filter(patient -> patient.getUser().getUniqueID().equals(uniqueId))
@@ -95,4 +93,7 @@ public class InMemoryPatientRepository implements PatientRepository {
                     || patient.getUser().getSurname().toLowerCase().contains(normalizedQuery)))
         .toList();
   }
+
+
+
 }

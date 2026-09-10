@@ -2,10 +2,11 @@ package com.healthflow.domain.model.user;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 public class User {
 
-  private final Long uniqueID;
+  private final UUID uniqueID;
   private final NationalId nationalId;
   private final String name;
   private final String surname;
@@ -15,7 +16,7 @@ public class User {
   private final List<UserRole> userRoleList;
 
   public User(
-      Long uniqueID,
+      UUID uniqueID,
       NationalId nationalId,
       String name,
       String surname,
@@ -58,7 +59,7 @@ public class User {
     this.userRoleList = userRoleList;
   }
 
-  public Long getUniqueID() {
+  public UUID getUniqueID() {
     return uniqueID;
   }
 
@@ -80,6 +81,10 @@ public class User {
 
   public String getEmail() {
     return email;
+  }
+
+  public void setUserRole(UserRole role){
+      userRoleList.add(role);
   }
 
   public List<UserRole> getUserRoleList() {

@@ -1,5 +1,7 @@
 package com.healthflow.domain.model.user;
 
+import com.healthflow.domain.exception.InvalidNationalIdException;
+
 import java.util.Objects;
 
 public class NationalId {
@@ -8,22 +10,27 @@ public class NationalId {
   // NOT: Burada record kullanmak da oldukça mantıklı valueObjectlerde record her zaman işe yarar
   // bir yöntem olmuştur.
   public NationalId(String nationalId) {
-    if (nationalId == null) {
-      throw new IllegalArgumentException("National ID cannot be null");
+
+    if(nationalId == null){
+        throw new InvalidNationalIdException("National Id can not be null.");
+    }
+
+    if (nationalId.isBlank()) {
+      throw new InvalidNationalIdException("National ID cannot be empty.");
     }
 
     if (nationalId.length() != 11) {
-      throw new IllegalArgumentException("National ID must be 11 digits");
+      throw new InvalidNationalIdException("National ID must be 11 digits");
     }
 
     if (!nationalId.chars().allMatch(Character::isDigit)) {
-      throw new IllegalArgumentException("National ID must contain only digits");
+      throw new InvalidNationalIdException("National ID must contain only digits");
     }
 
     int lastDigit = Character.getNumericValue(nationalId.charAt(nationalId.length() - 1));
 
     if (lastDigit % 2 != 0) {
-      throw new IllegalArgumentException("Last digit must be even");
+      throw new InvalidNationalIdException("Last digit must be even");
     }
 
     this.nationalId = nationalId;

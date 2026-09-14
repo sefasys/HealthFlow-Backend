@@ -1,7 +1,6 @@
 package com.healthflow.infrastructure.config;
 
-import com.healthflow.application.usecase.patient.CreatePatientUseCase;
-import com.healthflow.application.usecase.patient.GetPatientsUseCase;
+import com.healthflow.application.usecase.patient.*;
 import com.healthflow.domain.factory.UserFactory;
 import com.healthflow.infrastructure.repository.InMemoryIPatientRepository;
 import com.healthflow.port.repository.IPatientRepository;
@@ -30,4 +29,20 @@ public class ApplicationConfig {
   public GetPatientsUseCase getPatientsUseCase(IPatientRepository patientRepository) {
     return new GetPatientsUseCase(patientRepository);
   }
+
+  @Bean
+  public FindPatientByUniqueIdUseCase findPatientByUniqueIdUseCase(IPatientRepository patientRepository){
+    return new FindPatientByUniqueIdUseCase(patientRepository);
+  }
+
+  @Bean
+  public FindPatientByNationalIdUseCase findPatientByNationalIdUseCase(IPatientRepository patientRepository){
+    return new FindPatientByNationalIdUseCase(patientRepository);
+  }
+
+  @Bean
+  public SearchPatientUseCase searchPatientUseCase(IPatientRepository patientRepository){
+      return new SearchPatientUseCase(patientRepository);
+  }
+
 }

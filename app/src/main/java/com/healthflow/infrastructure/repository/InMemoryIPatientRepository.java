@@ -79,10 +79,7 @@ public class InMemoryIPatientRepository implements IPatientRepository {
   }
 
   public List<Patient> search(String query) { // query sorgu demek unutma
-    if (query == null) throw new IllegalArgumentException("Search query cannot be null.");
-    if (query.isBlank()) {
-      throw new IllegalArgumentException("Search query is blank.");
-    }
+
     String normalizedQuery = query.toLowerCase();
     return patients.stream()
         .filter(

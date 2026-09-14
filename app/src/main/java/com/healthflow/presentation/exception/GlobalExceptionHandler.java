@@ -1,7 +1,9 @@
 package com.healthflow.presentation.exception;
 
+import com.healthflow.application.exception.InvalidSearchQueryException;
 import com.healthflow.application.exception.PatientAlreadyExistsException;
 import com.healthflow.application.exception.PatientNotFoundException;
+import com.healthflow.domain.exception.InvalidNationalIdException;
 import com.healthflow.presentation.dto.patient.ErrorResponseDto;
 import java.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -65,4 +67,30 @@ public class GlobalExceptionHandler {
             LocalDateTime.now());
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
   }
+
+  @ExceptionHandler(InvalidNationalIdException.class)
+  public ResponseEntity<ErrorResponseDto> handleInvalidNationalId(
+          InvalidNationalIdException exception
+  ) {
+      ErrorResponseDto responseDto = new ErrorResponseDto(
+              HttpStatus.BAD_REQUEST.value(),
+              "INVALID_NATIONAL_ID",
+              exception.getMessage(),
+              LocalDateTime.now()
+      );
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
+  }
+
+  @ExceptionHandler(InvalidSearchQueryException.class)
+  public ResponseEntity<ErrorResponseDto> handleInvalidSearch(
+          InvalidSearchQueryException exception
+  ){
+      ErrorResponseDto responseDto = new ErrorResponseDto(
+              HttpStatus.BAD_REQUEST.value(),
+              "INVALID_SEARCH_QUERY",
+              exception.getMessage(),
+              LocalDateTime.now()
+      );
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
+  } // Search Patient Test kısmında kaldık. Yarın onun üzerinde çalışacağız. Bir de Controller'daki Exception kısımlarını yöneteceğiz. iyi bir karar vermek gerek orada.
 }

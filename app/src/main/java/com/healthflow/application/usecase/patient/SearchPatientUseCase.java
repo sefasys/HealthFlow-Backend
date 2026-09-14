@@ -1,5 +1,6 @@
 package com.healthflow.application.usecase.patient;
 
+import com.healthflow.application.exception.InvalidSearchQueryException;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.port.repository.IPatientRepository;
 import java.util.List;
@@ -12,6 +13,13 @@ public class SearchPatientUseCase {
   }
 
   public List<Patient> execute(String query) {
-    return iPatientRepository.search(query);
+
+      if (query == null || query.isBlank()) {
+          throw new InvalidSearchQueryException(
+                  "Search query cannot be null or blank."
+          );
+      }
+
+      return iPatientRepository.search(query);
   }
 }

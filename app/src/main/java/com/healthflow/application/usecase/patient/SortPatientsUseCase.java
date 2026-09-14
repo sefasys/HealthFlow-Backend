@@ -1,18 +1,18 @@
 package com.healthflow.application.usecase.patient;
 
 import com.healthflow.domain.model.user.patient.Patient;
-import com.healthflow.port.repository.PatientRepository;
+import com.healthflow.port.repository.IPatientRepository;
 import com.healthflow.port.repository.PatientSortType;
 import java.util.List;
 
 public class SortPatientsUseCase {
-  private final PatientRepository patientRepository;
+  private final IPatientRepository iPatientRepository;
 
-  public SortPatientsUseCase(PatientRepository patientRepository) {
-    this.patientRepository = patientRepository;
+  public SortPatientsUseCase(IPatientRepository iPatientRepository) {
+    this.iPatientRepository = iPatientRepository;
   }
 
   public List<Patient> execute(PatientSortType sortType) {
-    return patientRepository.sort(sortType);
+    return iPatientRepository.sort(sortType);
   }
 }

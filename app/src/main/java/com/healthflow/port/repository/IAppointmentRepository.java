@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface AppointmentRepository {
+public interface IAppointmentRepository {
   void addAppointment(Appointment appointment);
 
   Optional<Appointment> findByUniqueId(UUID uniqueId);

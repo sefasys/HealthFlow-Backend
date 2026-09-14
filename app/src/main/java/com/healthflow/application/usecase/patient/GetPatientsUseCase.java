@@ -1,18 +1,18 @@
 package com.healthflow.application.usecase.patient;
 
 import com.healthflow.domain.model.user.patient.Patient;
-import com.healthflow.port.repository.PatientRepository;
+import com.healthflow.port.repository.IPatientRepository;
 import java.util.List;
 
 public class GetPatientsUseCase {
 
-  private final PatientRepository patientRepository;
+  private final IPatientRepository iPatientRepository;
 
-  public GetPatientsUseCase(PatientRepository patientRepository) {
-    this.patientRepository = patientRepository;
+  public GetPatientsUseCase(IPatientRepository iPatientRepository) {
+    this.iPatientRepository = iPatientRepository;
   }
 
   public List<Patient> execute() {
-    return patientRepository.getPatients();
+    return iPatientRepository.getPatients();
   }
 }

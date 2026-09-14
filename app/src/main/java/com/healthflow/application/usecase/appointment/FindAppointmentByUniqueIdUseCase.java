@@ -1,18 +1,18 @@
 package com.healthflow.application.usecase.appointment;
 
 import com.healthflow.domain.model.appointment.Appointment;
-import com.healthflow.port.repository.AppointmentRepository;
+import com.healthflow.port.repository.IAppointmentRepository;
 import java.util.Optional;
 import java.util.UUID;
 
 public class FindAppointmentByUniqueIdUseCase {
-  private final AppointmentRepository appointmentRepository;
+  private final IAppointmentRepository iAppointmentRepository;
 
-  public FindAppointmentByUniqueIdUseCase(AppointmentRepository appointmentRepository) {
-    this.appointmentRepository = appointmentRepository;
+  public FindAppointmentByUniqueIdUseCase(IAppointmentRepository iAppointmentRepository) {
+    this.iAppointmentRepository = iAppointmentRepository;
   }
 
   public Optional<Appointment> execute(UUID uniqueId) {
-    return appointmentRepository.findByUniqueId(uniqueId);
+    return iAppointmentRepository.findByUniqueId(uniqueId);
   }
 }

@@ -7,6 +7,7 @@ import com.healthflow.domain.model.user.User;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.presentation.dto.patient.CreatePatientRequestDto;
 import com.healthflow.presentation.dto.patient.PatientResponseDto;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class PatientController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PatientResponseDto createPatient(@RequestBody CreatePatientRequestDto requestDto){
+    public PatientResponseDto createPatient(@Valid @RequestBody CreatePatientRequestDto requestDto){
         NationalId nationalId = new NationalId(requestDto.nationalId());
         Patient patient = createPatientUseCase.execute(
                 nationalId,

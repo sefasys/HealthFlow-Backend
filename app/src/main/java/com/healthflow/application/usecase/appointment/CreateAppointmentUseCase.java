@@ -1,21 +1,21 @@
 package com.healthflow.application.usecase.appointment;
 
 import com.healthflow.domain.model.appointment.Appointment;
-import com.healthflow.port.repository.AppointmentRepository;
+import com.healthflow.port.repository.IAppointmentRepository;
 
 public class CreateAppointmentUseCase {
-  private final AppointmentRepository appointmentRepository;
+  private final IAppointmentRepository iAppointmentRepository;
 
-  public CreateAppointmentUseCase(AppointmentRepository appointmentRepository) {
-    this.appointmentRepository = appointmentRepository;
+  public CreateAppointmentUseCase(IAppointmentRepository iAppointmentRepository) {
+    this.iAppointmentRepository = iAppointmentRepository;
   }
 
   public Appointment execute(Appointment appointment) {
-    if (appointmentRepository.findByUniqueId(appointment.getUniqueId()).isPresent()) {
+    if (iAppointmentRepository.findByUniqueId(appointment.getUniqueId()).isPresent()) {
       throw new IllegalArgumentException("Appointment already exists");
     }
 
-    appointmentRepository.addAppointment(appointment);
+    iAppointmentRepository.addAppointment(appointment);
 
     return appointment;
   }

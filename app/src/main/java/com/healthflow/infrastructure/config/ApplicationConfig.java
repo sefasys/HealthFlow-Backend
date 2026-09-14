@@ -2,8 +2,8 @@ package com.healthflow.infrastructure.config;
 
 import com.healthflow.application.usecase.patient.CreatePatientUseCase;
 import com.healthflow.domain.factory.UserFactory;
-import com.healthflow.infrastructure.repository.InMemoryPatientRepository;
-import com.healthflow.port.repository.PatientRepository;
+import com.healthflow.infrastructure.repository.InMemoryIPatientRepository;
+import com.healthflow.port.repository.IPatientRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,16 +15,16 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public PatientRepository patientRepository(){
-        return new InMemoryPatientRepository();
+    public IPatientRepository patientRepository(){
+        return new InMemoryIPatientRepository();
     }
 
     @Bean
     public CreatePatientUseCase createPatientUseCase(
-            PatientRepository patientRepository,
+            IPatientRepository iPatientRepository,
             UserFactory userFactory
     ){
-        return new CreatePatientUseCase(patientRepository, userFactory);
+        return new CreatePatientUseCase(iPatientRepository, userFactory);
     }
 
 }

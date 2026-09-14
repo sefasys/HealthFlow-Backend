@@ -1,22 +1,23 @@
 package com.healthflow.application.usecase.patient;
 
+import com.healthflow.application.exception.PatientAlreadyExistsException;
 import com.healthflow.domain.factory.UserFactory;
 import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.User;
 import com.healthflow.domain.model.user.UserRole;
 import com.healthflow.domain.model.user.patient.Patient;
-import com.healthflow.port.repository.PatientRepository;
+import com.healthflow.port.repository.IPatientRepository;
 
 
 import java.time.LocalDate;
 
 public class CreatePatientUseCase {
 
-  private final PatientRepository patientRepository;
+  private final IPatientRepository iPatientRepository;
   private final UserFactory userFactory;
 
-  public CreatePatientUseCase(PatientRepository patientRepository, UserFactory userFactory) {
-    this.patientRepository = patientRepository;
+  public CreatePatientUseCase(IPatientRepository iPatientRepository, UserFactory userFactory) {
+    this.iPatientRepository = iPatientRepository;
     this.userFactory = userFactory;
   }
 
@@ -28,15 +29,15 @@ public class CreatePatientUseCase {
                          String phoneNumber
                          ) {
 
-    if(patientRepository.findByNationalId(nationalId).isPresent()){
-      throw new IllegalArgumentException(
+    if(iPatientRepository.findByNationalId(nationalId).isPresent()){
+      throw new PatientAlreadyExistsException(
               "There is already a user with the same national identity number."
       );
     }
 
     User user = userFactory.createUser(nationalId, name, surname, birthDate, email, phoneNumber, UserRole.PATIENT);
     Patient patient = new Patient(user);
-    patientRepository.addPatient(patient);
+    iPatientRepository.addPatient(patient);
     return patient;
 
   }

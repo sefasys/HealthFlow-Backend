@@ -2,16 +2,26 @@ package com.healthflow.presentation.dto.patient;
 
 
 import com.healthflow.domain.model.user.NationalId;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
 
 public record CreatePatientRequestDto(
+        @NotBlank
         String nationalId, //Burada bilerek String olarak yazdık çünkü DTO’da String, domain’de NationalId tercih ederim. Çünkü DTO HTTP modelidir; client düz JSON gönderir. Domain value object’i dış API contract’ına sızdırmayalım.
+        @NotBlank
         String name,
+        @NotBlank
         String surname,
+        @NotNull
         LocalDate birthDate,
+        @NotBlank
+        @Email
         String email,
+        @NotBlank
         String phoneNumber
 ) {
 }

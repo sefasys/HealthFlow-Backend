@@ -2,15 +2,15 @@ package com.healthflow.infrastructure.repository;
 
 import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.patient.Patient;
-import com.healthflow.port.repository.PatientRepository;
+import com.healthflow.port.repository.IPatientRepository;
 import com.healthflow.port.repository.PatientSortType;
 
 import java.util.*;
 
-public class InMemoryPatientRepository implements PatientRepository {
+public class InMemoryIPatientRepository implements IPatientRepository {
   private final List<Patient> patients;
 
-  public InMemoryPatientRepository() {
+  public InMemoryIPatientRepository() {
     patients = new ArrayList<>();
   }
 

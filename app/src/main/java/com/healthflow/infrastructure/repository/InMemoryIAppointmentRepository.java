@@ -3,16 +3,16 @@ package com.healthflow.infrastructure.repository;
 import com.healthflow.domain.model.appointment.Appointment;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.domain.model.user.staff.Clinician;
-import com.healthflow.port.repository.AppointmentRepository;
+import com.healthflow.port.repository.IAppointmentRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class InMemoryAppointmentRepository implements AppointmentRepository {
+public class InMemoryIAppointmentRepository implements IAppointmentRepository {
   List<Appointment> appointments;
 
-  public InMemoryAppointmentRepository(List<Appointment> appointments) {
+  public InMemoryIAppointmentRepository(List<Appointment> appointments) {
     if (appointments == null) throw new IllegalArgumentException("Appointments can not be null");
 
     this.appointments =

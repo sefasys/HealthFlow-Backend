@@ -2,17 +2,17 @@ package com.healthflow.application.usecase.appointment;
 
 import com.healthflow.domain.model.appointment.Appointment;
 import com.healthflow.domain.model.user.patient.Patient;
-import com.healthflow.port.repository.AppointmentRepository;
+import com.healthflow.port.repository.IAppointmentRepository;
 import java.util.List;
 
 public class FindAppointmentByPatientUseCase {
-  private final AppointmentRepository appointmentRepository;
+  private final IAppointmentRepository iAppointmentRepository;
 
-  public FindAppointmentByPatientUseCase(AppointmentRepository appointmentRepository) {
-    this.appointmentRepository = appointmentRepository;
+  public FindAppointmentByPatientUseCase(IAppointmentRepository iAppointmentRepository) {
+    this.iAppointmentRepository = iAppointmentRepository;
   }
 
   public List<Appointment> execute(Patient patient) {
-    return appointmentRepository.findByPatient(patient);
+    return iAppointmentRepository.findByPatient(patient);
   }
 }

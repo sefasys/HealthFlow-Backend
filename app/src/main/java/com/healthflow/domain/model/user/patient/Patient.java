@@ -2,7 +2,6 @@ package com.healthflow.domain.model.user.patient;
 
 import com.healthflow.domain.model.appointment.Appointment;
 import com.healthflow.domain.model.user.User;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,21 +24,15 @@ public class Patient {
     return user;
   }
 
-
-
-  public void updateBloodType(BloodType bloodType){
-    if(bloodType == null)
-      throw new IllegalArgumentException(
-              "Blood Type can not be null"
-      );
+  public void updateBloodType(BloodType bloodType) {
+    if (bloodType == null) throw new IllegalArgumentException("Blood Type can not be null");
 
     this.bloodType = bloodType;
   }
 
-  public BloodType getBloodType(){
+  public BloodType getBloodType() {
     return bloodType;
   }
-
 
   public List<Appointment> getAppointments() {
     return appointments;

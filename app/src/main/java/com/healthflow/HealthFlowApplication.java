@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class HealthFlowApplication {
 
-    public static void main(String[] args){
+  public static void main(String[] args) {
 
-        SpringApplication.run(HealthFlowApplication.class, args);
-    }
+    SpringApplication.run(HealthFlowApplication.class, args);
+  }
 }

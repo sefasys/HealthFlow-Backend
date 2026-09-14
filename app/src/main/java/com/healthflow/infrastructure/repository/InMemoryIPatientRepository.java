@@ -4,7 +4,6 @@ import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.port.repository.IPatientRepository;
 import com.healthflow.port.repository.PatientSortType;
-
 import java.util.*;
 
 public class InMemoryIPatientRepository implements IPatientRepository {
@@ -92,7 +91,4 @@ public class InMemoryIPatientRepository implements IPatientRepository {
                     || patient.getUser().getSurname().toLowerCase().contains(normalizedQuery)))
         .toList();
   }
-
-
-
 }

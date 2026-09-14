@@ -83,8 +83,8 @@ public class User {
     return email;
   }
 
-  public void setUserRole(UserRole role){
-      userRoleList.add(role);
+  public void setUserRole(UserRole role) {
+    userRoleList.add(role);
   }
 
   public List<UserRole> getUserRoleList() {

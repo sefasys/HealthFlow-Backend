@@ -7,8 +7,6 @@ import com.healthflow.domain.model.user.User;
 import com.healthflow.domain.model.user.UserRole;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.port.repository.IPatientRepository;
-
-
 import java.time.LocalDate;
 
 public class CreatePatientUseCase {
@@ -21,24 +19,24 @@ public class CreatePatientUseCase {
     this.userFactory = userFactory;
   }
 
-  public Patient execute(NationalId nationalId,
-                         String name,
-                         String surname,
-                         LocalDate birthDate,
-                         String email,
-                         String phoneNumber
-                         ) {
+  public Patient execute(
+      NationalId nationalId,
+      String name,
+      String surname,
+      LocalDate birthDate,
+      String email,
+      String phoneNumber) {
 
-    if(iPatientRepository.findByNationalId(nationalId).isPresent()){
+    if (iPatientRepository.findByNationalId(nationalId).isPresent()) {
       throw new PatientAlreadyExistsException(
-              "There is already a user with the same national identity number."
-      );
+          "There is already a user with the same national identity number.");
     }
 
-    User user = userFactory.createUser(nationalId, name, surname, birthDate, email, phoneNumber, UserRole.PATIENT);
+    User user =
+        userFactory.createUser(
+            nationalId, name, surname, birthDate, email, phoneNumber, UserRole.PATIENT);
     Patient patient = new Patient(user);
     iPatientRepository.addPatient(patient);
     return patient;
-
   }
 }

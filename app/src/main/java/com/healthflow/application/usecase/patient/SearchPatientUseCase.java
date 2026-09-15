@@ -6,10 +6,10 @@ import com.healthflow.port.repository.IPatientRepository;
 import java.util.List;
 
 public class SearchPatientUseCase {
-  private final IPatientRepository iPatientRepository;
+  private final IPatientRepository patientRepository;
 
-  public SearchPatientUseCase(IPatientRepository iPatientRepository) {
-    this.iPatientRepository = iPatientRepository;
+  public SearchPatientUseCase(IPatientRepository patientRepository) {
+    this.patientRepository = patientRepository;
   }
 
   public List<Patient> execute(String query) {
@@ -20,6 +20,6 @@ public class SearchPatientUseCase {
           );
       }
 
-      return iPatientRepository.search(query);
+      return patientRepository.search(query);
   }
 }

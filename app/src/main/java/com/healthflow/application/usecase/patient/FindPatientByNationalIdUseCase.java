@@ -1,5 +1,6 @@
 package com.healthflow.application.usecase.patient;
 
+import com.healthflow.domain.exception.InvalidNationalIdException;
 import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.port.repository.IPatientRepository;
@@ -13,6 +14,10 @@ public class FindPatientByNationalIdUseCase {
   }
 
   public Optional<Patient> execute(NationalId nationalId) {
+
+    if (nationalId == null) {
+      throw new InvalidNationalIdException("National ID cannot be null.");
+    }
     return iPatientRepository.findByNationalId(nationalId);
   }
 }

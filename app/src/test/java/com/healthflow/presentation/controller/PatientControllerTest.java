@@ -6,11 +6,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.healthflow.application.exception.InvalidSearchQueryException;
 import com.healthflow.application.exception.PatientAlreadyExistsException;
-import com.healthflow.application.usecase.patient.CreatePatientUseCase;
-import com.healthflow.application.usecase.patient.FindPatientByNationalIdUseCase;
-import com.healthflow.application.usecase.patient.FindPatientByUniqueIdUseCase;
-import com.healthflow.application.usecase.patient.GetPatientsUseCase;
+import com.healthflow.application.usecase.patient.*;
 import com.healthflow.domain.factory.UserFactory;
 import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.User;
@@ -39,6 +37,9 @@ class PatientControllerTest {
 
   @MockitoBean
   private FindPatientByNationalIdUseCase findPatientByNationalIdUseCase;
+
+  @MockitoBean
+  private SearchPatientUseCase searchPatientUseCase;
 
   // ==============================
   // POST /patients
@@ -409,4 +410,97 @@ class PatientControllerTest {
                 .andExpect(jsonPath("$.status").value(500))
                 .andExpect(jsonPath("$.code").value("INTERNAL_SERVER_ERROR"));
     }
+
+  // ==============================
+// GET /patients/search
+// Search Patients Tests
+// ==============================
+
+  @Test
+  void shouldReturn200WithMatchingPatients() throws Exception {
+
+    UserFactory userFactory = new UserFactory();
+
+    User user = userFactory.createUser(
+            new NationalId("12345678910"),
+            "Sefa",
+            "Soysal",
+            LocalDate.of(2004, 1, 1),
+            "sefa@example.com",
+            "5555555555",
+            UserRole.PATIENT
+    );
+
+    Patient patient = new Patient(user);
+
+    when(searchPatientUseCase.execute("Sefa"))
+            .thenReturn(List.of(patient));
+
+    mockMvc.perform(
+                    get("/patients/search")
+                            .param("query", "Sefa")
+                            .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].name").value("Sefa"))
+            .andExpect(jsonPath("$[0].surname").value("Soysal"));
+  }
+
+
+  @Test
+  void shouldReturn200WithEmptyListWhenSearchHasNoMatches() throws Exception {
+
+    when(searchPatientUseCase.execute("Unknown"))
+            .thenReturn(List.of());
+
+    mockMvc.perform(
+                    get("/patients/search")
+                            .param("query", "Unknown")
+            )
+            .andExpect(status().isOk())
+            .andExpect(content().json("[]"));
+  }
+
+  @Test
+  void shouldReturn400WhenSearchQueryIsInvalid() throws Exception {
+
+    doThrow(new InvalidSearchQueryException(
+            "Search query cannot be null or blank."
+    ))
+            .when(searchPatientUseCase)
+            .execute("");
+
+    mockMvc.perform(
+                    get("/patients/search")
+                            .param("query", "")
+            )
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.status").value(400))
+            .andExpect(jsonPath("$.code").value("INVALID_SEARCH_QUERY"));
+  }
+
+
+  @Test
+  void shouldReturn500WhenSearchFails() throws Exception {
+
+    doThrow(new RuntimeException("Unexpected error"))
+            .when(searchPatientUseCase)
+            .execute("Sefa");
+
+    mockMvc.perform(
+                    get("/patients/search")
+                            .param("query", "Sefa")
+            )
+            .andExpect(status().isInternalServerError())
+            .andExpect(jsonPath("$.status").value(500))
+            .andExpect(jsonPath("$.code").value("INTERNAL_SERVER_ERROR"));
+  }
+
+
+
+
+
+
+
+
 }

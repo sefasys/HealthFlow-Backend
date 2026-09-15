@@ -12,7 +12,6 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -107,7 +106,7 @@ public class PatientController {
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/search")
-  public List<PatientResponseDto> searchPatients(@RequestParam @NotBlank String query){
+  public List<PatientResponseDto> searchPatients(@RequestParam String query){
       List<Patient> patients = searchPatientUseCase.execute(query);
       return patients.stream().map(patient -> {
           User user = patient.getUser();

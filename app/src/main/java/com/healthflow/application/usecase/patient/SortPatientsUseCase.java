@@ -13,6 +13,7 @@ public class SortPatientsUseCase {
   }
 
   public List<Patient> execute(PatientSortType sortType) {
+
     return iPatientRepository.sort(sortType);
   }
 }

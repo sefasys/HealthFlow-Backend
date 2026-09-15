@@ -82,7 +82,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(InvalidSearchQueryException.class)
-  public ResponseEntity<ErrorResponseDto> handleInvalidSearch(
+  public ResponseEntity<ErrorResponseDto> handleInvalidSearchQuery(
           InvalidSearchQueryException exception
   ){
       ErrorResponseDto responseDto = new ErrorResponseDto(
@@ -93,4 +93,6 @@ public class GlobalExceptionHandler {
       );
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
   } // Search Patient Test kısmında kaldık. Yarın onun üzerinde çalışacağız. Bir de Controller'daki Exception kısımlarını yöneteceğiz. iyi bir karar vermek gerek orada.
+
+
 }

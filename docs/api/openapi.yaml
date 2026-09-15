@@ -143,6 +143,64 @@ paths:
                 code: ID_NOT_FOUND_ERROR
                 message: There is no patient with this ID.
                 timestamp: '2023-05-14T17:30:00Z'
+    patch:
+      tags:
+        - Patients
+      summary: Updates patient information successfully.
+      operationId: UpdatePatient
+      parameters:
+        - name: uniqueId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePatientRequest'
+      responses:
+        '200':
+          description: Patient successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdatePatientRequest'
+        '400':
+          description: The update request is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 400
+                code: BAD_REQUEST_ERROR
+                message: The update request is invalid.
+                timestamp: '2023-05-14T17:30:00Z'
+        '404':
+          description: No patient was found with the provided unique ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 404
+                code: PATIENT_NOT_FOUND
+                message: No patient was found with the provided unique ID.
+                timestamp: '2023-05-14T17:30:00Z'
+        '409':
+          description: There is already a patient with the same request feature. #burayı değiş kötü yazdık.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 409
+                code: PATIENT_CONFLICT_ERROR
+                message: There is already a patient with the same request feature.
+                timestamp: '2023-05-14T17:30:00Z'
 
   /patients/search-by-national-id:
     post:
@@ -315,3 +373,34 @@ components:
       properties:
         nationalId:
           $ref: '#/components/schemas/NationalId'
+
+    UpdatePatientRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: newmail@example.com
+
+        phoneNumber:
+          type: string
+          example: "5551112233"
+
+        bloodType:
+          type: string
+          enum:
+            - A_POSITIVE
+            - A_NEGATIVE
+            - B_POSITIVE
+            - B_NEGATIVE
+            - AB_POSITIVE
+            - AB_NEGATIVE
+            - O_POSITIVE
+            - O_NEGATIVE
+          example: A_POSITIVE
+
+    BloodType:
+      type: string
+      description: Bloodtype of patient.
+      example: A_POSITIVE
+

@@ -1,6 +1,6 @@
 package com.healthflow.presentation.controller;
 
-import com.healthflow.application.exception.PatientNotFoundException;
+
 import com.healthflow.application.usecase.patient.*;
 import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.User;
@@ -78,16 +78,8 @@ public class PatientController {
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/{uniqueId}")
   public PatientResponseDto findPatientByUniqueId(@PathVariable UUID uniqueId) {
-    Patient patient =
-        findPatientByUniqueIdUseCase
-            .execute(uniqueId)
-            .orElseThrow(
-                () ->
-                    new PatientNotFoundException(
-                        "Patient not found with unique id: "
-                            + uniqueId) // or else throw yapmak zorundaydık çünkü Patient aslında
-                // optional<patient>.
-                );
+    Patient patient = findPatientByUniqueIdUseCase.execute(uniqueId);
+
     User user = patient.getUser();
     return new PatientResponseDto(
         user.getUniqueID(), user.getName(), user.getSurname(), user.getBirthDate());
@@ -98,8 +90,7 @@ public class PatientController {
   public PatientResponseDto findPatientByNationalId(@Valid @RequestBody FindPatientByNationalIdRequestDto findPatientByNationalIdRequestDto){
       NationalId nationalId = new NationalId(findPatientByNationalIdRequestDto.nationalId());
 
-      Patient patient = findPatientByNationalIdUseCase.execute(nationalId).orElseThrow(() ->
-              new PatientNotFoundException("Patient not found with this national id."));
+      Patient patient = findPatientByNationalIdUseCase.execute(nationalId);
       User user = patient.getUser();
       return new PatientResponseDto(user.getUniqueID(), user.getName(), user.getSurname(), user.getBirthDate());
   }

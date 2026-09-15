@@ -1,5 +1,6 @@
 package com.healthflow.application.usecase.patient;
 
+import com.healthflow.application.exception.PatientNotFoundException;
 import com.healthflow.domain.exception.InvalidNationalIdException;
 import com.healthflow.domain.factory.UserFactory;
 import com.healthflow.domain.model.user.NationalId;
@@ -12,11 +13,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class FindByNationalIdUseCaseTest {
+public class FindPatientByNationalIdUseCaseTest {
 
     private IPatientRepository patientRepository;
     private FindPatientByNationalIdUseCase findPatientByNationalIdUseCase;
@@ -33,7 +34,8 @@ public class FindByNationalIdUseCaseTest {
     @Test
     void shouldReturnPatientWhenNationalIdExists() {
 
-        NationalId nationalId = new NationalId("12345678910");
+        NationalId nationalId =
+                new NationalId("12345678910");
 
         User user = userFactory.createUser(
                 nationalId,
@@ -46,35 +48,34 @@ public class FindByNationalIdUseCaseTest {
         );
 
         Patient patient = new Patient(user);
-
         patientRepository.addPatient(patient);
 
-        Optional<Patient> result =
+        Patient result =
                 findPatientByNationalIdUseCase.execute(nationalId);
 
-        assertTrue(result.isPresent());
         assertEquals(
                 nationalId,
-                result.get().getUser().getNationalId()
+                result.getUser().getNationalId()
         );
     }
 
     @Test
-    void shouldReturnEmptyWhenNationalIdDoesNotExist() {
+    void shouldThrowPatientNotFoundExceptionWhenNationalIdDoesNotExist() {
 
-        NationalId nationalId = new NationalId("12345678910");
+        NationalId nationalId =
+                new NationalId("12345678910");
 
-        Optional<Patient> result =
-                findPatientByNationalIdUseCase.execute(nationalId);
-
-        assertTrue(result.isEmpty());
+        assertThrows(
+                PatientNotFoundException.class,
+                () -> findPatientByNationalIdUseCase.execute(nationalId)
+        );
     }
 
     @Test
     void shouldThrowExceptionWhenNationalIdIsNull() {
 
         assertThrows(
-                InvalidNationalIdException.class,
+                InvalidNationalIdException.class, // custom exception'ın hangisiyse değiştir
                 () -> findPatientByNationalIdUseCase.execute(null)
         );
     }

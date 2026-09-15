@@ -1,5 +1,6 @@
 package com.healthflow.application.usecase.patient;
 
+import com.healthflow.application.exception.PatientNotFoundException;
 import com.healthflow.domain.exception.InvalidUniqueIdException;
 import com.healthflow.domain.factory.UserFactory;
 import com.healthflow.domain.model.user.NationalId;
@@ -12,14 +13,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FindByUniqueIdUseCaseTest {
+public class FindPatientByUniqueIdUseCaseTest {
 
     private IPatientRepository patientRepository;
     private FindPatientByUniqueIdUseCase findPatientByUniqueIdUseCase;
@@ -47,37 +46,35 @@ public class FindByUniqueIdUseCaseTest {
         );
 
         Patient patient = new Patient(user);
-
         patientRepository.addPatient(patient);
 
         UUID uniqueId = user.getUniqueID();
 
-        Optional<Patient> result =
+        Patient result =
                 findPatientByUniqueIdUseCase.execute(uniqueId);
 
-        assertTrue(result.isPresent());
         assertEquals(
                 uniqueId,
-                result.get().getUser().getUniqueID()
+                result.getUser().getUniqueID()
         );
     }
 
     @Test
-    void shouldReturnEmptyWhenUniqueIdDoesNotExist() {
+    void shouldThrowPatientNotFoundExceptionWhenUniqueIdDoesNotExist() {
 
         UUID uniqueId = UUID.randomUUID();
 
-        Optional<Patient> result =
-                findPatientByUniqueIdUseCase.execute(uniqueId);
-
-        assertTrue(result.isEmpty());
+        assertThrows(
+                PatientNotFoundException.class,
+                () -> findPatientByUniqueIdUseCase.execute(uniqueId)
+        );
     }
 
     @Test
     void shouldThrowExceptionWhenUniqueIdIsNull() {
 
         assertThrows(
-                InvalidUniqueIdException.class,
+                InvalidUniqueIdException.class, // kendi custom exception'ın varsa onu yaz
                 () -> findPatientByUniqueIdUseCase.execute(null)
         );
     }

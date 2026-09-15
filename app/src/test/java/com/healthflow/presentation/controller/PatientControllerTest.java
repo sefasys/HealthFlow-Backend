@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.healthflow.application.exception.InvalidSearchQueryException;
 import com.healthflow.application.exception.PatientAlreadyExistsException;
+import com.healthflow.application.exception.PatientNotFoundException;
 import com.healthflow.application.usecase.patient.*;
 import com.healthflow.domain.factory.UserFactory;
 import com.healthflow.domain.model.user.NationalId;
@@ -16,7 +17,6 @@ import com.healthflow.domain.model.user.UserRole;
 import com.healthflow.domain.model.user.patient.Patient;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -253,7 +253,8 @@ class PatientControllerTest {
 
     Patient patient = new Patient(user);
 
-    when(findPatientByUniqueIdUseCase.execute(uniqueId)).thenReturn(Optional.of(patient));
+    when(findPatientByUniqueIdUseCase.execute(uniqueId))
+            .thenReturn(patient);
 
     mockMvc
         .perform(get("/patients/{uniqueId}", uniqueId).contentType(MediaType.APPLICATION_JSON))
@@ -268,8 +269,22 @@ class PatientControllerTest {
   void shouldReturn404WhenPatientNotFoundByUniqueId() throws Exception {
 
     UUID uniqueId = UUID.randomUUID();
+    UserFactory userFactory = new UserFactory();
 
-    when(findPatientByUniqueIdUseCase.execute(uniqueId)).thenReturn(Optional.empty());
+    User user =
+            userFactory.createUser(
+                    new NationalId("12345678910"),
+                    "Sefa",
+                    "Soysal",
+                    LocalDate.of(2004, 1, 1),
+                    "sefa@example.com",
+                    "5555555555",
+                    UserRole.PATIENT);
+
+    Patient patient = new Patient(user);
+
+    when(findPatientByUniqueIdUseCase.execute(uniqueId))
+            .thenReturn(patient);
 
     mockMvc
         .perform(get("/patients/{uniqueId}", uniqueId).contentType(MediaType.APPLICATION_JSON))
@@ -295,123 +310,124 @@ class PatientControllerTest {
         .andExpect(jsonPath("$.code").value("INTERNAL_SERVER_ERROR"));
   }
 
-    // ==============================
-    // GET /patients/search-by-national-id
-    // Find Patient By National ID Tests
-    // ==============================
-    @Test
-    void shouldReturn200WhenPatientFoundByNationalId() throws Exception {
+  // ==============================
+// POST /patients/search-by-national-id
+// Find Patient By National ID Tests
+// ==============================
 
-        NationalId nationalId = new NationalId("12345678910");
+  @Test
+  void shouldReturn200WhenPatientIsFoundByNationalId() throws Exception {
 
-        UserFactory userFactory = new UserFactory();
+    NationalId nationalId = new NationalId("12345678910");
+    UserFactory userFactory = new UserFactory();
 
-        User user = userFactory.createUser(
-                nationalId,
-                "Sefa",
-                "Soysal",
-                LocalDate.of(2004, 1, 1),
-                "sefa@example.com",
-                "5555555555",
-                UserRole.PATIENT
-        );
+    User user = userFactory.createUser(
+            nationalId,
+            "Sefa",
+            "Soysal",
+            LocalDate.of(2004, 1, 1),
+            "sefa@example.com",
+            "5555555555",
+            UserRole.PATIENT
+    );
 
-        Patient patient = new Patient(user);
+    Patient patient = new Patient(user);
 
-        when(findPatientByNationalIdUseCase.execute(any(NationalId.class)))
-                .thenReturn(Optional.of(patient));
+    when(findPatientByNationalIdUseCase.execute(any(NationalId.class)))
+            .thenReturn(patient);
 
-        mockMvc.perform(
-                        post("/patients/search-by-national-id")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("""
+    mockMvc.perform(
+                    post("/patients/search-by-national-id")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
                             {
                               "nationalId": "12345678910"
                             }
                             """)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Sefa"))
-                .andExpect(jsonPath("$.surname").value("Soysal"));
-    }
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name").value("Sefa"))
+            .andExpect(jsonPath("$.surname").value("Soysal"))
+            .andExpect(jsonPath("$.birthDate").value("2004-01-01"));
+  }
 
-    @Test
-    void shouldReturn400WhenNationalIdRequestIsBlank() throws Exception {
+  @Test
+  void shouldReturn404WhenPatientIsNotFoundByNationalId() throws Exception {
 
-        mockMvc.perform(
-                        post("/patients/search-by-national-id")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("""
+    doThrow(new PatientNotFoundException("Patient not found."))
+            .when(findPatientByNationalIdUseCase)
+            .execute(any(NationalId.class));
+
+    mockMvc.perform(
+                    post("/patients/search-by-national-id")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                            {
+                              "nationalId": "12345678910"
+                            }
+                            """)
+            )
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.status").value(404))
+            .andExpect(jsonPath("$.code").value("PATIENT_NOT_FOUND"));
+  }
+
+  @Test
+  void shouldReturn400WhenNationalIdIsBlank() throws Exception {
+
+    mockMvc.perform(
+                    post("/patients/search-by-national-id")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
                             {
                               "nationalId": ""
                             }
                             """)
-                )
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"));
-    }
+            )
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.status").value(400))
+            .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"));
+  }
 
-    @Test
-    void shouldReturn400WhenNationalIdIsInvalid() throws Exception {
+  @Test
+  void shouldReturn400WhenNationalIdIsInvalid() throws Exception {
 
-        mockMvc.perform(
-                        post("/patients/search-by-national-id")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("""
+    mockMvc.perform(
+                    post("/patients/search-by-national-id")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
                             {
                               "nationalId": "123"
                             }
                             """)
-                )
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.code").value("INVALID_NATIONAL_ID"));
-    }
+            )
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.status").value(400))
+            .andExpect(jsonPath("$.code").value("INVALID_NATIONAL_ID"));
+  }
 
-    @Test
-    void shouldReturn404WhenPatientNotFoundByNationalId() throws Exception {
+  @Test
+  void shouldReturn500WhenFindByNationalIdFails() throws Exception {
 
-        when(findPatientByNationalIdUseCase.execute(any(NationalId.class)))
-                .thenReturn(Optional.empty());
+    doThrow(new RuntimeException("Unexpected error"))
+            .when(findPatientByNationalIdUseCase)
+            .execute(any(NationalId.class));
 
-        mockMvc.perform(
-                        post("/patients/search-by-national-id")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("""
+    mockMvc.perform(
+                    post("/patients/search-by-national-id")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
                             {
                               "nationalId": "12345678910"
                             }
                             """)
-                )
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.code").value("PATIENT_NOT_FOUND"));
-    }
+            )
+            .andExpect(status().isInternalServerError())
+            .andExpect(jsonPath("$.status").value(500))
+            .andExpect(jsonPath("$.code").value("INTERNAL_SERVER_ERROR"));
+  }
 
-
-    @Test
-    void shouldReturn500WhenFindPatientByNationalIdFails() throws Exception {
-
-        doThrow(new RuntimeException("Unexpected error"))
-                .when(findPatientByNationalIdUseCase)
-                .execute(any(NationalId.class));
-
-        mockMvc.perform(
-                        post("/patients/search-by-national-id")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("""
-                            {
-                              "nationalId": "12345678910"
-                            }
-                            """)
-                )
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.status").value(500))
-                .andExpect(jsonPath("$.code").value("INTERNAL_SERVER_ERROR"));
-    }
-
-  // ==============================
+// ==============================
 // GET /patients/search
 // Search Patients Tests
 // ==============================
@@ -495,10 +511,6 @@ class PatientControllerTest {
             .andExpect(jsonPath("$.status").value(500))
             .andExpect(jsonPath("$.code").value("INTERNAL_SERVER_ERROR"));
   }
-
-
-
-
 
 
 

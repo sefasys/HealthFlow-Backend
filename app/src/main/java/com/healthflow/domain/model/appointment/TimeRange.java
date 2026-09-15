@@ -1,5 +1,8 @@
 package com.healthflow.domain.model.appointment;
 
+import com.healthflow.domain.exception.InvalidDurationException;
+import com.healthflow.domain.exception.InvalidTimeRangeException;
+
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -9,11 +12,11 @@ public record TimeRange(LocalTime start, LocalTime end) {
 
   public TimeRange {
     if (start == null || end == null) {
-      throw new IllegalArgumentException("Start and end time cannot be null");
+      throw new InvalidTimeRangeException("Start and end time cannot be null");
     }
 
     if (!start.isBefore(end)) {
-      throw new IllegalArgumentException("Start time must be before end time");
+      throw new InvalidTimeRangeException("Start time must be before end time");
     }
   }
 
@@ -57,7 +60,7 @@ public record TimeRange(LocalTime start, LocalTime end) {
     validatePositiveDuration(slotDuration);
 
     if (!canBeSplitInto(slotDuration)) {
-      throw new IllegalArgumentException(
+      throw new InvalidTimeRangeException(
           "Time range cannot be evenly split into given slot duration");
     }
 
@@ -79,7 +82,7 @@ public record TimeRange(LocalTime start, LocalTime end) {
   private static void validatePositiveDuration(Duration duration) {
     if (duration == null || duration.isZero() || duration.isNegative()) {
 
-      throw new IllegalArgumentException("Duration must be positive");
+      throw new InvalidDurationException("Duration must be positive");
     }
   }
 }

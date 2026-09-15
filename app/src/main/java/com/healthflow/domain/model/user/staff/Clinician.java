@@ -1,5 +1,9 @@
 package com.healthflow.domain.model.user.staff;
 
+import com.healthflow.domain.exception.InvalidAvailabilityException;
+import com.healthflow.domain.exception.InvalidClinicianException;
+import com.healthflow.domain.exception.InvalidDepartmentException;
+import com.healthflow.domain.exception.InvalidStaffException;
 import com.healthflow.domain.model.appointment.Availability;
 import com.healthflow.domain.model.clinicaldepartment.ClinicalDepartment;
 import java.util.ArrayList;
@@ -12,10 +16,10 @@ public class Clinician {
 
   public Clinician(Staff staff, ClinicalDepartment department) {
 
-    if (staff == null) throw new IllegalArgumentException("Staff information can not be null");
+    if (staff == null) throw new InvalidStaffException("Staff information can not be null");
 
     if (department == null)
-      throw new IllegalArgumentException("Department information can not be null");
+      throw new InvalidDepartmentException("Department information can not be null");
 
     this.staff = staff;
     this.department = department;
@@ -23,10 +27,10 @@ public class Clinician {
   }
 
   public void addAvailability(Availability availability) {
-    if (availability == null) throw new IllegalArgumentException("Availability can not be null");
+    if (availability == null) throw new InvalidAvailabilityException("Availability can not be null");
 
     if (availability.getClinician() != this) {
-      throw new IllegalArgumentException("Clinicians are not matched!");
+      throw new InvalidClinicianException("Clinicians are not matched!");
     }
 
     availabilities.add(availability);
@@ -34,28 +38,28 @@ public class Clinician {
 
   public boolean removeAvailability(Availability availability) {
     if (availability == null) {
-      throw new IllegalArgumentException("Availability can not be null");
+      throw new InvalidAvailabilityException("Availability can not be null");
     } else if (availability.getClinician() != this) {
-      throw new IllegalArgumentException("Clinicians are not matched!");
+      throw new InvalidClinicianException("Clinicians are not matched!"); // ? burası böyle mi olmalı yoksa yine availability mi?
     } else {
       return availabilities.remove(availability);
     }
   }
 
   public void updateAvailability(Availability oldAvailability, Availability newAvailability) {
-    if (oldAvailability == null) throw new IllegalArgumentException("Availability can not be null");
+    if (oldAvailability == null) throw new InvalidAvailabilityException("Availability can not be null");
 
     if (oldAvailability.getClinician() != this) {
-      throw new IllegalArgumentException("Clinicians are not matched!");
+      throw new InvalidAvailabilityException("Clinicians are not matched!");
     }
-    if (newAvailability == null) throw new IllegalArgumentException("Availability can not be null");
+    if (newAvailability == null) throw new InvalidAvailabilityException("Availability can not be null");
 
     if (newAvailability.getClinician() != this) {
-      throw new IllegalArgumentException("Clinicians are not matched!");
+      throw new InvalidClinicianException("Clinicians are not matched!");
     }
     int indexOfOldAvailability = availabilities.indexOf(oldAvailability);
     if (indexOfOldAvailability == -1) {
-      throw new IllegalArgumentException(
+      throw new InvalidAvailabilityException(
           "Old availability doesn't match with the availabilities list.");
     }
 
@@ -63,7 +67,7 @@ public class Clinician {
       if (!availability.equals(oldAvailability)
           && newAvailability.getDate().equals(availability.getDate())
           && newAvailability.getTimeRange().overlaps(availability.getTimeRange())) {
-        throw new IllegalArgumentException(
+        throw new InvalidAvailabilityException(
             "New availability overlaps with an existing availability.");
       }
     }

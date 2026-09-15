@@ -1,5 +1,9 @@
 package com.healthflow.domain.model.user;
 
+import com.healthflow.domain.exception.InvalidNationalIdException;
+import com.healthflow.domain.exception.InvalidUniqueIdException;
+import com.healthflow.domain.exception.InvalidUserException;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -25,28 +29,28 @@ public class User {
       String phoneNumber,
       List<UserRole> userRoleList) {
     if (uniqueID == null) {
-      throw new IllegalArgumentException("uniqueId cannot be null.");
+      throw new InvalidUniqueIdException("uniqueId cannot be null.");
     }
     if (nationalId == null) {
-      throw new IllegalArgumentException("National ID cannot be null.");
+      throw new InvalidNationalIdException("National ID cannot be null.");
     }
     if (name == null) {
-      throw new IllegalArgumentException("Name cannot be null.");
+      throw new InvalidUserException("Name cannot be null.");
     }
     if (birthDate == null) {
-      throw new IllegalArgumentException("Birthdate cannot be null.");
+      throw new InvalidUserException("Birthdate cannot be null.");
     }
     if (surname == null) {
-      throw new IllegalArgumentException("Surname cannot be null.");
+      throw new InvalidUserException("Surname cannot be null.");
     }
     if (email == null) {
-      throw new IllegalArgumentException("E-mail cannot be null.");
+      throw new InvalidUserException("E-mail cannot be null.");
     }
     if (phoneNumber == null) {
-      throw new IllegalArgumentException("Phone number cannot be null.");
+      throw new InvalidUserException("Phone number cannot be null.");
     }
     if (userRoleList == null) {
-      throw new IllegalArgumentException("User roles cannot be null.");
+      throw new InvalidUserException("User roles cannot be null.");
     }
 
     this.uniqueID = uniqueID;

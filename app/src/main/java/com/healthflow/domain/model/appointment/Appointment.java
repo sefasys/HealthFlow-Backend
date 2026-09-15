@@ -1,5 +1,6 @@
 package com.healthflow.domain.model.appointment;
 
+import com.healthflow.domain.exception.InvalidAppointmentException;
 import com.healthflow.domain.model.clinicaldepartment.ClinicalDepartment;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.domain.model.user.staff.Clinician;
@@ -25,25 +26,25 @@ public class Appointment {
       ClinicalDepartment clinicalDepartment) {
 
     if (uniqueId == null) {
-      throw new IllegalArgumentException("Unique ID cannot be null");
+      throw new InvalidAppointmentException("Unique ID cannot be null");
     }
     if (patient == null) {
-      throw new IllegalArgumentException("Patient cannot be null");
+      throw new InvalidAppointmentException("Patient cannot be null");
     }
 
     if (clinician == null) {
-      throw new IllegalArgumentException("Clinician cannot be null");
+      throw new InvalidAppointmentException("Clinician cannot be null");
     }
 
     if (date == null) {
-      throw new IllegalArgumentException("Date cannot be null");
+      throw new InvalidAppointmentException("Date cannot be null");
     }
 
     if (timeRange == null) {
-      throw new IllegalArgumentException("Time range cannot be null");
+      throw new InvalidAppointmentException("Time range cannot be null");
     }
     if (clinicalDepartment == null) {
-      throw new IllegalArgumentException("Clinical department cannot be null");
+      throw new InvalidAppointmentException("Clinical department cannot be null");
     }
     this.uniqueId = uniqueId;
     this.patient = patient;
@@ -84,7 +85,7 @@ public class Appointment {
 
   public void cancel() {
     if (status == AppointmentStatus.COMPLETED) {
-      throw new IllegalStateException("Completed appointment cannot be cancelled");
+      throw new InvalidAppointmentException("Completed appointment cannot be cancelled");
     }
 
     status = AppointmentStatus.CANCELLED;
@@ -92,7 +93,7 @@ public class Appointment {
 
   public void complete() {
     if (status != AppointmentStatus.SCHEDULED) {
-      throw new IllegalStateException("Only scheduled appointments can be completed");
+      throw new InvalidAppointmentException("Only scheduled appointments can be completed");
     }
 
     status = AppointmentStatus.COMPLETED;
@@ -100,7 +101,7 @@ public class Appointment {
 
   public void markAsNoShow() {
     if (status != AppointmentStatus.SCHEDULED) {
-      throw new IllegalStateException("Only scheduled appointments can be marked as no-show");
+      throw new InvalidAppointmentException("Only scheduled appointments can be marked as no-show");
     }
 
     status = AppointmentStatus.NO_SHOW;

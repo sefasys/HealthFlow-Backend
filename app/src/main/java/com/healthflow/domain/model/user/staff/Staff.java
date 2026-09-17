@@ -1,6 +1,9 @@
 package com.healthflow.domain.model.user.staff;
 
+import com.healthflow.domain.exception.InvalidDateException;
+import com.healthflow.domain.exception.InvalidEmployeeIdException;
 import com.healthflow.domain.exception.InvalidStaffException;
+import com.healthflow.domain.exception.InvalidUserException;
 import com.healthflow.domain.model.user.User;
 import java.time.LocalDate;
 
@@ -13,11 +16,11 @@ public class Staff {
   public Staff(
       String employeeId, LocalDate hireDate, EmploymentStatus employmentStatus, User user) {
     if(employeeId == null | employeeId.isBlank()){
-      throw new InvalidStaffException("Employee id can not be null or blank.");
+      throw new InvalidEmployeeIdException("Employee id can not be null or blank.");
     }
 
     if (hireDate == null){
-      throw new InvalidStaffException("Hire Date can not be null.");
+      throw new InvalidDateException("Hire Date can not be null.");
     }
 
     if(employmentStatus == null){
@@ -25,7 +28,7 @@ public class Staff {
     }
 
     if(user == null){
-      throw new InvalidStaffException("User can not be null.");
+      throw new InvalidUserException("User can not be null.");
     }
 
     this.employeeId = employeeId;

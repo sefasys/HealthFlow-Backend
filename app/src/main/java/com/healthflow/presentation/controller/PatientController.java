@@ -8,6 +8,7 @@ import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.presentation.dto.patient.CreatePatientRequestDto;
 import com.healthflow.presentation.dto.patient.FindPatientByNationalIdRequestDto;
 import com.healthflow.presentation.dto.patient.PatientResponseDto;
+import com.healthflow.presentation.dto.patient.UpdatePatientRequestDto;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -24,18 +25,21 @@ public class PatientController {
   private final FindPatientByUniqueIdUseCase findPatientByUniqueIdUseCase;
   private final FindPatientByNationalIdUseCase findPatientByNationalIdUseCase;
   private final SearchPatientUseCase searchPatientUseCase;
+  private final UpdatePatientUseCase updatePatientUseCase;
 
   public PatientController(
       CreatePatientUseCase createPatientUseCase,
       GetPatientsUseCase getPatientsUseCase,
       FindPatientByUniqueIdUseCase findPatientByUniqueIdUseCase,
       FindPatientByNationalIdUseCase findPatientByNationalIdUseCase,
-      SearchPatientUseCase searchPatientUseCase) {
+      SearchPatientUseCase searchPatientUseCase,
+      UpdatePatientUseCase updatePatientUseCase) {
     this.createPatientUseCase = createPatientUseCase;
     this.getPatientsUseCase = getPatientsUseCase;
     this.findPatientByUniqueIdUseCase = findPatientByUniqueIdUseCase;
     this.findPatientByNationalIdUseCase = findPatientByNationalIdUseCase;
     this.searchPatientUseCase = searchPatientUseCase;
+    this.updatePatientUseCase = updatePatientUseCase;
   }
 
   @PostMapping
@@ -109,5 +113,19 @@ public class PatientController {
                   user.getBirthDate()
           );
       }).toList();
+  }
+
+  @ResponseStatus(HttpStatus.OK)
+  @PatchMapping("/{uniqueId}")
+  public PatientResponseDto updatePatient(@PathVariable UUID uniqueId,
+                                          @RequestBody UpdatePatientRequestDto requestDto){
+      Patient patient = updatePatientUseCase.execute(uniqueId,
+              requestDto.email(),
+              requestDto.phoneNumber(),
+              requestDto.bloodType()
+      );
+
+      User user = patient.getUser();
+      return new PatientResponseDto(user.getUniqueId(), user.getName(), user.getSurname(), user.getBirthDate());
   }
 }

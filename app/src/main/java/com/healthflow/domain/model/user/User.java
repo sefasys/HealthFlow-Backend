@@ -42,10 +42,10 @@ public class User {
       throw new InvalidUserException("Surname cannot be null.");
     }
     if (email == null) {
-      throw new InvalidUserException("E-mail cannot be null.");
+      throw new InvalidEmailException("E-mail cannot be null.");
     }
     if (phoneNumber == null) {
-      throw new InvalidUserException("Phone number cannot be null.");
+      throw new InvalidPhoneNumberException("Phone number cannot be null.");
     }
     if (userRoleList == null) {
       throw new InvalidUserException("User roles cannot be null.");

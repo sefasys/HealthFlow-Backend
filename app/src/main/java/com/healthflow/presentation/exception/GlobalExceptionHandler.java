@@ -3,6 +3,7 @@ package com.healthflow.presentation.exception;
 import com.healthflow.application.exception.InvalidSearchQueryException;
 import com.healthflow.application.exception.PatientAlreadyExistsException;
 import com.healthflow.application.exception.PatientNotFoundException;
+import com.healthflow.domain.exception.DomainValidationException;
 import com.healthflow.domain.exception.InvalidNationalIdException;
 import com.healthflow.presentation.dto.patient.ErrorResponseDto;
 import java.time.LocalDateTime;
@@ -20,7 +21,7 @@ public class GlobalExceptionHandler {
   private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   @ExceptionHandler(PatientAlreadyExistsException.class)
-  public ResponseEntity<ErrorResponseDto> handlePatientAlreadyExists(
+  public ResponseEntity<ErrorResponseDto> handlePatientAlreadyExists(//409
       PatientAlreadyExistsException exception) {
     ErrorResponseDto responseDto =
         new ErrorResponseDto(
@@ -31,20 +32,20 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.CONFLICT).body(responseDto);
   }
 
-  @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ErrorResponseDto> handleMethodArgumentNotValid(
-      MethodArgumentNotValidException exception) {
+  @ExceptionHandler(DomainValidationException.class)
+  public ResponseEntity<ErrorResponseDto> handleDomainValidationException(//400
+      DomainValidationException exception) {
     ErrorResponseDto responseDto =
         new ErrorResponseDto(
             HttpStatus.BAD_REQUEST.value(),
-            "VALIDATION_ERROR",
+            "DOMAIN_VALIDATION_ERROR",
             exception.getMessage(),
             LocalDateTime.now());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<ErrorResponseDto> handleGenericError(Exception exception) {
+  public ResponseEntity<ErrorResponseDto> handleGenericError(Exception exception) {//500
     logger.error("Unexpected error occurred", exception);
 
     ErrorResponseDto responseDto =
@@ -57,7 +58,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(PatientNotFoundException.class)
-  public ResponseEntity<ErrorResponseDto> handlePatientNotFound(
+  public ResponseEntity<ErrorResponseDto> handlePatientNotFound(//404
       PatientNotFoundException exception) {
     ErrorResponseDto responseDto =
         new ErrorResponseDto(
@@ -68,21 +69,10 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
   }
 
-  @ExceptionHandler(InvalidNationalIdException.class)
-  public ResponseEntity<ErrorResponseDto> handleInvalidNationalId(
-          InvalidNationalIdException exception
-  ) {
-      ErrorResponseDto responseDto = new ErrorResponseDto(
-              HttpStatus.BAD_REQUEST.value(),
-              "INVALID_NATIONAL_ID",
-              exception.getMessage(),
-              LocalDateTime.now()
-      );
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
-  }
+
 
   @ExceptionHandler(InvalidSearchQueryException.class)
-  public ResponseEntity<ErrorResponseDto> handleInvalidSearchQuery(
+  public ResponseEntity<ErrorResponseDto> handleInvalidSearchQuery(//400
           InvalidSearchQueryException exception
   ){
       ErrorResponseDto responseDto = new ErrorResponseDto(
@@ -92,7 +82,10 @@ public class GlobalExceptionHandler {
               LocalDateTime.now()
       );
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
-  } // Search Patient Test kısmında kaldık. Yarın onun üzerinde çalışacağız. Bir de Controller'daki Exception kısımlarını yöneteceğiz. iyi bir karar vermek gerek orada.
+  }
+
+
+
 
 
 }

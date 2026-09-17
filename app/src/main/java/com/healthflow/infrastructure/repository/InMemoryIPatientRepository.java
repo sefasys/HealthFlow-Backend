@@ -1,5 +1,6 @@
 package com.healthflow.infrastructure.repository;
 
+import com.healthflow.domain.exception.InvalidUniqueIdException;
 import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.port.repository.IPatientRepository;
@@ -65,7 +66,7 @@ public class InMemoryIPatientRepository implements IPatientRepository {
   public Optional<Patient> findByUniqueId(UUID uniqueId) {
     if (uniqueId != null) {
       return patients.stream()
-          .filter(patient -> patient.getUser().getUniqueID().equals(uniqueId))
+          .filter(patient -> patient.getUser().getUniqueId().equals(uniqueId))
           .findFirst();
     } else return Optional.empty(); // exception da verilebilir burada belki.
   }
@@ -87,5 +88,18 @@ public class InMemoryIPatientRepository implements IPatientRepository {
                 (patient.getUser().getName().toLowerCase().contains(normalizedQuery)
                     || patient.getUser().getSurname().toLowerCase().contains(normalizedQuery)))
         .toList();
+  }
+
+  public void update(Patient patient){
+     UUID uniqueId = patient.getUser().getUniqueId();
+
+     for(int i = 0; i < patients.size(); i++){
+
+          if(patients.get(i).getUser().getUniqueId().equals(uniqueId)){
+              patients.set(i, patient);
+              return;
+          }
+     }
+
   }
 }

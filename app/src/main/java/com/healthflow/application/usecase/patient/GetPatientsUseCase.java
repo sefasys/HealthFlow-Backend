@@ -6,13 +6,13 @@ import java.util.List;
 
 public class GetPatientsUseCase {
 
-  private final IPatientRepository iPatientRepository;
+  private final IPatientRepository patientRepository;
 
-  public GetPatientsUseCase(IPatientRepository iPatientRepository) {
-    this.iPatientRepository = iPatientRepository;
+  public GetPatientsUseCase(IPatientRepository patientRepository) {
+    this.patientRepository = patientRepository;
   }
 
   public List<Patient> execute() {
-    return iPatientRepository.getPatients();
+    return patientRepository.getPatients();
   }
 }

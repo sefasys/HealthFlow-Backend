@@ -6,14 +6,14 @@ import com.healthflow.port.repository.PatientSortType;
 import java.util.List;
 
 public class SortPatientsUseCase {
-  private final IPatientRepository iPatientRepository;
+  private final IPatientRepository patientRepository;
 
-  public SortPatientsUseCase(IPatientRepository iPatientRepository) {
-    this.iPatientRepository = iPatientRepository;
+  public SortPatientsUseCase(IPatientRepository patientRepository) {
+    this.patientRepository = patientRepository;
   }
 
   public List<Patient> execute(PatientSortType sortType) {
 
-    return iPatientRepository.sort(sortType);
+    return patientRepository.sort(sortType);
   }
 }

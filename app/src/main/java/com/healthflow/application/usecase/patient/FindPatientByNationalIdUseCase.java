@@ -7,10 +7,10 @@ import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.port.repository.IPatientRepository;
 
 public class FindPatientByNationalIdUseCase {
-  private final IPatientRepository iPatientRepository;
+  private final IPatientRepository patientRepository;
 
-  public FindPatientByNationalIdUseCase(IPatientRepository iPatientRepository) {
-    this.iPatientRepository = iPatientRepository;
+  public FindPatientByNationalIdUseCase(IPatientRepository patientRepository) {
+    this.patientRepository = patientRepository;
   }
 
   public Patient execute(NationalId nationalId) {
@@ -18,7 +18,7 @@ public class FindPatientByNationalIdUseCase {
     if (nationalId == null) {
       throw new InvalidNationalIdException("National ID cannot be null.");
     }
-    return iPatientRepository.findByNationalId(nationalId).orElseThrow(() ->
+    return patientRepository.findByNationalId(nationalId).orElseThrow(() ->
             new PatientNotFoundException("Patient not found with this national id."));
   }
 }

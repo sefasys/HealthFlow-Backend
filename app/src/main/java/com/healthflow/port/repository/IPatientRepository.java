@@ -19,4 +19,6 @@ public interface IPatientRepository {
   Optional<Patient> findByNationalId(NationalId nationalId);
 
   List<Patient> search(String query);
+
+  void update(Patient patient);
 }

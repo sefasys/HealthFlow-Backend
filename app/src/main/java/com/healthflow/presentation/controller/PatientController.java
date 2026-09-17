@@ -53,7 +53,7 @@ public class PatientController {
     User user = patient.getUser();
     PatientResponseDto responseDto =
         new PatientResponseDto(
-            user.getUniqueID(), user.getName(), user.getSurname(), user.getBirthDate());
+            user.getUniqueId(), user.getName(), user.getSurname(), user.getBirthDate());
     return responseDto;
   }
 
@@ -67,7 +67,7 @@ public class PatientController {
               User user = patient.getUser();
 
               return new PatientResponseDto(
-                  user.getUniqueID(),
+                  user.getUniqueId(),
                   user.getName(),
                   user.getSurname(),
                   user.getBirthDate()); // Buradaki yapıya bir göz at.
@@ -82,7 +82,7 @@ public class PatientController {
 
     User user = patient.getUser();
     return new PatientResponseDto(
-        user.getUniqueID(), user.getName(), user.getSurname(), user.getBirthDate());
+        user.getUniqueId(), user.getName(), user.getSurname(), user.getBirthDate());
   }
 
   @ResponseStatus(HttpStatus.OK)
@@ -92,7 +92,7 @@ public class PatientController {
 
       Patient patient = findPatientByNationalIdUseCase.execute(nationalId);
       User user = patient.getUser();
-      return new PatientResponseDto(user.getUniqueID(), user.getName(), user.getSurname(), user.getBirthDate());
+      return new PatientResponseDto(user.getUniqueId(), user.getName(), user.getSurname(), user.getBirthDate());
   }
 
   @ResponseStatus(HttpStatus.OK)
@@ -103,7 +103,7 @@ public class PatientController {
           User user = patient.getUser();
 
           return new PatientResponseDto(
-                  user.getUniqueID(),
+                  user.getUniqueId(),
                   user.getName(),
                   user.getSurname(),
                   user.getBirthDate()

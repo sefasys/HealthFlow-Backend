@@ -11,11 +11,11 @@ import java.time.LocalDate;
 
 public class CreatePatientUseCase {
 
-  private final IPatientRepository iPatientRepository;
+  private final IPatientRepository patientRepository;
   private final UserFactory userFactory;
 
-  public CreatePatientUseCase(IPatientRepository iPatientRepository, UserFactory userFactory) {
-    this.iPatientRepository = iPatientRepository;
+  public CreatePatientUseCase(IPatientRepository patientRepository, UserFactory userFactory) {
+    this.patientRepository = patientRepository;
     this.userFactory = userFactory;
   }
 
@@ -27,7 +27,7 @@ public class CreatePatientUseCase {
       String email,
       String phoneNumber) {
 
-    if (iPatientRepository.findByNationalId(nationalId).isPresent()) {
+    if (patientRepository.findByNationalId(nationalId).isPresent()) {
       throw new PatientAlreadyExistsException(
           "There is already a user with the same national identity number.");
     }
@@ -36,7 +36,7 @@ public class CreatePatientUseCase {
         userFactory.createUser(
             nationalId, name, surname, birthDate, email, phoneNumber, UserRole.PATIENT);
     Patient patient = new Patient(user);
-    iPatientRepository.addPatient(patient);
+    patientRepository.addPatient(patient);
     return patient;
   }
 }

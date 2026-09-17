@@ -201,6 +201,12 @@ paths:
                 code: PATIENT_CONFLICT_ERROR
                 message: There is already a patient with the same request feature.
                 timestamp: '2023-05-14T17:30:00Z'
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /patients/search-by-national-id:
     post:

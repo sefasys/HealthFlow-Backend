@@ -1,8 +1,6 @@
 package com.healthflow.domain.model.user;
 
-import com.healthflow.domain.exception.InvalidNationalIdException;
-import com.healthflow.domain.exception.InvalidUniqueIdException;
-import com.healthflow.domain.exception.InvalidUserException;
+import com.healthflow.domain.exception.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,17 +8,17 @@ import java.util.UUID;
 
 public class User {
 
-  private final UUID uniqueID;
+  private final UUID uniqueId;
   private final NationalId nationalId;
   private final String name;
   private final String surname;
   private final LocalDate birthDate;
-  private final String email;
-  private final String phoneNumber;
+  private String email;
+  private String phoneNumber;
   private final List<UserRole> userRoleList;
 
   public User(
-      UUID uniqueID,
+      UUID uniqueId,
       NationalId nationalId,
       String name,
       String surname,
@@ -28,7 +26,7 @@ public class User {
       String email,
       String phoneNumber,
       List<UserRole> userRoleList) {
-    if (uniqueID == null) {
+    if (uniqueId == null) {
       throw new InvalidUniqueIdException("uniqueId cannot be null.");
     }
     if (nationalId == null) {
@@ -53,7 +51,7 @@ public class User {
       throw new InvalidUserException("User roles cannot be null.");
     }
 
-    this.uniqueID = uniqueID;
+    this.uniqueId = uniqueId;
     this.nationalId = nationalId;
     this.name = name;
     this.surname = surname;
@@ -63,8 +61,8 @@ public class User {
     this.userRoleList = userRoleList;
   }
 
-  public UUID getUniqueID() {
-    return uniqueID;
+  public UUID getUniqueId() {
+    return uniqueId;
   }
 
   public NationalId getNationalId() {
@@ -98,4 +96,19 @@ public class User {
   public String getPhoneNumber() {
     return phoneNumber;
   }
+
+  public void updateEmail(String email){
+    if(email == null || email.isBlank()){
+      throw new InvalidEmailException("Email can not be null or blank.");
+    }
+    this.email = email;
+  }
+
+  public void updatePhoneNumber(String phoneNumber){
+    if(phoneNumber == null || phoneNumber.isBlank()){
+      throw new InvalidPhoneNumberException("Phone number can not be null or blank.");
+    }
+    this.phoneNumber = phoneNumber;
+  }
+
 }

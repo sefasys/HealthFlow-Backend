@@ -1,11 +1,13 @@
 package com.healthflow.domain.model.user.patient;
 
 import com.healthflow.domain.exception.InvalidAppointmentException;
+import com.healthflow.domain.exception.InvalidBloodTypeException;
 import com.healthflow.domain.exception.InvalidPatientException;
 import com.healthflow.domain.model.appointment.Appointment;
 import com.healthflow.domain.model.user.User;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Patient {
   private final User user;
@@ -27,7 +29,7 @@ public class Patient {
   }
 
   public void updateBloodType(BloodType bloodType) {
-    if (bloodType == null) throw new InvalidPatientException("Blood Type can not be null");
+    if (bloodType == null) throw new InvalidBloodTypeException("Bloodtype can not be null");
 
     this.bloodType = bloodType;
   }
@@ -77,4 +79,12 @@ public class Patient {
     int index = appointments.indexOf(oldAppointment);
     appointments.set(index, newAppointment);
   }
+
+  public void updateEmail(String email){
+    user.updateEmail(email);
+  }
+  public void updatePhoneNumber(String phoneNumber){
+    user.updatePhoneNumber(phoneNumber);
+  }
+
 }

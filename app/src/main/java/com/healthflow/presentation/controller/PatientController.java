@@ -77,7 +77,7 @@ public class PatientController {
                   user.getBirthDate()); // Buradaki yapıya bir göz at.
             })
         .toList();
-  }
+  }// Response DtO'yu neden kullanıyoruz?
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/{uniqueId}")
@@ -101,7 +101,7 @@ public class PatientController {
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/search")
-  public List<PatientResponseDto> searchPatients(@RequestParam String query){
+  public List<PatientResponseDto> searchPatients(@RequestParam String query){ // Request Param'dan ayrıca bahsetmek gerekiyor.
       List<Patient> patients = searchPatientUseCase.execute(query);
       return patients.stream().map(patient -> {
           User user = patient.getUser();
@@ -119,7 +119,8 @@ public class PatientController {
   @PatchMapping("/{uniqueId}")
   public PatientResponseDto updatePatient(@PathVariable UUID uniqueId,
                                           @RequestBody UpdatePatientRequestDto requestDto){
-      Patient patient = updatePatientUseCase.execute(uniqueId,
+      Patient patient = updatePatientUseCase.execute(
+              uniqueId,
               requestDto.email(),
               requestDto.phoneNumber(),
               requestDto.bloodType()

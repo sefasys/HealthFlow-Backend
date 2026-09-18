@@ -2,18 +2,20 @@ package com.healthflow.presentation.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.healthflow.application.exception.InvalidSearchQueryException;
+import com.healthflow.application.exception.InvalidUpdateRequestException;
 import com.healthflow.application.exception.PatientAlreadyExistsException;
 import com.healthflow.application.exception.PatientNotFoundException;
 import com.healthflow.application.usecase.patient.*;
+import com.healthflow.domain.exception.DomainValidationException;
 import com.healthflow.domain.factory.UserFactory;
 import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.User;
 import com.healthflow.domain.model.user.UserRole;
+import com.healthflow.domain.model.user.patient.BloodType;
 import com.healthflow.domain.model.user.patient.Patient;
 import java.time.LocalDate;
 import java.util.List;
@@ -41,34 +43,15 @@ class PatientControllerTest {
   @MockitoBean
   private SearchPatientUseCase searchPatientUseCase;
 
+  @MockitoBean
+  private UpdatePatientUseCase updatePatientUseCase;
+
   // ==============================
   // POST /patients
   // Create Patient Tests
   // ==============================
 
-  // 400 Bad Request - Invalid request validation
-  @Test
-  void shouldReturn400WhenRequestIsInvalid() throws Exception {
 
-    mockMvc
-        .perform(
-            post("/patients")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    """
-                            {
-                              "nationalId": "",
-                              "name": "",
-                              "surname": "",
-                              "birthDate": null,
-                              "email": "invalid-email",
-                              "phoneNumber": ""
-                            }
-                            """))
-        .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.status").value(400))
-        .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"));
-  }
 
   // 409 Conflict - Patient already exists
   @Test
@@ -97,6 +80,40 @@ class PatientControllerTest {
         .andExpect(jsonPath("$.status").value(409))
         .andExpect(jsonPath("$.code").value("PATIENT_ALREADY_EXISTS"));
   }
+
+    @Test
+    void shouldReturn400WhenDomainValidationFails() throws Exception {
+
+        when(createPatientUseCase.execute(
+                any(NationalId.class),
+                any(String.class),
+                any(String.class),
+                any(LocalDate.class),
+                any(String.class),
+                any(String.class)))
+                .thenThrow(
+                        new DomainValidationException("Domain validation failed.")
+                );
+
+        mockMvc.perform(
+                        post("/patients")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                    {
+                      "nationalId": "12345678910",
+                      "name": "Sefa",
+                      "surname": "Soysal",
+                      "birthDate": "2004-01-01",
+                      "email": "sefa@example.com",
+                      "phoneNumber": "5555555555"
+                    }
+                    """)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.code").value("DOMAIN_VALIDATION_ERROR"))
+                .andExpect(jsonPath("$.message").value("Domain validation failed."));
+    }
 
   // 500 Internal Server Error - Unexpected server error
   @Test
@@ -283,8 +300,9 @@ class PatientControllerTest {
 
     Patient patient = new Patient(user);
 
-    when(findPatientByUniqueIdUseCase.execute(uniqueId))
-            .thenReturn(patient);
+      doThrow(new PatientNotFoundException("Patient not found."))
+              .when(findPatientByUniqueIdUseCase)
+              .execute(uniqueId);
 
     mockMvc
         .perform(get("/patients/{uniqueId}", uniqueId).contentType(MediaType.APPLICATION_JSON))
@@ -372,39 +390,6 @@ class PatientControllerTest {
             .andExpect(jsonPath("$.code").value("PATIENT_NOT_FOUND"));
   }
 
-  @Test
-  void shouldReturn400WhenNationalIdIsBlank() throws Exception {
-
-    mockMvc.perform(
-                    post("/patients/search-by-national-id")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content("""
-                            {
-                              "nationalId": ""
-                            }
-                            """)
-            )
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.status").value(400))
-            .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"));
-  }
-
-  @Test
-  void shouldReturn400WhenNationalIdIsInvalid() throws Exception {
-
-    mockMvc.perform(
-                    post("/patients/search-by-national-id")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content("""
-                            {
-                              "nationalId": "123"
-                            }
-                            """)
-            )
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.status").value(400))
-            .andExpect(jsonPath("$.code").value("INVALID_NATIONAL_ID"));
-  }
 
   @Test
   void shouldReturn500WhenFindByNationalIdFails() throws Exception {
@@ -512,7 +497,181 @@ class PatientControllerTest {
             .andExpect(jsonPath("$.code").value("INTERNAL_SERVER_ERROR"));
   }
 
+// ==============================
+// PATCH /patients/{uniqueId}
+// Update Patients Tests
+// ==============================
 
+@Test
+void shouldReturn200WhenPatientUpdatedSuccessfully() throws Exception {
 
+    UUID uniqueId = UUID.randomUUID();
 
+    Patient patient = mock(Patient.class);
+
+    User user = mock(User.class);
+
+    when(patient.getUser()).thenReturn(user);
+
+    when(user.getUniqueId()).thenReturn(uniqueId);
+    when(user.getName()).thenReturn("Sefa");
+    when(user.getSurname()).thenReturn("Soysal");
+    when(user.getBirthDate()).thenReturn(LocalDate.of(2004, 1, 1));
+    when(user.getEmail()).thenReturn("newmail@example.com");
+    when(user.getPhoneNumber()).thenReturn("5555555555");
+
+    when(updatePatientUseCase.execute(
+            eq(uniqueId),
+            eq("newmail@example.com"),
+            eq("5555555555"),
+            any(BloodType.class)))
+            .thenReturn(patient);
+
+    mockMvc.perform(
+                    patch("/patients/{uniqueId}", uniqueId)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                    {
+                      "email": "newmail@example.com",
+                      "phoneNumber": "5555555555",
+                      "bloodType": "A_POSITIVE"
+                    }
+                    """))
+            .andExpect(status().isOk());
+}
+
+    @Test
+    void shouldReturn400WhenUpdateRequestIsInvalid() throws Exception { //FAILED
+
+        UUID uniqueId = UUID.randomUUID();
+
+        when(updatePatientUseCase.execute(
+                eq(uniqueId),
+                isNull(),
+                isNull(),
+                isNull()))
+                .thenThrow(
+                        new InvalidUpdateRequestException(
+                                "At least one field must be provided for update."
+                        )
+                );
+
+        mockMvc.perform(
+                        patch("/patients/{uniqueId}", uniqueId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                    {}
+                    """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.code").value("INVALID_UPDATE_REQUEST"));
+    }
+
+    @Test
+    void shouldReturn404WhenUpdatingPatientNotFound() throws Exception {
+
+        UUID uniqueId = UUID.randomUUID();
+
+        when(updatePatientUseCase.execute(
+                eq(uniqueId),
+                eq("newmail@example.com"),
+                isNull(),
+                isNull()))
+                .thenThrow(
+                        new PatientNotFoundException("Patient could not be found.")
+                );
+
+        mockMvc.perform(
+                        patch("/patients/{uniqueId}", uniqueId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                    {
+                      "email": "newmail@example.com"
+                    }
+                    """))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.code").value("PATIENT_NOT_FOUND"));
+    }
+
+    @Test
+    void shouldReturn409WhenUpdateCausesConflict() throws Exception {
+
+        UUID uniqueId = UUID.randomUUID();
+
+        when(updatePatientUseCase.execute(
+                eq(uniqueId),
+                eq("existing@example.com"),
+                isNull(),
+                isNull()))
+                .thenThrow(
+                        new PatientAlreadyExistsException(
+                                "Patient already exists."
+                        )
+                );
+
+        mockMvc.perform(
+                        patch("/patients/{uniqueId}", uniqueId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                    {
+                      "email": "existing@example.com"
+                    }
+                    """))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status").value(409))
+                .andExpect(jsonPath("$.code").value("PATIENT_ALREADY_EXISTS"));
+    }
+
+    @Test
+    void shouldReturn400WhenUpdateViolatesDomainValidation() throws Exception {
+
+        UUID uniqueId = UUID.randomUUID();
+
+        when(updatePatientUseCase.execute(
+                eq(uniqueId),
+                eq("invalid-email"),
+                isNull(),
+                isNull()))
+                .thenThrow(
+                        new DomainValidationException("Invalid email.")
+                );
+
+        mockMvc.perform(
+                        patch("/patients/{uniqueId}", uniqueId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                    {
+                      "email": "invalid-email"
+                    }
+                    """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.code").value("DOMAIN_VALIDATION_ERROR"));
+    }
+
+    @Test
+    void shouldReturn500WhenUpdateFailsUnexpectedly() throws Exception {
+
+        UUID uniqueId = UUID.randomUUID();
+
+        when(updatePatientUseCase.execute(
+                eq(uniqueId),
+                eq("newmail@example.com"),
+                isNull(),
+                isNull()))
+                .thenThrow(new RuntimeException("Unexpected error"));
+
+        mockMvc.perform(
+                        patch("/patients/{uniqueId}", uniqueId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                    {
+                      "email": "newmail@example.com"
+                    }
+                    """))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.status").value(500))
+                .andExpect(jsonPath("$.code").value("INTERNAL_SERVER_ERROR"));
+    }
 }

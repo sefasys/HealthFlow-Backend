@@ -48,14 +48,14 @@ public class FindPatientByUniqueIdUseCaseTest {
         Patient patient = new Patient(user);
         patientRepository.addPatient(patient);
 
-        UUID uniqueId = user.getUniqueID();
+        UUID uniqueId = user.getUniqueId();
 
         Patient result =
                 findPatientByUniqueIdUseCase.execute(uniqueId);
 
         assertEquals(
                 uniqueId,
-                result.getUser().getUniqueID()
+                result.getUser().getUniqueId()
         );
     }
 

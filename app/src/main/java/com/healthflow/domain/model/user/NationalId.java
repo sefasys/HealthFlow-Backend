@@ -1,7 +1,6 @@
 package com.healthflow.domain.model.user;
 
 import com.healthflow.domain.exception.InvalidNationalIdException;
-
 import java.util.Objects;
 
 public class NationalId {
@@ -11,8 +10,8 @@ public class NationalId {
   // bir yöntem olmuştur.
   public NationalId(String nationalId) {
 
-    if(nationalId == null){
-        throw new InvalidNationalIdException("National Id can not be null.");
+    if (nationalId == null) {
+      throw new InvalidNationalIdException("National Id can not be null.");
     }
 
     if (nationalId.isBlank()) {

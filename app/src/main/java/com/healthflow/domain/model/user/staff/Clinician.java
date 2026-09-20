@@ -27,7 +27,8 @@ public class Clinician {
   }
 
   public void addAvailability(Availability availability) {
-    if (availability == null) throw new InvalidAvailabilityException("Availability can not be null");
+    if (availability == null)
+      throw new InvalidAvailabilityException("Availability can not be null");
 
     if (availability.getClinician() != this) {
       throw new InvalidClinicianException("Clinicians are not matched!");
@@ -40,19 +41,22 @@ public class Clinician {
     if (availability == null) {
       throw new InvalidAvailabilityException("Availability can not be null");
     } else if (availability.getClinician() != this) {
-      throw new InvalidClinicianException("Clinicians are not matched!"); // ? burası böyle mi olmalı yoksa yine availability mi?
+      throw new InvalidClinicianException(
+          "Clinicians are not matched!"); // ? burası böyle mi olmalı yoksa yine availability mi?
     } else {
       return availabilities.remove(availability);
     }
   }
 
   public void updateAvailability(Availability oldAvailability, Availability newAvailability) {
-    if (oldAvailability == null) throw new InvalidAvailabilityException("Availability can not be null");
+    if (oldAvailability == null)
+      throw new InvalidAvailabilityException("Availability can not be null");
 
     if (oldAvailability.getClinician() != this) {
       throw new InvalidAvailabilityException("Clinicians are not matched!");
     }
-    if (newAvailability == null) throw new InvalidAvailabilityException("Availability can not be null");
+    if (newAvailability == null)
+      throw new InvalidAvailabilityException("Availability can not be null");
 
     if (newAvailability.getClinician() != this) {
       throw new InvalidClinicianException("Clinicians are not matched!");

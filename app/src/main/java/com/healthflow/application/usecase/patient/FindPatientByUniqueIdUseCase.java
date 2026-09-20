@@ -1,6 +1,5 @@
 package com.healthflow.application.usecase.patient;
 
-
 import com.healthflow.application.exception.PatientNotFoundException;
 import com.healthflow.domain.exception.InvalidUniqueIdException;
 import com.healthflow.domain.model.user.patient.Patient;
@@ -20,6 +19,8 @@ public class FindPatientByUniqueIdUseCase {
       throw new InvalidUniqueIdException("Unique ID cannot be null.");
     }
 
-    return patientRepository.findByUniqueId(id).orElseThrow(() -> new PatientNotFoundException("Patient not found with unique id: " + id));
+    return patientRepository
+        .findByUniqueId(id)
+        .orElseThrow(() -> new PatientNotFoundException("Patient not found with unique id: " + id));
   }
 }

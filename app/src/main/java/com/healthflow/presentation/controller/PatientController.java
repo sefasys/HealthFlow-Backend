@@ -1,6 +1,5 @@
 package com.healthflow.presentation.controller;
 
-
 import com.healthflow.application.usecase.patient.*;
 import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.User;
@@ -12,7 +11,6 @@ import com.healthflow.presentation.dto.patient.UpdatePatientRequestDto;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -77,7 +75,7 @@ public class PatientController {
                   user.getBirthDate()); // Buradaki yapıya bir göz at.
             })
         .toList();
-  }// Response DtO'yu neden kullanıyoruz?
+  } // Response DtO'yu neden kullanıyoruz?
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/{uniqueId}")
@@ -91,42 +89,42 @@ public class PatientController {
 
   @ResponseStatus(HttpStatus.OK)
   @PostMapping("/search-by-national-id")
-  public PatientResponseDto findPatientByNationalId(@Valid @RequestBody FindPatientByNationalIdRequestDto findPatientByNationalIdRequestDto){
-      NationalId nationalId = new NationalId(findPatientByNationalIdRequestDto.nationalId());
+  public PatientResponseDto findPatientByNationalId(
+      @Valid @RequestBody FindPatientByNationalIdRequestDto findPatientByNationalIdRequestDto) {
+    NationalId nationalId = new NationalId(findPatientByNationalIdRequestDto.nationalId());
 
-      Patient patient = findPatientByNationalIdUseCase.execute(nationalId);
-      User user = patient.getUser();
-      return new PatientResponseDto(user.getUniqueId(), user.getName(), user.getSurname(), user.getBirthDate());
+    Patient patient = findPatientByNationalIdUseCase.execute(nationalId);
+    User user = patient.getUser();
+    return new PatientResponseDto(
+        user.getUniqueId(), user.getName(), user.getSurname(), user.getBirthDate());
   }
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/search")
-  public List<PatientResponseDto> searchPatients(@RequestParam String query){ // Request Param'dan ayrıca bahsetmek gerekiyor.
-      List<Patient> patients = searchPatientUseCase.execute(query);
-      return patients.stream().map(patient -> {
-          User user = patient.getUser();
+  public List<PatientResponseDto> searchPatients(
+      @RequestParam String query) { // Request Param'dan ayrıca bahsetmek gerekiyor.
+    List<Patient> patients = searchPatientUseCase.execute(query);
+    return patients.stream()
+        .map(
+            patient -> {
+              User user = patient.getUser();
 
-          return new PatientResponseDto(
-                  user.getUniqueId(),
-                  user.getName(),
-                  user.getSurname(),
-                  user.getBirthDate()
-          );
-      }).toList();
+              return new PatientResponseDto(
+                  user.getUniqueId(), user.getName(), user.getSurname(), user.getBirthDate());
+            })
+        .toList();
   }
 
   @ResponseStatus(HttpStatus.OK)
   @PatchMapping("/{uniqueId}")
-  public PatientResponseDto updatePatient(@PathVariable UUID uniqueId,
-                                          @RequestBody UpdatePatientRequestDto requestDto){
-      Patient patient = updatePatientUseCase.execute(
-              uniqueId,
-              requestDto.email(),
-              requestDto.phoneNumber(),
-              requestDto.bloodType()
-      );
+  public PatientResponseDto updatePatient(
+      @PathVariable UUID uniqueId, @RequestBody UpdatePatientRequestDto requestDto) {
+    Patient patient =
+        updatePatientUseCase.execute(
+            uniqueId, requestDto.email(), requestDto.phoneNumber(), requestDto.bloodType());
 
-      User user = patient.getUser();
-      return new PatientResponseDto(user.getUniqueId(), user.getName(), user.getSurname(), user.getBirthDate());
+    User user = patient.getUser();
+    return new PatientResponseDto(
+        user.getUniqueId(), user.getName(), user.getSurname(), user.getBirthDate());
   }
 }

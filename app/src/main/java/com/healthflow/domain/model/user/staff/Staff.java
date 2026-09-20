@@ -15,19 +15,19 @@ public class Staff {
 
   public Staff(
       String employeeId, LocalDate hireDate, EmploymentStatus employmentStatus, User user) {
-    if(employeeId == null | employeeId.isBlank()){
+    if (employeeId == null | employeeId.isBlank()) {
       throw new InvalidEmployeeIdException("Employee id can not be null or blank.");
     }
 
-    if (hireDate == null){
+    if (hireDate == null) {
       throw new InvalidDateException("Hire Date can not be null.");
     }
 
-    if(employmentStatus == null){
+    if (employmentStatus == null) {
       throw new InvalidStaffException("Employment status information can not be null.");
     }
 
-    if(user == null){
+    if (user == null) {
       throw new InvalidUserException("User can not be null.");
     }
 

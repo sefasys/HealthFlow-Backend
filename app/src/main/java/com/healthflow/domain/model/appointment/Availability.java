@@ -13,16 +13,15 @@ public class Availability {
   private final TimeRange timeRange;
 
   public Availability(Clinician clinician, LocalDate date, TimeRange timeRange) {
-    if(clinician == null){
+    if (clinician == null) {
       throw new InvalidClinicianException("Clinician can not be null.");
     }
-    if(date == null){
+    if (date == null) {
       throw new InvalidDateException("Date can not be null");
     }
-    if(timeRange == null){
+    if (timeRange == null) {
       throw new InvalidTimeRangeException("Time range cen not be null");
     }
-
 
     this.clinician = clinician;
     this.date = date;
@@ -31,10 +30,10 @@ public class Availability {
 
   public List<AppointmentSlot> generateSlots(
       Duration slotDuration, List<Appointment> appointments) {
-    if(slotDuration == null){
+    if (slotDuration == null) {
       throw new InvalidDurationException("Duration can not be null.");
     }
-    if(appointments == null){
+    if (appointments == null) {
       throw new InvalidAppointmentException("Appointments list can not be null.");
     }
 

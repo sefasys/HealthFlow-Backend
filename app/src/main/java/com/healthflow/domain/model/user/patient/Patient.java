@@ -7,7 +7,6 @@ import com.healthflow.domain.model.appointment.Appointment;
 import com.healthflow.domain.model.user.User;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class Patient {
   private final User user;
@@ -80,11 +79,11 @@ public class Patient {
     appointments.set(index, newAppointment);
   }
 
-  public void updateEmail(String email){
+  public void updateEmail(String email) {
     user.updateEmail(email);
   }
-  public void updatePhoneNumber(String phoneNumber){
+
+  public void updatePhoneNumber(String phoneNumber) {
     user.updatePhoneNumber(phoneNumber);
   }
-
 }

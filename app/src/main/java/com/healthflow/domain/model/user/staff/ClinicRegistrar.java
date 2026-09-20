@@ -12,8 +12,7 @@ public class ClinicRegistrar {
   private final AppointmentScheduler appointmentScheduler;
 
   public ClinicRegistrar(Staff staff, AppointmentScheduler appointmentScheduler) {
-    if(staff == null)
-      throw new InvalidStaffException("Staff can not be null.");
+    if (staff == null) throw new InvalidStaffException("Staff can not be null.");
 
     this.staff = staff;
     this.appointmentScheduler = appointmentScheduler;
@@ -26,25 +25,24 @@ public class ClinicRegistrar {
       Availability availability,
       TimeRange requestedRange,
       List<Appointment> appointments) {
-    if (uniqueId == null){
+    if (uniqueId == null) {
       throw new InvalidUniqueIdException("Unique Id can not be null.");
     }
-    if (patient == null){
+    if (patient == null) {
       throw new InvalidPatientException("Patient can not be null.");
     }
-    if (clinician == null){
+    if (clinician == null) {
       throw new InvalidClinicianException("Clinician can not be null.");
     }
-    if (availability == null){
+    if (availability == null) {
       throw new InvalidAvailabilityException("Availability can not be null.");
     }
-    if (requestedRange == null){
+    if (requestedRange == null) {
       throw new InvalidTimeRangeException("Time Range can not be null.");
     }
-    if (appointments == null){
+    if (appointments == null) {
       throw new InvalidAppointmentException("Appointment list can not be null.");
     }
-
 
     Appointment appointment =
         appointmentScheduler.schedule(
@@ -74,7 +72,8 @@ public class ClinicRegistrar {
     if (newAvailability == null) throw new InvalidAvailabilityException("New availability is null");
     if (appointments == null)
       throw new InvalidAppointmentException("Appointments list can not be null");
-    if (newRequestedRange == null) throw new InvalidTimeRangeException("Time range can not be null");
+    if (newRequestedRange == null)
+      throw new InvalidTimeRangeException("Time range can not be null");
 
     if (!appointments.contains(oldAppointment)) {
       throw new InvalidAppointmentException("Old appointment is not on the list.");

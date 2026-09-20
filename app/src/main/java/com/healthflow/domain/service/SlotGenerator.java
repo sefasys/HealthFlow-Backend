@@ -16,7 +16,8 @@ public class SlotGenerator {
 
   public List<AppointmentSlot> generateSlots(
       Availability availability, Duration slotDuration, List<Appointment> appointments) {
-    if (availability == null) throw new InvalidAvailabilityException("Availability can not be null");
+    if (availability == null)
+      throw new InvalidAvailabilityException("Availability can not be null");
 
     if (slotDuration == null) throw new InvalidDurationException("Duration can not be null");
 
@@ -30,13 +31,13 @@ public class SlotGenerator {
 
   private List<AppointmentSlot> buildSlots( // burada mesela exception check yapacak mıyız?
       Availability availability, List<Appointment> appointments, List<TimeRange> ranges) {
-    if(availability == null){
+    if (availability == null) {
       throw new InvalidAvailabilityException("Availability can not be null.");
     }
-    if(appointments == null){
+    if (appointments == null) {
       throw new InvalidAppointmentException("Appointments list can not be null.");
     }
-    if(ranges == null){
+    if (ranges == null) {
       throw new InvalidTimeRangeException("Time range list can not be null.");
     }
 

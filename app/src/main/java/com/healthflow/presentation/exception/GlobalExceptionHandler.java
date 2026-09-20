@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
   private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   @ExceptionHandler(PatientAlreadyExistsException.class)
-  public ResponseEntity<ErrorResponseDto> handlePatientAlreadyExists(//409
+  public ResponseEntity<ErrorResponseDto> handlePatientAlreadyExists( // 409
       PatientAlreadyExistsException exception) {
     ErrorResponseDto responseDto =
         new ErrorResponseDto(
@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(DomainValidationException.class)
-  public ResponseEntity<ErrorResponseDto> handleDomainValidationException(//400
+  public ResponseEntity<ErrorResponseDto> handleDomainValidationException( // 400
       DomainValidationException exception) {
     ErrorResponseDto responseDto =
         new ErrorResponseDto(
@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<ErrorResponseDto> handleGenericError(Exception exception) {//500
+  public ResponseEntity<ErrorResponseDto> handleGenericError(Exception exception) { // 500
     logger.error("Unexpected error occurred", exception);
 
     ErrorResponseDto responseDto =
@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(PatientNotFoundException.class)
-  public ResponseEntity<ErrorResponseDto> handlePatientNotFound(//404
+  public ResponseEntity<ErrorResponseDto> handlePatientNotFound( // 404
       PatientNotFoundException exception) {
     ErrorResponseDto responseDto =
         new ErrorResponseDto(
@@ -68,35 +68,27 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
   }
 
-
-
   @ExceptionHandler(InvalidSearchQueryException.class)
-  public ResponseEntity<ErrorResponseDto> handleInvalidSearchQuery(//400
-          InvalidSearchQueryException exception
-  ){
-      ErrorResponseDto responseDto = new ErrorResponseDto(
-              HttpStatus.BAD_REQUEST.value(),
-              "INVALID_SEARCH_QUERY",
-              exception.getMessage(),
-              LocalDateTime.now()
-      );
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
+  public ResponseEntity<ErrorResponseDto> handleInvalidSearchQuery( // 400
+      InvalidSearchQueryException exception) {
+    ErrorResponseDto responseDto =
+        new ErrorResponseDto(
+            HttpStatus.BAD_REQUEST.value(),
+            "INVALID_SEARCH_QUERY",
+            exception.getMessage(),
+            LocalDateTime.now());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
   }
 
   @ExceptionHandler(InvalidUpdateRequestException.class)
-    public ResponseEntity<ErrorResponseDto> handleInvalidUpdateRequest(
-            InvalidUpdateRequestException exception
-  ){
-      ErrorResponseDto responseDto = new ErrorResponseDto(
-              HttpStatus.BAD_REQUEST.value(),
-              "INVALID_UPDATE_REQUEST",
-              exception.getMessage(),
-              LocalDateTime.now()
-      );
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
+  public ResponseEntity<ErrorResponseDto> handleInvalidUpdateRequest(
+      InvalidUpdateRequestException exception) {
+    ErrorResponseDto responseDto =
+        new ErrorResponseDto(
+            HttpStatus.BAD_REQUEST.value(),
+            "INVALID_UPDATE_REQUEST",
+            exception.getMessage(),
+            LocalDateTime.now());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
   }
-
-
-
-
 }

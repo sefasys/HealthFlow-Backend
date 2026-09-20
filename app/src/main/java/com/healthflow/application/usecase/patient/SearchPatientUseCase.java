@@ -14,12 +14,10 @@ public class SearchPatientUseCase {
 
   public List<Patient> execute(String query) {
 
-      if (query == null || query.isBlank()) {
-          throw new InvalidSearchQueryException(
-                  "Search query cannot be null or blank."
-          );
-      }
+    if (query == null || query.isBlank()) {
+      throw new InvalidSearchQueryException("Search query cannot be null or blank.");
+    }
 
-      return patientRepository.search(query);
+    return patientRepository.search(query);
   }
 }

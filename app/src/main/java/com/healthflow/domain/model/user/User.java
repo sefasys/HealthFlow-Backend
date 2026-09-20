@@ -1,7 +1,6 @@
 package com.healthflow.domain.model.user;
 
 import com.healthflow.domain.exception.*;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -97,18 +96,17 @@ public class User {
     return phoneNumber;
   }
 
-  public void updateEmail(String email){
-    if(email == null || email.isBlank()){
+  public void updateEmail(String email) {
+    if (email == null || email.isBlank()) {
       throw new InvalidEmailException("Email can not be null or blank.");
     }
     this.email = email;
   }
 
-  public void updatePhoneNumber(String phoneNumber){
-    if(phoneNumber == null || phoneNumber.isBlank()){
+  public void updatePhoneNumber(String phoneNumber) {
+    if (phoneNumber == null || phoneNumber.isBlank()) {
       throw new InvalidPhoneNumberException("Phone number can not be null or blank.");
     }
     this.phoneNumber = phoneNumber;
   }
-
 }

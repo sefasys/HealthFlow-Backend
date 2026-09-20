@@ -15,16 +15,15 @@ public abstract class AbstractClinicalDepartment implements ClinicalDepartment {
 
   protected AbstractClinicalDepartment(
       String departmentName, String departmentCode, String description, boolean activity) {
-    if(departmentName == null | departmentName.isBlank()){
+    if (departmentName == null | departmentName.isBlank()) {
       throw new InvalidDepartmentException("Department name can not be null.");
     }
-    if(departmentCode == null | departmentCode.isBlank()){
+    if (departmentCode == null | departmentCode.isBlank()) {
       throw new InvalidDepartmentException("Department code can not be null.");
     }
-    if(description == null | description.isBlank()){
+    if (description == null | description.isBlank()) {
       throw new InvalidDepartmentException("Department description can not be null.");
     }
-
 
     this.departmentName = departmentName;
     this.departmentCode = departmentCode;

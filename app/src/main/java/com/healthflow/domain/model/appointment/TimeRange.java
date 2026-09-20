@@ -2,7 +2,6 @@ package com.healthflow.domain.model.appointment;
 
 import com.healthflow.domain.exception.InvalidDurationException;
 import com.healthflow.domain.exception.InvalidTimeRangeException;
-
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;

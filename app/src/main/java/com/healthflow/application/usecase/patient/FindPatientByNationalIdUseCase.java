@@ -18,7 +18,9 @@ public class FindPatientByNationalIdUseCase {
     if (nationalId == null) {
       throw new InvalidNationalIdException("National ID cannot be null.");
     }
-    return patientRepository.findByNationalId(nationalId).orElseThrow(() ->
-            new PatientNotFoundException("Patient not found with this national id."));
+    return patientRepository
+        .findByNationalId(nationalId)
+        .orElseThrow(
+            () -> new PatientNotFoundException("Patient not found with this national id."));
   }
 }

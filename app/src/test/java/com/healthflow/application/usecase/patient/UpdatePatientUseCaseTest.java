@@ -4,12 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-import com.healthflow.domain.exception.InvalidUniqueIdException;
 import com.healthflow.application.exception.InvalidUpdateRequestException;
 import com.healthflow.application.exception.PatientNotFoundException;
-import com.healthflow.port.repository.IPatientRepository;
+import com.healthflow.domain.exception.InvalidUniqueIdException;
 import com.healthflow.domain.model.user.patient.BloodType;
 import com.healthflow.domain.model.user.patient.Patient;
+import com.healthflow.port.repository.IPatientRepository;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,170 +17,128 @@ import org.junit.jupiter.api.Test;
 
 class UpdatePatientUseCaseTest {
 
-    private IPatientRepository patientRepository;
-    private UpdatePatientUseCase updatePatientUseCase;
+  private IPatientRepository patientRepository;
+  private UpdatePatientUseCase updatePatientUseCase;
 
-    @BeforeEach
-    void setUp() {
-        patientRepository = mock(IPatientRepository.class);
-        updatePatientUseCase = new UpdatePatientUseCase(patientRepository);
-    }
+  @BeforeEach
+  void setUp() {
+    patientRepository = mock(IPatientRepository.class);
+    updatePatientUseCase = new UpdatePatientUseCase(patientRepository);
+  }
 
-    @Test
-    void shouldThrowInvalidUniqueIdExceptionWhenUniqueIdIsNull() {
+  @Test
+  void shouldThrowInvalidUniqueIdExceptionWhenUniqueIdIsNull() {
 
-        assertThrows(
-                InvalidUniqueIdException.class,
-                () -> updatePatientUseCase.execute(
-                        null,
-                        "newmail@example.com",
-                        null,
-                        null
-                )
-        );
+    assertThrows(
+        InvalidUniqueIdException.class,
+        () -> updatePatientUseCase.execute(null, "newmail@example.com", null, null));
 
-        verifyNoInteractions(patientRepository);
-    }
+    verifyNoInteractions(patientRepository);
+  }
 
-    @Test
-    void shouldThrowInvalidUpdateRequestExceptionWhenNoFieldIsProvided() {
+  @Test
+  void shouldThrowInvalidUpdateRequestExceptionWhenNoFieldIsProvided() {
 
-        UUID uniqueId = UUID.randomUUID();
+    UUID uniqueId = UUID.randomUUID();
 
-        assertThrows(
-                InvalidUpdateRequestException.class,
-                () -> updatePatientUseCase.execute(
-                        uniqueId,
-                        null,
-                        null,
-                        null
-                )
-        );
+    assertThrows(
+        InvalidUpdateRequestException.class,
+        () -> updatePatientUseCase.execute(uniqueId, null, null, null));
 
-        verifyNoInteractions(patientRepository);
-    }
+    verifyNoInteractions(patientRepository);
+  }
 
-    @Test
-    void shouldThrowPatientNotFoundExceptionWhenPatientDoesNotExist() {
+  @Test
+  void shouldThrowPatientNotFoundExceptionWhenPatientDoesNotExist() {
 
-        UUID uniqueId = UUID.randomUUID();
+    UUID uniqueId = UUID.randomUUID();
 
-        when(patientRepository.findByUniqueId(uniqueId))
-                .thenReturn(Optional.empty());
+    when(patientRepository.findByUniqueId(uniqueId)).thenReturn(Optional.empty());
 
-        assertThrows(
-                PatientNotFoundException.class,
-                () -> updatePatientUseCase.execute(
-                        uniqueId,
-                        "newmail@example.com",
-                        null,
-                        null
-                )
-        );
+    assertThrows(
+        PatientNotFoundException.class,
+        () -> updatePatientUseCase.execute(uniqueId, "newmail@example.com", null, null));
 
-        verify(patientRepository).findByUniqueId(uniqueId);
-        verify(patientRepository, never()).update(any());
-    }
+    verify(patientRepository).findByUniqueId(uniqueId);
+    verify(patientRepository, never()).update(any());
+  }
 
-    @Test
-    void shouldUpdateEmailWhenEmailIsProvided() {
+  @Test
+  void shouldUpdateEmailWhenEmailIsProvided() {
 
-        UUID uniqueId = UUID.randomUUID();
-        Patient patient = mock(Patient.class);
+    UUID uniqueId = UUID.randomUUID();
+    Patient patient = mock(Patient.class);
 
-        when(patientRepository.findByUniqueId(uniqueId))
-                .thenReturn(Optional.of(patient));
+    when(patientRepository.findByUniqueId(uniqueId)).thenReturn(Optional.of(patient));
 
-        Patient result = updatePatientUseCase.execute(
-                uniqueId,
-                "newmail@example.com",
-                null,
-                null
-        );
+    Patient result = updatePatientUseCase.execute(uniqueId, "newmail@example.com", null, null);
 
-        verify(patient).updateEmail("newmail@example.com");
-        verify(patient, never()).updatePhoneNumber(anyString());
-        verify(patient, never()).updateBloodType(any());
+    verify(patient).updateEmail("newmail@example.com");
+    verify(patient, never()).updatePhoneNumber(anyString());
+    verify(patient, never()).updateBloodType(any());
 
-        verify(patientRepository).update(patient);
+    verify(patientRepository).update(patient);
 
-        assertSame(patient, result);
-    }
+    assertSame(patient, result);
+  }
 
-    @Test
-    void shouldUpdatePhoneNumberWhenPhoneNumberIsProvided() {
+  @Test
+  void shouldUpdatePhoneNumberWhenPhoneNumberIsProvided() {
 
-        UUID uniqueId = UUID.randomUUID();
-        Patient patient = mock(Patient.class);
+    UUID uniqueId = UUID.randomUUID();
+    Patient patient = mock(Patient.class);
 
-        when(patientRepository.findByUniqueId(uniqueId))
-                .thenReturn(Optional.of(patient));
+    when(patientRepository.findByUniqueId(uniqueId)).thenReturn(Optional.of(patient));
 
-        Patient result = updatePatientUseCase.execute(
-                uniqueId,
-                null,
-                "5555555555",
-                null
-        );
+    Patient result = updatePatientUseCase.execute(uniqueId, null, "5555555555", null);
 
-        verify(patient).updatePhoneNumber("5555555555");
-        verify(patient, never()).updateEmail(anyString());
-        verify(patient, never()).updateBloodType(any());
+    verify(patient).updatePhoneNumber("5555555555");
+    verify(patient, never()).updateEmail(anyString());
+    verify(patient, never()).updateBloodType(any());
 
-        verify(patientRepository).update(patient);
+    verify(patientRepository).update(patient);
 
-        assertSame(patient, result);
-    }
+    assertSame(patient, result);
+  }
 
-    @Test
-    void shouldUpdateBloodTypeWhenBloodTypeIsProvided() {
+  @Test
+  void shouldUpdateBloodTypeWhenBloodTypeIsProvided() {
 
-        UUID uniqueId = UUID.randomUUID();
-        Patient patient = mock(Patient.class);
-        BloodType bloodType = BloodType.values()[0];
+    UUID uniqueId = UUID.randomUUID();
+    Patient patient = mock(Patient.class);
+    BloodType bloodType = BloodType.values()[0];
 
-        when(patientRepository.findByUniqueId(uniqueId))
-                .thenReturn(Optional.of(patient));
+    when(patientRepository.findByUniqueId(uniqueId)).thenReturn(Optional.of(patient));
 
-        Patient result = updatePatientUseCase.execute(
-                uniqueId,
-                null,
-                null,
-                bloodType
-        );
+    Patient result = updatePatientUseCase.execute(uniqueId, null, null, bloodType);
 
-        verify(patient).updateBloodType(bloodType);
-        verify(patient, never()).updateEmail(anyString());
-        verify(patient, never()).updatePhoneNumber(anyString());
+    verify(patient).updateBloodType(bloodType);
+    verify(patient, never()).updateEmail(anyString());
+    verify(patient, never()).updatePhoneNumber(anyString());
 
-        verify(patientRepository).update(patient);
+    verify(patientRepository).update(patient);
 
-        assertSame(patient, result);
-    }
+    assertSame(patient, result);
+  }
 
-    @Test
-    void shouldUpdateAllProvidedFields() {
+  @Test
+  void shouldUpdateAllProvidedFields() {
 
-        UUID uniqueId = UUID.randomUUID();
-        Patient patient = mock(Patient.class);
-        BloodType bloodType = BloodType.values()[0];
+    UUID uniqueId = UUID.randomUUID();
+    Patient patient = mock(Patient.class);
+    BloodType bloodType = BloodType.values()[0];
 
-        when(patientRepository.findByUniqueId(uniqueId))
-                .thenReturn(Optional.of(patient));
+    when(patientRepository.findByUniqueId(uniqueId)).thenReturn(Optional.of(patient));
 
-        Patient result = updatePatientUseCase.execute(
-                uniqueId,
-                "newmail@example.com",
-                "5555555555",
-                bloodType
-        );
+    Patient result =
+        updatePatientUseCase.execute(uniqueId, "newmail@example.com", "5555555555", bloodType);
 
-        verify(patient).updateEmail("newmail@example.com");
-        verify(patient).updatePhoneNumber("5555555555");
-        verify(patient).updateBloodType(bloodType);
+    verify(patient).updateEmail("newmail@example.com");
+    verify(patient).updatePhoneNumber("5555555555");
+    verify(patient).updateBloodType(bloodType);
 
-        verify(patientRepository).update(patient);
+    verify(patientRepository).update(patient);
 
-        assertSame(patient, result);
-    }
+    assertSame(patient, result);
+  }
 }

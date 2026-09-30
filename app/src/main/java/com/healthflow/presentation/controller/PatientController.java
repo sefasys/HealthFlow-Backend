@@ -1,7 +1,6 @@
 package com.healthflow.presentation.controller;
 
 import com.healthflow.application.service.PatientService;
-import com.healthflow.application.usecase.patient.*;
 import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.User;
 import com.healthflow.domain.model.user.patient.Patient;
@@ -9,7 +8,6 @@ import com.healthflow.presentation.dto.patient.CreatePatientRequestDto;
 import com.healthflow.presentation.dto.patient.FindPatientByNationalIdRequestDto;
 import com.healthflow.presentation.dto.patient.PatientResponseDto;
 import com.healthflow.presentation.dto.patient.UpdatePatientRequestDto;
-import com.healthflow.presentation.mapper.PatientMapper;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -21,37 +19,22 @@ import org.springframework.web.bind.annotation.*;
 public class PatientController {
 
   private final PatientService patientService;
-  private final PatientMapper patientMapper;
 
-  public PatientController(PatientService patientService, PatientMapper patientMapper) {
+
+  public PatientController(PatientService patientService) {
     this.patientService = patientService;
-    this.patientMapper = patientMapper;
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public PatientResponseDto createPatient(@Valid @RequestBody CreatePatientRequestDto requestDto) {
-    Patient patient = patientService.createPatient(requestDto);
-
-    return PatientMapper.toResponseDto(patient);
+    return patientService.createPatient(requestDto);
   }
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   public List<PatientResponseDto> getPatients() {
-    List<Patient> patients = getPatientsUseCase.execute();
-    return patients.stream()
-        .map(
-            patient -> {
-              User user = patient.getUser();
-
-              return new PatientResponseDto(
-                  user.getUniqueId(),
-                  user.getName(),
-                  user.getSurname(),
-                  user.getBirthDate()); // Buradaki yapıya bir göz at.
-            })
-        .toList();
+    return patientService.getPatients();
   } // Response DtO'yu neden kullanıyoruz?
 
   @ResponseStatus(HttpStatus.OK)

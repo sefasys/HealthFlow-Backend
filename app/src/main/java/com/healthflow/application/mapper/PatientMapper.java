@@ -1,13 +1,15 @@
-package com.healthflow.presentation.mapper;
+package com.healthflow.application.mapper;
 
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.presentation.dto.patient.PatientResponseDto;
+import org.springframework.stereotype.Component;
 
-public final class PatientMapper {
+@Component
+public class PatientMapper {
 
     private PatientMapper(){}
 
-    public static PatientResponseDto toResponseDto(Patient patient){
+    public PatientResponseDto toResponseDto(Patient patient){
         PatientResponseDto responseDto = new PatientResponseDto(
                 patient.getUser().getUniqueId(),
                 patient.getUser().getName(),

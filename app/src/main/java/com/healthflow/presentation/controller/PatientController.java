@@ -40,51 +40,24 @@ public class PatientController {
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/{uniqueId}")
   public PatientResponseDto findPatientByUniqueId(@PathVariable UUID uniqueId) {
-    Patient patient = findPatientByUniqueIdUseCase.execute(uniqueId);
-
-    User user = patient.getUser();
-    return new PatientResponseDto(
-        user.getUniqueId(), user.getName(), user.getSurname(), user.getBirthDate());
+    return patientService.findPatientByUniqueId(uniqueId);
   }
 
   @ResponseStatus(HttpStatus.OK)
   @PostMapping("/search-by-national-id")
-  public PatientResponseDto findPatientByNationalId(
-      @Valid @RequestBody FindPatientByNationalIdRequestDto findPatientByNationalIdRequestDto) {
-    NationalId nationalId = new NationalId(findPatientByNationalIdRequestDto.nationalId());
-
-    Patient patient = findPatientByNationalIdUseCase.execute(nationalId);
-    User user = patient.getUser();
-    return new PatientResponseDto(
-        user.getUniqueId(), user.getName(), user.getSurname(), user.getBirthDate());
+  public PatientResponseDto findPatientByNationalId(@Valid @RequestBody FindPatientByNationalIdRequestDto findPatientByNationalIdRequestDto) {
+      return patientService.findPatientByNationalId(findPatientByNationalIdRequestDto.nationalId());
   }
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/search")
-  public List<PatientResponseDto> searchPatients(
-      @RequestParam String query) { // Request Param'dan ayrıca bahsetmek gerekiyor.
-    List<Patient> patients = searchPatientUseCase.execute(query);
-    return patients.stream()
-        .map(
-            patient -> {
-              User user = patient.getUser();
-
-              return new PatientResponseDto(
-                  user.getUniqueId(), user.getName(), user.getSurname(), user.getBirthDate());
-            })
-        .toList();
+  public List<PatientResponseDto> searchPatients(@RequestParam String query) { // Request Param'dan ayrıca bahsetmek gerekiyor.
+   return patientService.searchPatient(query);
   }
 
   @ResponseStatus(HttpStatus.OK)
   @PatchMapping("/{uniqueId}")
-  public PatientResponseDto updatePatient(
-      @PathVariable UUID uniqueId, @RequestBody UpdatePatientRequestDto requestDto) {
-    Patient patient =
-        updatePatientUseCase.execute(
-            uniqueId, requestDto.email(), requestDto.phoneNumber(), requestDto.bloodType());
-
-    User user = patient.getUser();
-    return new PatientResponseDto(
-        user.getUniqueId(), user.getName(), user.getSurname(), user.getBirthDate());
+  public PatientResponseDto updatePatient(@PathVariable UUID uniqueId, @Valid @RequestBody UpdatePatientRequestDto requestDto) {
+    return patientService.updatePatient(uniqueId, requestDto);
   }
 }

@@ -14,7 +14,6 @@ public class FindPatientByUniqueIdUseCase {
   }
 
   public Patient execute(UUID id) {
-
     if (id == null) {
       throw new InvalidUniqueIdException("Unique ID cannot be null.");
     }

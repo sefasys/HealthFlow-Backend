@@ -1,5 +1,6 @@
 package com.healthflow.presentation.controller;
 
+import com.healthflow.application.service.PatientService;
 import com.healthflow.application.usecase.patient.*;
 import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.User;
@@ -8,6 +9,7 @@ import com.healthflow.presentation.dto.patient.CreatePatientRequestDto;
 import com.healthflow.presentation.dto.patient.FindPatientByNationalIdRequestDto;
 import com.healthflow.presentation.dto.patient.PatientResponseDto;
 import com.healthflow.presentation.dto.patient.UpdatePatientRequestDto;
+import com.healthflow.presentation.mapper.PatientMapper;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -18,45 +20,20 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/patients")
 public class PatientController {
 
-  private final CreatePatientUseCase createPatientUseCase;
-  private final GetPatientsUseCase getPatientsUseCase;
-  private final FindPatientByUniqueIdUseCase findPatientByUniqueIdUseCase;
-  private final FindPatientByNationalIdUseCase findPatientByNationalIdUseCase;
-  private final SearchPatientUseCase searchPatientUseCase;
-  private final UpdatePatientUseCase updatePatientUseCase;
+  private final PatientService patientService;
+  private final PatientMapper patientMapper;
 
-  public PatientController(
-      CreatePatientUseCase createPatientUseCase,
-      GetPatientsUseCase getPatientsUseCase,
-      FindPatientByUniqueIdUseCase findPatientByUniqueIdUseCase,
-      FindPatientByNationalIdUseCase findPatientByNationalIdUseCase,
-      SearchPatientUseCase searchPatientUseCase,
-      UpdatePatientUseCase updatePatientUseCase) {
-    this.createPatientUseCase = createPatientUseCase;
-    this.getPatientsUseCase = getPatientsUseCase;
-    this.findPatientByUniqueIdUseCase = findPatientByUniqueIdUseCase;
-    this.findPatientByNationalIdUseCase = findPatientByNationalIdUseCase;
-    this.searchPatientUseCase = searchPatientUseCase;
-    this.updatePatientUseCase = updatePatientUseCase;
+  public PatientController(PatientService patientService, PatientMapper patientMapper) {
+    this.patientService = patientService;
+    this.patientMapper = patientMapper;
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public PatientResponseDto createPatient(@Valid @RequestBody CreatePatientRequestDto requestDto) {
-    NationalId nationalId = new NationalId(requestDto.nationalId());
-    Patient patient =
-        createPatientUseCase.execute(
-            nationalId,
-            requestDto.name(),
-            requestDto.surname(),
-            requestDto.birthDate(),
-            requestDto.email(),
-            requestDto.phoneNumber());
-    User user = patient.getUser();
-    PatientResponseDto responseDto =
-        new PatientResponseDto(
-            user.getUniqueId(), user.getName(), user.getSurname(), user.getBirthDate());
-    return responseDto;
+    Patient patient = patientService.createPatient(requestDto);
+
+    return PatientMapper.toResponseDto(patient);
   }
 
   @GetMapping

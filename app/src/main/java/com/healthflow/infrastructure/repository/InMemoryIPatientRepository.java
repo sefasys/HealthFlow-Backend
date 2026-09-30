@@ -4,8 +4,11 @@ import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.port.repository.IPatientRepository;
 import com.healthflow.port.repository.PatientSortType;
+import org.springframework.stereotype.Repository;
+
 import java.util.*;
 
+@Repository
 public class InMemoryIPatientRepository implements IPatientRepository {
   private final List<Patient> patients;
 

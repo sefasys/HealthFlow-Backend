@@ -1,9 +1,6 @@
 package com.healthflow.presentation.controller;
 
 import com.healthflow.application.service.PatientService;
-import com.healthflow.domain.model.user.NationalId;
-import com.healthflow.domain.model.user.User;
-import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.presentation.dto.patient.CreatePatientRequestDto;
 import com.healthflow.presentation.dto.patient.FindPatientByNationalIdRequestDto;
 import com.healthflow.presentation.dto.patient.PatientResponseDto;

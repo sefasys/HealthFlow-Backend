@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponseDto> handleGenericError(Exception exception) { // 500
-    logger.error("Unexpected error occurred", exception);
+    logger.error("Unexpected error occurred", exception); // 500 şu an alt mesajları vermiyor.
 
     ErrorResponseDto responseDto =
         new ErrorResponseDto(

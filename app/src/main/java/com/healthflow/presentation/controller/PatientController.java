@@ -1,10 +1,7 @@
 package com.healthflow.presentation.controller;
 
 import com.healthflow.application.service.PatientService;
-import com.healthflow.presentation.dto.patient.CreatePatientRequestDto;
-import com.healthflow.presentation.dto.patient.FindPatientByNationalIdRequestDto;
-import com.healthflow.presentation.dto.patient.PatientResponseDto;
-import com.healthflow.presentation.dto.patient.UpdatePatientRequestDto;
+import com.healthflow.presentation.dto.patient.*;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -12,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/patients")
+@RequestMapping("/api/patients")
 public class PatientController {
 
   private final PatientService patientService;
@@ -32,7 +29,7 @@ public class PatientController {
   @ResponseStatus(HttpStatus.OK)
   public List<PatientResponseDto> getPatients() {
     return patientService.getPatients();
-  } // Response DtO'yu neden kullanıyoruz?
+  }//bunda sorun var.
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/{uniqueId}")
@@ -43,18 +40,18 @@ public class PatientController {
   @ResponseStatus(HttpStatus.OK)
   @PostMapping("/search-by-national-id")
   public PatientResponseDto findPatientByNationalId(@Valid @RequestBody FindPatientByNationalIdRequestDto findPatientByNationalIdRequestDto) {
-      return patientService.findPatientByNationalId(findPatientByNationalIdRequestDto.nationalId());
+      return patientService.findPatientByNationalId(findPatientByNationalIdRequestDto);
   }
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/search")
   public List<PatientResponseDto> searchPatients(@RequestParam String query) { // Request Param'dan ayrıca bahsetmek gerekiyor.
    return patientService.searchPatient(query);
-  }
+  }//bunda da sorun var.
 
   @ResponseStatus(HttpStatus.OK)
   @PatchMapping("/{uniqueId}")
-  public PatientResponseDto updatePatient(@PathVariable UUID uniqueId, @Valid @RequestBody UpdatePatientRequestDto requestDto) {
+  public UpdatePatientResponseDto updatePatient(@PathVariable UUID uniqueId, @Valid @RequestBody UpdatePatientRequestDto requestDto) {
     return patientService.updatePatient(uniqueId, requestDto);
   }
 }

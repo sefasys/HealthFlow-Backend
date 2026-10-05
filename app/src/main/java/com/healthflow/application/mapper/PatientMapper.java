@@ -2,22 +2,19 @@ package com.healthflow.application.mapper;
 
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.presentation.dto.patient.PatientResponseDto;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-public class PatientMapper {
 
-    private PatientMapper(){}
 
-    public PatientResponseDto toResponseDto(Patient patient){
-        PatientResponseDto responseDto = new PatientResponseDto(
-                patient.getUser().getUniqueId(),
-                patient.getUser().getName(),
-                patient.getUser().getSurname(),
-                patient.getUser().getBirthDate()
-        );
+@Mapper(componentModel = "spring")
+public interface PatientMapper {
 
-        return responseDto;
-    }
+        @Mapping(source = "user.uniqueId", target = "id")
+        @Mapping(source = "user.name", target = "name")
+        @Mapping(source = "user.surname", target = "surname")
+        @Mapping(source = "user.birthDate", target = "birthDate")
+        PatientResponseDto responseDto(Patient patient);
+        // Bu kısma çalış. Aslında bir converter olarak çalışıyor MapStruct Anotasyonu
 
 }

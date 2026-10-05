@@ -23,6 +23,7 @@ repositories {
 }
 
 dependencies {
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.0")
     // Use JUnit Jupiter for testing.
     testImplementation(libs.junit.jupiter)
 
@@ -38,6 +39,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.mapstruct:mapstruct:1.6.3")
+
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
+
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")

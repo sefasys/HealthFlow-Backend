@@ -90,7 +90,7 @@ public class InMemoryIPatientRepository implements IPatientRepository {
                 (patient.getUser().getName().toLowerCase().contains(normalizedQuery)
                     || patient.getUser().getSurname().toLowerCase().contains(normalizedQuery)))
         .toList();
-  }
+  }//listelemiyor.
 
   public void update(Patient patient) {
     UUID uniqueId = patient.getUser().getUniqueId();

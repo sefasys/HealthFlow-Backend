@@ -2,8 +2,9 @@ package com.healthflow.presentation.controller;
 
 import com.healthflow.application.dto.clinician.*;
 import com.healthflow.application.service.ClinicianService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,27 +19,39 @@ public class ClinicianController {
         this.clinicianService = clinicianService;
     }
 
-    public ClinicianResponseDto createClinician(CreateClinicianRequestDto requestDto){
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ClinicianResponseDto createClinician(@Valid @RequestBody CreateClinicianRequestDto requestDto){
         return clinicianService.createClinician(requestDto);
     }
 
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<ClinicianResponseDto> getClinicians(){
         return clinicianService.getClinicians();
     }
 
-    public ClinicianResponseDto findClinicianByUniqueId(UUID uniqueId){
+    @GetMapping("/find-by-unique-id/{uniqueId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ClinicianResponseDto findClinicianByUniqueId(@Valid @PathVariable UUID uniqueId){
         return clinicianService.findClinicianByUniqueId(uniqueId);
     }
 
-    public ClinicianResponseDto findClinicianByNationalId(FindClinicianByNationalIdRequestDto requestDto){
+    @PostMapping("/find-by-national-id")
+    @ResponseStatus(HttpStatus.OK)
+    public ClinicianResponseDto findClinicianByNationalId(@Valid @RequestBody FindClinicianByNationalIdRequestDto requestDto){
         return clinicianService.findClinicianByNationalId(requestDto);
     }
 
-    public UpdateClinicianResponseDto updateClinician(UUID uniqueId, UpdateClinicianRequestDto requestDto){
+    @PatchMapping("/update/{uniqueId}")
+    @ResponseStatus(HttpStatus.OK)
+    public UpdateClinicianResponseDto updateClinician(@PathVariable UUID uniqueId, @Valid @RequestBody UpdateClinicianRequestDto requestDto){
         return clinicianService.updateClinician(uniqueId, requestDto);
     }
 
-    public List<ClinicianResponseDto> searchClinician(String query){
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ClinicianResponseDto> searchClinician(@RequestParam String query){
         return clinicianService.searchClinician(query);
     }
 }

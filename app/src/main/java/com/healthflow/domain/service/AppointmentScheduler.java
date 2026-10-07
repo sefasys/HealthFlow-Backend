@@ -49,8 +49,8 @@ public class AppointmentScheduler {
         patient,
         clinician,
         availability.getDate(),
-        requestedRange,
-        clinician.getDepartment());
+        requestedRange
+        );
     // ileride bu clinician getDepartment'ı çıkar. constructordan
   }
 }

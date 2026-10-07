@@ -2,27 +2,26 @@ package com.healthflow.domain.model.user.staff;
 
 import com.healthflow.domain.exception.InvalidAvailabilityException;
 import com.healthflow.domain.exception.InvalidClinicianException;
-import com.healthflow.domain.exception.InvalidDepartmentException;
+
 import com.healthflow.domain.exception.InvalidStaffException;
 import com.healthflow.domain.model.appointment.Availability;
-import com.healthflow.domain.model.clinicaldepartment.ClinicalDepartment;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Clinician {
   private final Staff staff;
-  private final ClinicalDepartment department;
+
   private final List<Availability> availabilities;
 
-  public Clinician(Staff staff, ClinicalDepartment department) {
+  public Clinician(Staff staff) {
 
     if (staff == null) throw new InvalidStaffException("Staff information can not be null");
 
-    if (department == null)
-      throw new InvalidDepartmentException("Department information can not be null");
+
 
     this.staff = staff;
-    this.department = department;
+
     availabilities = new ArrayList<>();
   }
 
@@ -83,9 +82,7 @@ public class Clinician {
     return staff;
   }
 
-  public ClinicalDepartment getDepartment() {
-    return department;
-  }
+
 
   public List<Availability> getAvailabilities() {
     return availabilities;

@@ -5,7 +5,7 @@ import com.healthflow.application.exception.InvalidUpdateRequestException;
 import com.healthflow.application.exception.PatientAlreadyExistsException;
 import com.healthflow.application.exception.PatientNotFoundException;
 import com.healthflow.domain.exception.DomainValidationException;
-import com.healthflow.presentation.dto.patient.ErrorResponseDto;
+import com.healthflow.application.dto.patient.ErrorResponseDto;
 import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

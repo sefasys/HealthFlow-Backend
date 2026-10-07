@@ -1,4 +1,4 @@
-package com.healthflow.presentation.dto.patient;
+package com.healthflow.application.dto.patient;
 
 import com.healthflow.domain.model.user.patient.BloodType;
 

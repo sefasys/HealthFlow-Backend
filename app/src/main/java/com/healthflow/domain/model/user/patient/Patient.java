@@ -79,11 +79,6 @@ public class Patient {
     appointments.set(index, newAppointment);
   }
 
-  public void updateEmail(String email) {
-    user.updateEmail(email);
-  }
 
-  public void updatePhoneNumber(String phoneNumber) {
-    user.updatePhoneNumber(phoneNumber);
-  }
+
 }

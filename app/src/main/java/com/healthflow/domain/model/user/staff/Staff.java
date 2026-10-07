@@ -6,16 +6,17 @@ import com.healthflow.domain.exception.InvalidStaffException;
 import com.healthflow.domain.exception.InvalidUserException;
 import com.healthflow.domain.model.user.User;
 import java.time.LocalDate;
+import java.util.UUID;
 
 public class Staff {
-  private final String employeeId;
+  private final UUID employeeId;
   private final LocalDate hireDate;
   private final EmploymentStatus employmentStatus;
   private final User user;
 
   public Staff(
-      String employeeId, LocalDate hireDate, EmploymentStatus employmentStatus, User user) {
-    if (employeeId == null | employeeId.isBlank()) {
+      UUID employeeId, LocalDate hireDate, EmploymentStatus employmentStatus, User user) {
+    if (employeeId == null) {
       throw new InvalidEmployeeIdException("Employee id can not be null or blank.");
     }
 
@@ -37,7 +38,7 @@ public class Staff {
     this.user = user;
   }
 
-  public String getEmployeeId() {
+  public UUID getEmployeeId() {
     return employeeId;
   }
 

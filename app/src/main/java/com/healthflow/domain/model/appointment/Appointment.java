@@ -1,7 +1,6 @@
 package com.healthflow.domain.model.appointment;
 
 import com.healthflow.domain.exception.InvalidAppointmentException;
-import com.healthflow.domain.model.clinicaldepartment.ClinicalDepartment;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.domain.model.user.staff.Clinician;
 import java.time.LocalDate;
@@ -14,7 +13,6 @@ public class Appointment {
   private final Patient patient;
   private final Clinician clinician;
   private final TimeRange timeRange;
-  private final ClinicalDepartment clinicalDepartment;
   private final LocalDate date;
 
   public Appointment(
@@ -22,8 +20,7 @@ public class Appointment {
       Patient patient,
       Clinician clinician,
       LocalDate date,
-      TimeRange timeRange,
-      ClinicalDepartment clinicalDepartment) {
+      TimeRange timeRange) {
 
     if (uniqueId == null) {
       throw new InvalidAppointmentException("Unique ID cannot be null");
@@ -43,21 +40,16 @@ public class Appointment {
     if (timeRange == null) {
       throw new InvalidAppointmentException("Time range cannot be null");
     }
-    if (clinicalDepartment == null) {
-      throw new InvalidAppointmentException("Clinical department cannot be null");
-    }
+
     this.uniqueId = uniqueId;
     this.patient = patient;
     this.clinician = clinician;
     this.date = date;
     this.timeRange = timeRange;
     this.status = AppointmentStatus.SCHEDULED;
-    this.clinicalDepartment = clinicalDepartment;
+
   }
 
-  public ClinicalDepartment getClinicalDepartment() {
-    return clinicalDepartment;
-  }
 
   public Patient getPatient() {
     return patient;

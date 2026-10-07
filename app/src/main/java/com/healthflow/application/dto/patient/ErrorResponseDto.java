@@ -1,4 +1,4 @@
-package com.healthflow.presentation.dto.patient;
+package com.healthflow.application.dto.patient;
 
 import java.time.LocalDateTime;
 

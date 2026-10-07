@@ -1,7 +1,7 @@
 package com.healthflow.presentation.controller;
 
+import com.healthflow.application.dto.patient.*;
 import com.healthflow.application.service.PatientService;
-import com.healthflow.presentation.dto.patient.*;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;

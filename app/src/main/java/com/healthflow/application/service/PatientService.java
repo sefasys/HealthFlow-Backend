@@ -1,5 +1,6 @@
 package com.healthflow.application.service;
 
+import com.healthflow.application.dto.patient.*;
 import com.healthflow.application.exception.InvalidSearchQueryException;
 import com.healthflow.application.exception.InvalidUpdateRequestException;
 import com.healthflow.application.exception.PatientAlreadyExistsException;
@@ -14,7 +15,6 @@ import com.healthflow.domain.model.user.User;
 import com.healthflow.domain.model.user.UserRole;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.port.repository.IPatientRepository;
-import com.healthflow.presentation.dto.patient.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -80,9 +80,9 @@ public class PatientService {
         if (requestDto.nationalId() == null) {
             throw new InvalidNationalIdException("National ID cannot be null.");
         }
-        NationalId nationalIdObject = new NationalId(requestDto.nationalId());
+        NationalId nationalId = new NationalId(requestDto.nationalId());
         Patient patient = patientRepository
-                .findByNationalId(nationalIdObject)
+                .findByNationalId(nationalId)
                 .orElseThrow(
                         () -> new PatientNotFoundException("Patient not found with this national id."));
 
@@ -115,10 +115,10 @@ public class PatientService {
                         .orElseThrow(() -> new PatientNotFoundException("Patient could not be found."));
 
         if (updatePatientRequestDto.email() != null) {
-            patient.updateEmail(updatePatientRequestDto.email());
+            patient.getUser().updateEmail(updatePatientRequestDto.email());
         }
         if (updatePatientRequestDto.phoneNumber() != null) {
-            patient.updatePhoneNumber(updatePatientRequestDto.phoneNumber());
+            patient.getUser().updatePhoneNumber(updatePatientRequestDto.phoneNumber());
         }
         if (updatePatientRequestDto.bloodType() != null) {
             patient.updateBloodType(updatePatientRequestDto.bloodType());

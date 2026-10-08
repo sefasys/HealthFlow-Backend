@@ -23,8 +23,8 @@ public record CreateClinicianRequestDto(@NotBlank
                                         String email,
                                         @NotBlank
                                         String phoneNumber,
-                                        @NotBlank
+                                        @NotNull
                                         LocalDate hireDate,
-                                        @NotBlank
+                                        @NotNull
                                         EmploymentStatus employmentStatus//Bunda kararsızım
                                         ) {}

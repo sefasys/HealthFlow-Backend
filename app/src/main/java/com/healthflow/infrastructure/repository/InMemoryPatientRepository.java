@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 
 @Repository
-public class InMemoryIPatientRepository implements IPatientRepository {
+public class InMemoryPatientRepository implements IPatientRepository {
   private final List<Patient> patients;
 
-  public InMemoryIPatientRepository() {
+  public InMemoryPatientRepository() {
     patients = new ArrayList<>();
   }
 

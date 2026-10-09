@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class InMemoryIAppointmentRepository implements IAppointmentRepository {
+public class InMemoryAppointmentRepository implements IAppointmentRepository {
   List<Appointment> appointments;
 
-  public InMemoryIAppointmentRepository(List<Appointment> appointments) {
+  public InMemoryAppointmentRepository(List<Appointment> appointments) {
     if (appointments == null) throw new IllegalArgumentException("Appointments can not be null");
 
     this.appointments =

@@ -37,47 +37,7 @@ public class Patient {
     return bloodType;
   }
 
-  public List<Appointment> getAppointments() {
-    return appointments;
-  }
 
-  public void addAppointment(Appointment appointment) {
-    if (appointment == null) {
-      throw new InvalidAppointmentException("Appointment can not be null.");
-    } else if (appointment.getPatient() != this) {
-      throw new InvalidAppointmentException("The appointment is not for this patient.");
-    } else {
-      appointments.add(appointment);
-    }
-  }
-
-  public boolean removeAppointment(
-      Appointment appointment) { // burada appointment return etme. remove metodu zaten boolean
-    if (appointment == null) {
-      throw new InvalidAppointmentException("Appointment can not be null.");
-    } else if (appointment.getPatient() != this) {
-      throw new InvalidAppointmentException("The appointment is not for this patient.");
-    } else {
-      return appointments.remove(appointment);
-    }
-  }
-
-  public void updateAppointment(Appointment oldAppointment, Appointment newAppointment) {
-    if (oldAppointment == null)
-      throw new InvalidAppointmentException("Old Appointment can not be null");
-    if (newAppointment == null)
-      throw new InvalidAppointmentException("New Appointment can not be null");
-    if (!appointments.contains(oldAppointment))
-      throw new InvalidAppointmentException("Old appointment is not in the list.");
-    if (!(oldAppointment.getPatient() == this)) {
-      throw new InvalidAppointmentException("Old appointment does not belong to the patient.");
-    }
-    if (!(newAppointment.getPatient() == this)) {
-      throw new InvalidAppointmentException("New appointment does not belong to the patient.");
-    }
-    int index = appointments.indexOf(oldAppointment);
-    appointments.set(index, newAppointment);
-  }
 
 
 

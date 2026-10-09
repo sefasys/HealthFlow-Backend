@@ -1,56 +1,77 @@
 package com.healthflow.domain.service;
 
-import com.healthflow.domain.exception.*;
-import com.healthflow.domain.model.appointment.Appointment;
-import com.healthflow.domain.model.appointment.AppointmentStatus;
-import com.healthflow.domain.model.appointment.Availability;
-import com.healthflow.domain.model.appointment.TimeRange;
+import com.healthflow.domain.exception.InvalidAppointmentException;
+import com.healthflow.domain.exception.InvalidAvailabilityException;
+import com.healthflow.domain.exception.InvalidSlotException;
+import com.healthflow.domain.model.appointment.*;
 import com.healthflow.domain.model.user.patient.Patient;
-import com.healthflow.domain.model.user.staff.Clinician;
+import com.healthflow.domain.model.user.staff.EmploymentStatus;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
 public class AppointmentScheduler {
+  public static final ZoneId BUSINESS_ZONE = ZoneId.of("Europe/Istanbul");
+  private final Clock clock;
 
-  public Appointment schedule(
-      UUID uniqueId,
-      Patient patient,
-      Clinician clinician,
-      Availability availability,
-      TimeRange requestedRange,
-      List<Appointment> appointments) {
+  public AppointmentScheduler() { this(Clock.system(BUSINESS_ZONE)); }
 
-    if (patient == null) throw new InvalidPatientException("Patient information can not be null.");
-    if (clinician == null)
-      throw new InvalidClinicianException("Clinician information can not be null.");
-    if (availability == null)
-      throw new InvalidAvailabilityException("Availability information can not be null.");
-    if (requestedRange == null)
-      throw new InvalidTimeRangeException("Requested range information can not be null.");
-    if (appointments == null)
-      throw new InvalidAppointmentException("Appointments information can not be null.");
-    if (!availability.getClinician().equals(clinician)) {
-      throw new InvalidAvailabilityException(
-          "Given availability is not matching with the clinician's.");
+  public AppointmentScheduler(Clock clock) {
+    if (clock == null) throw new IllegalArgumentException("Clock is required.");
+    this.clock = clock.withZone(BUSINESS_ZONE);
+  }
+
+  /** existing must include both participants' appointments in either role. */
+  public Appointment schedule(UUID id, Patient patient, Availability availability,
+      TimeRange range, List<Appointment> existing) {
+    validateContext(existing);
+    if (existing.stream().anyMatch(a -> a.getUniqueId().equals(id))) {
+      throw new InvalidAppointmentException("Appointment ID already exists.");
     }
-    if (!availability.getTimeRange().contains(requestedRange)) {
-      throw new InvalidAvailabilityException("Availability time is not matching.");
+    Appointment candidate = new Appointment(id, patient, availability, range);
+    validateBooking(candidate, existing);
+    return candidate;
+  }
+
+  /** Returns a replacement with the same ID; caller must save only after success. */
+  public Appointment reschedule(Appointment current, Availability newAvailability,
+      TimeRange newRange, List<Appointment> existing) {
+    if (current == null || current.getStatus() != AppointmentStatus.SCHEDULED) {
+      throw new InvalidAppointmentException("Only scheduled appointments can be rescheduled.");
     }
-    for (Appointment appointment : appointments) {
-      if (appointment.getClinician().equals(clinician)
-          && availability.getDate().equals(appointment.getDate())
-          && appointment.getStatus() == AppointmentStatus.SCHEDULED
-          && appointment.getTimeRange().overlaps(requestedRange)) {
-        throw new InvalidSlotException("Slot is already booked");
+    validateContext(existing);
+    Appointment candidate = new Appointment(current.getUniqueId(), current.getPatient(),
+        newAvailability, newRange);
+    List<Appointment> others = existing.stream()
+        .filter(a -> !a.getUniqueId().equals(current.getUniqueId())).toList();
+    validateBooking(candidate, others);
+    return candidate;
+  }
+
+  private void validateBooking(Appointment candidate, List<Appointment> existing) {
+    if (candidate.getClinician().getStaff().getEmploymentStatus() != EmploymentStatus.ACTIVE) {
+      throw new InvalidAvailabilityException("Clinician must be active to receive appointments.");
+    }
+    if (!LocalDateTime.of(candidate.getDate(), candidate.getTimeRange().start())
+        .isAfter(LocalDateTime.now(clock))) {
+      throw new InvalidAppointmentException("Appointment start must be in the future.");
+    }
+    UUID patientId = candidate.getPatient().getUser().getUniqueId();
+    UUID clinicianId = candidate.getClinician().getStaff().getUser().getUniqueId();
+    for (Appointment other : existing) {
+      if (other.blocksSlot() && other.getDate().equals(candidate.getDate())
+          && other.getTimeRange().overlaps(candidate.getTimeRange())
+          && (other.involvesUser(patientId) || other.involvesUser(clinicianId))) {
+        throw new InvalidSlotException("Patient or clinician has an overlapping appointment.");
       }
     }
-    return new Appointment(
-        uniqueId,
-        patient,
-        clinician,
-        availability.getDate(),
-        requestedRange
-        );
-    // ileride bu clinician getDepartment'ı çıkar. constructordan
+  }
+
+  private void validateContext(List<Appointment> existing) {
+    if (existing == null || existing.stream().anyMatch(a -> a == null)) {
+      throw new InvalidAppointmentException("Appointment context cannot be null or contain null.");
+    }
   }
 }

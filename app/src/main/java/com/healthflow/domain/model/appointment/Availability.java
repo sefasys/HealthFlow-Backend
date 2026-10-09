@@ -1,64 +1,49 @@
 package com.healthflow.domain.model.appointment;
 
-import com.healthflow.domain.exception.*;
+import com.healthflow.domain.exception.InvalidAvailabilityException;
 import com.healthflow.domain.model.user.staff.Clinician;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.UUID;
 
 public class Availability {
-
+  public static final Duration SLOT_DURATION = Duration.ofMinutes(15);
+  private final UUID uniqueId;
   private final Clinician clinician;
   private final LocalDate date;
   private final TimeRange timeRange;
 
-  public Availability(Clinician clinician, LocalDate date, TimeRange timeRange) {
-    if (clinician == null) {
-      throw new InvalidClinicianException("Clinician can not be null.");
+  public Availability(UUID uniqueId, Clinician clinician, LocalDate date, TimeRange timeRange) {
+    if (uniqueId == null || clinician == null || date == null || timeRange == null) {
+      throw new InvalidAvailabilityException("ID, clinician, date and time range are required.");
     }
-    if (date == null) {
-      throw new InvalidDateException("Date can not be null");
+    if (timeRange.start().getSecond() != 0 || timeRange.start().getNano() != 0
+        || timeRange.end().getSecond() != 0 || timeRange.end().getNano() != 0
+        || !timeRange.canBeSplitInto(SLOT_DURATION)) {
+      throw new InvalidAvailabilityException("Availability must contain whole 15-minute slots with minute precision.");
     }
-    if (timeRange == null) {
-      throw new InvalidTimeRangeException("Time range cen not be null");
-    }
-
+    this.uniqueId = uniqueId;
     this.clinician = clinician;
     this.date = date;
     this.timeRange = timeRange;
   }
 
-  public List<AppointmentSlot> generateSlots(
-      Duration slotDuration, List<Appointment> appointments) {
-    if (slotDuration == null) {
-      throw new InvalidDurationException("Duration can not be null.");
-    }
-    if (appointments == null) {
-      throw new InvalidAppointmentException("Appointments list can not be null.");
-    }
-
-    return timeRange.split(slotDuration).stream()
-        .map(
-            range -> {
-              boolean booked =
-                  appointments.stream()
-                      .filter(a -> a.getStatus() == AppointmentStatus.SCHEDULED)
-                      .anyMatch(a -> a.getDate().equals(date) && a.getTimeRange().overlaps(range));
-
-              return new AppointmentSlot(range, booked ? SlotStatus.BOOKED : SlotStatus.AVAILABLE);
-            })
-        .toList();
+  public boolean accepts(TimeRange requested) {
+    return requested != null && timeRange.contains(requested)
+        && requested.duration().equals(SLOT_DURATION)
+        && Duration.between(timeRange.start(), requested.start()).toNanos()
+            % SLOT_DURATION.toNanos() == 0;
   }
 
-  public Clinician getClinician() {
-    return clinician;
+  public boolean overlaps(Availability other) {
+    if (other == null) throw new InvalidAvailabilityException("Availability cannot be null.");
+    return clinician.getStaff().getUser().getUniqueId()
+        .equals(other.clinician.getStaff().getUser().getUniqueId())
+        && date.equals(other.date) && timeRange.overlaps(other.timeRange);
   }
 
-  public LocalDate getDate() {
-    return date;
-  }
-
-  public TimeRange getTimeRange() {
-    return timeRange;
-  }
+  public UUID getUniqueId() { return uniqueId; }
+  public Clinician getClinician() { return clinician; }
+  public LocalDate getDate() { return date; }
+  public TimeRange getTimeRange() { return timeRange; }
 }

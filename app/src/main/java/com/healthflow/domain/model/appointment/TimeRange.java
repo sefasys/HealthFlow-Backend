@@ -8,80 +8,67 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record TimeRange(LocalTime start, LocalTime end) {
-
   public TimeRange {
-    if (start == null || end == null) {
-      throw new InvalidTimeRangeException("Start and end time cannot be null");
-    }
-
-    if (!start.isBefore(end)) {
-      throw new InvalidTimeRangeException("Start time must be before end time");
+    if (start == null || end == null || !start.isBefore(end)) {
+      throw new InvalidTimeRangeException("Start and end must be set and start must precede end.");
     }
   }
 
   public boolean contains(LocalTime time) {
+    if (time == null) throw new InvalidTimeRangeException("Time cannot be null.");
     return !time.isBefore(start) && time.isBefore(end);
   }
 
   public boolean contains(TimeRange other) {
-    return !other.start().isBefore(start) && !other.end().isAfter(end);
+    requireRange(other);
+    return !other.start.isBefore(start) && !other.end.isAfter(end);
   }
 
   public boolean overlaps(TimeRange other) {
-    return start.isBefore(other.end()) && other.start().isBefore(end);
+    requireRange(other);
+    return start.isBefore(other.end) && other.start.isBefore(end);
   }
 
-  public Duration duration() {
-    return Duration.between(start, end);
-  }
+  public Duration duration() { return Duration.between(start, end); }
+
 
   public boolean isAlignedTo(Duration step) {
     validatePositiveDuration(step);
-
-    long minutes = step.toMinutes();
-
-    return start.getMinute() % minutes == 0
-        && end.getMinute() % minutes == 0
-        && start.getSecond() == 0
-        && end.getSecond() == 0;
+    if (step.compareTo(Duration.ofDays(1)) > 0) return false;
+    long nanos = step.toNanos();
+    return start.toNanoOfDay() % nanos == 0 && end.toNanoOfDay() % nanos == 0;
   }
 
-  public boolean canBeSplitInto(Duration slotDuration) {
-    validatePositiveDuration(slotDuration);
-
-    long rangeMinutes = duration().toMinutes();
-    long slotMinutes = slotDuration.toMinutes();
-
-    return rangeMinutes % slotMinutes == 0;
+  public boolean canBeSplitInto(Duration step) {
+    validatePositiveDuration(step);
+    if (step.compareTo(duration()) > 0) return false;
+    return duration().toNanos() % step.toNanos() == 0;
   }
 
-  public List<TimeRange> split(Duration slotDuration) {
-    validatePositiveDuration(slotDuration);
-
-    if (!canBeSplitInto(slotDuration)) {
-      throw new InvalidTimeRangeException(
-          "Time range cannot be evenly split into given slot duration");
+  public List<TimeRange> split(Duration step) {
+    if (!canBeSplitInto(step)) {
+      throw new InvalidTimeRangeException("Time range must be evenly divisible by slot duration.");
     }
+    long count = duration().toNanos() / step.toNanos();
 
-    List<TimeRange> slots = new ArrayList<>();
-
-    LocalTime current = start;
-
-    while (current.isBefore(end)) {
-      LocalTime slotEnd = current.plus(slotDuration);
-
-      slots.add(new TimeRange(current, slotEnd));
-
-      current = slotEnd;
+    if (count > 86400) throw new InvalidDurationException("Too many slots in a single range.");
+    List<TimeRange> ranges = new ArrayList<>();
+    LocalTime cursor = start;
+    for (long i = 0; i < count; i++) {
+      LocalTime next = cursor.plus(step);
+      ranges.add(new TimeRange(cursor, next));
+      cursor = next;
     }
-
-    return List.copyOf(slots);
+    return List.copyOf(ranges);
   }
 
   private static void validatePositiveDuration(Duration duration) {
     if (duration == null || duration.isZero() || duration.isNegative()) {
-
-      throw new InvalidDurationException("Duration must be positive");
+      throw new InvalidDurationException("Duration must be positive.");
     }
+  }
+
+  private static void requireRange(TimeRange range) {
+    if (range == null) throw new InvalidTimeRangeException("Time range cannot be null.");
   }
 }

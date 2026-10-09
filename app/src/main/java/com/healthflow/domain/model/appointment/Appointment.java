@@ -7,95 +7,88 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public class Appointment {
-
   private final UUID uniqueId;
-  private AppointmentStatus status;
+  private final UUID availabilityId;
   private final Patient patient;
   private final Clinician clinician;
-  private final TimeRange timeRange;
   private final LocalDate date;
+  private final TimeRange timeRange;
+  private AppointmentStatus status;
 
-  public Appointment(
-      UUID uniqueId,
-      Patient patient,
-      Clinician clinician,
-      LocalDate date,
-      TimeRange timeRange) {
-
-    if (uniqueId == null) {
-      throw new InvalidAppointmentException("Unique ID cannot be null");
+  public Appointment(UUID uniqueId, Patient patient, Availability availability, TimeRange range) {
+    this(uniqueId, patient, requireAvailability(availability).getClinician(),
+        availability.getUniqueId(), availability.getDate(), range, AppointmentStatus.SCHEDULED);
+    if (!availability.accepts(range)) {
+      throw new InvalidAppointmentException("Requested range must match one availability slot.");
     }
-    if (patient == null) {
-      throw new InvalidAppointmentException("Patient cannot be null");
-    }
+  }
 
-    if (clinician == null) {
-      throw new InvalidAppointmentException("Clinician cannot be null");
+  private Appointment(UUID uniqueId, Patient patient, Clinician clinician, UUID availabilityId,
+      LocalDate date, TimeRange timeRange, AppointmentStatus status) {
+    if (uniqueId == null || patient == null || clinician == null || availabilityId == null
+        || date == null || timeRange == null || status == null) {
+      throw new InvalidAppointmentException("Appointment fields cannot be null.");
     }
-
-    if (date == null) {
-      throw new InvalidAppointmentException("Date cannot be null");
+    if (!timeRange.duration().equals(Availability.SLOT_DURATION)
+        || timeRange.start().getSecond() != 0 || timeRange.start().getNano() != 0) {
+      throw new InvalidAppointmentException("Appointment must be a whole 15-minute slot.");
     }
-
-    if (timeRange == null) {
-      throw new InvalidAppointmentException("Time range cannot be null");
+    if (patient.getUser().getUniqueId().equals(clinician.getStaff().getUser().getUniqueId())) {
+      throw new InvalidAppointmentException("A clinician cannot be the patient in the same appointment.");
     }
-
     this.uniqueId = uniqueId;
     this.patient = patient;
     this.clinician = clinician;
+    this.availabilityId = availabilityId;
     this.date = date;
     this.timeRange = timeRange;
-    this.status = AppointmentStatus.SCHEDULED;
-
+    this.status = status;
   }
 
-
-  public Patient getPatient() {
-    return patient;
+  public static Appointment restore(UUID id, Patient patient, Clinician clinician,
+      UUID availabilityId, LocalDate date, TimeRange range, AppointmentStatus status) {
+    return new Appointment(id, patient, clinician, availabilityId, date, range, status);
   }
 
-  public UUID getUniqueId() {
-    return uniqueId;
+  public boolean involvesUser(UUID userId) {
+    return patient.getUser().getUniqueId().equals(userId)
+        || clinician.getStaff().getUser().getUniqueId().equals(userId);
   }
 
-  public Clinician getClinician() {
-    return clinician;
-  }
-
-  public LocalDate getDate() {
-    return date;
-  }
-
-  public TimeRange getTimeRange() {
-    return timeRange;
-  }
-
-  public AppointmentStatus getStatus() {
-    return status;
-  }
+  public boolean blocksSlot() { return status != AppointmentStatus.CANCELLED; }
 
   public void cancel() {
-    if (status == AppointmentStatus.COMPLETED) {
-      throw new InvalidAppointmentException("Completed appointment cannot be cancelled");
-    }
-
+    if (status == AppointmentStatus.CANCELLED) return;
+    requireScheduled();
     status = AppointmentStatus.CANCELLED;
   }
 
   public void complete() {
-    if (status != AppointmentStatus.SCHEDULED) {
-      throw new InvalidAppointmentException("Only scheduled appointments can be completed");
-    }
-
+    requireScheduled();
     status = AppointmentStatus.COMPLETED;
   }
 
   public void markAsNoShow() {
-    if (status != AppointmentStatus.SCHEDULED) {
-      throw new InvalidAppointmentException("Only scheduled appointments can be marked as no-show");
-    }
-
+    requireScheduled();
     status = AppointmentStatus.NO_SHOW;
   }
+
+  private void requireScheduled() {
+    if (status != AppointmentStatus.SCHEDULED) {
+      throw new InvalidAppointmentException("Only a scheduled appointment can change state.");
+    }
+  }
+
+  private static Availability requireAvailability(Availability availability) {
+    if (availability == null) throw new InvalidAppointmentException("Availability is required.");
+    return availability;
+  }
+
+  public UUID getUniqueId() { return uniqueId; }
+  public UUID getAvailabilityId() { return availabilityId; }
+  public Patient getPatient() { return patient; }
+  public Clinician getClinician() { return clinician; }
+  public LocalDate getDate() { return date; }
+  public TimeRange getTimeRange() { return timeRange; }
+  public AppointmentStatus getStatus() { return status; }
 }

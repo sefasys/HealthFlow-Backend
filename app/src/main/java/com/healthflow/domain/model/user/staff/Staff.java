@@ -53,4 +53,5 @@ public class Staff {
   public User getUser() {
     return user;
   }
+
 }

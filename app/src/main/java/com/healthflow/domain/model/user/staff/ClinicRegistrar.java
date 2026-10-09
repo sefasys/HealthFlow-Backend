@@ -98,4 +98,8 @@ public class ClinicRegistrar {
     appointments.set(index, newAppointment);
     oldAppointment.getPatient().updateAppointment(oldAppointment, newAppointment);
   }
+
+    public Staff getStaff() {
+        return staff;
+    }
 }

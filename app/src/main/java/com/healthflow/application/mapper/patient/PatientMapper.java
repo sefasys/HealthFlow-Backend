@@ -1,4 +1,4 @@
-package com.healthflow.application.mapper;
+package com.healthflow.application.mapper.patient;
 
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.application.dto.patient.PatientResponseDto;

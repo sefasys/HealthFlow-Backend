@@ -12,6 +12,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
+/** Pure booking policy. Does not load, save or mutate repository collections. */
 public class AppointmentScheduler {
   public static final ZoneId BUSINESS_ZONE = ZoneId.of("Europe/Istanbul");
   private final Clock clock;
@@ -23,8 +24,10 @@ public class AppointmentScheduler {
     this.clock = clock.withZone(BUSINESS_ZONE);
   }
 
-  /** existing must include both participants' appointments in either role. */
-  public Appointment schedule(UUID id, Patient patient, Availability availability,
+  /** The application resolves patient from the authenticated account.
+   * existing must include both participants' appointments in either role.
+   */
+  public Appointment bookAppointment(UUID id, Patient patient, Availability availability,
       TimeRange range, List<Appointment> existing) {
     validateContext(existing);
     if (existing.stream().anyMatch(a -> a.getUniqueId().equals(id))) {

@@ -4,6 +4,7 @@ import com.healthflow.domain.exception.InvalidSlotException;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/** Computed view of a slot, not an independently persisted booking. */
 public record AppointmentSlot(
     UUID availabilityId, LocalDate date, TimeRange timeRange, SlotStatus status) {
   public AppointmentSlot {

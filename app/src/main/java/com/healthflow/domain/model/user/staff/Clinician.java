@@ -2,6 +2,7 @@ package com.healthflow.domain.model.user.staff;
 
 import com.healthflow.domain.exception.InvalidStaffException;
 
+/** Clinician profile. Availability records are queried through a repository. */
 public class Clinician {
   private final Staff staff;
 

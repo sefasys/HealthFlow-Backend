@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Same-day half-open interval [start, end); midnight-crossing ranges are unsupported. */
 public record TimeRange(LocalTime start, LocalTime end) {
   public TimeRange {
     if (start == null || end == null || !start.isBefore(end)) {
@@ -31,7 +32,7 @@ public record TimeRange(LocalTime start, LocalTime end) {
 
   public Duration duration() { return Duration.between(start, end); }
 
-
+  /** Alignment relative to midnight, without truncating seconds or hours. */
   public boolean isAlignedTo(Duration step) {
     validatePositiveDuration(step);
     if (step.compareTo(Duration.ofDays(1)) > 0) return false;
@@ -50,7 +51,7 @@ public record TimeRange(LocalTime start, LocalTime end) {
       throw new InvalidTimeRangeException("Time range must be evenly divisible by slot duration.");
     }
     long count = duration().toNanos() / step.toNanos();
-
+    // Avoid unbounded allocations for accidental nanosecond-sized slots.
     if (count > 86400) throw new InvalidDurationException("Too many slots in a single range.");
     List<TimeRange> ranges = new ArrayList<>();
     LocalTime cursor = start;

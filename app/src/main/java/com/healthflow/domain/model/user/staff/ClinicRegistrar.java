@@ -2,6 +2,7 @@ package com.healthflow.domain.model.user.staff;
 
 import com.healthflow.domain.exception.InvalidStaffException;
 
+/** Registrar profile. Booking orchestration belongs to application services. */
 public class ClinicRegistrar {
   private final Staff staff;
 

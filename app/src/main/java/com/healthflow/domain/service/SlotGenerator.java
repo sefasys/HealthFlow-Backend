@@ -6,6 +6,7 @@ import com.healthflow.domain.model.appointment.*;
 import java.util.List;
 import java.util.UUID;
 
+/** Computes occupancy. Future-time/active-staff filtering belongs to the application query. */
 public class SlotGenerator {
   public List<AppointmentSlot> generateSlots(Availability availability,
       List<Appointment> appointments) {
@@ -13,6 +14,8 @@ public class SlotGenerator {
     if (appointments == null || appointments.stream().anyMatch(a -> a == null)) {
       throw new InvalidAppointmentException("Appointment context is required and cannot contain null.");
     }
+    // Patient-facing slot generation exposes only registrar-published availability.
+    if (!availability.isPublished()) return List.of();
     UUID clinicianUserId = availability.getClinician().getStaff().getUser().getUniqueId();
     return availability.getTimeRange().split(Availability.SLOT_DURATION).stream()
         .map(range -> {

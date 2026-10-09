@@ -4,6 +4,7 @@ import com.healthflow.domain.exception.InvalidBloodTypeException;
 import com.healthflow.domain.exception.InvalidPatientException;
 import com.healthflow.domain.model.user.User;
 
+/** Patient profile. Appointments are queried through a repository. */
 public class Patient {
   private final User user;
   private BloodType bloodType;

@@ -15,9 +15,13 @@ public class Appointment {
   private final TimeRange timeRange;
   private AppointmentStatus status;
 
+  /** Local invariants only. Cross-record booking checks belong to AppointmentScheduler. */
   public Appointment(UUID uniqueId, Patient patient, Availability availability, TimeRange range) {
     this(uniqueId, patient, requireAvailability(availability).getClinician(),
         availability.getUniqueId(), availability.getDate(), range, AppointmentStatus.SCHEDULED);
+    if (!availability.isPublished()) {
+      throw new InvalidAppointmentException("Appointments require published availability.");
+    }
     if (!availability.accepts(range)) {
       throw new InvalidAppointmentException("Requested range must match one availability slot.");
     }
@@ -45,6 +49,7 @@ public class Appointment {
     this.status = status;
   }
 
+  /** Repository rehydration: preserve stored state, including historical appointments. */
   public static Appointment restore(UUID id, Patient patient, Clinician clinician,
       UUID availabilityId, LocalDate date, TimeRange range, AppointmentStatus status) {
     return new Appointment(id, patient, clinician, availabilityId, date, range, status);

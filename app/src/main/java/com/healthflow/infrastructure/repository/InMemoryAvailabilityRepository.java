@@ -23,6 +23,11 @@ public class InMemoryAvailabilityRepository implements IAvailabilityRepository {
     }
 
     @Override
+    public List<Availability> getAvailabilities(){
+        return List.copyOf(availabilityMap.values());
+    }
+
+    @Override
     public Optional<Availability> findById(UUID availabilityId) {
         return Optional.ofNullable(availabilityMap.get(availabilityId));
     }

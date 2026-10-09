@@ -5,6 +5,8 @@ import com.healthflow.domain.model.appointment.Availability;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface AvailabilityMapper {
 
@@ -13,4 +15,7 @@ public interface AvailabilityMapper {
     @Mapping(target = "endTime", source = "timeRange.end")
     AvailabilityResponseDto responseDto(Availability availability);
 
+    List<AvailabilityResponseDto> toResponseDtoList(
+            List<Availability> availabilities
+    );
 }

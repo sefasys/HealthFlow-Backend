@@ -69,7 +69,7 @@ public class ClinicRegistrarService {
         }
         ClinicRegistrar clinicRegistrar = clinicRegistrarRepository
                 .findByUniqueId(uniqueId)
-                .orElseThrow(() -> new ClinicRegistrarNotfoundException("Clinic registrar not found with unique id: " + uniqueId));
+                .orElseThrow(() -> new ClinicRegistrarNotFoundException("Clinic registrar not found with unique id: " + uniqueId));
 
         return clinicRegistrarMapper.responseDto(clinicRegistrar);
     }
@@ -82,7 +82,7 @@ public class ClinicRegistrarService {
         ClinicRegistrar clinicRegistrar = clinicRegistrarRepository
                 .findByNationalId(nationalId)
                 .orElseThrow(
-                        () -> new ClinicRegistrarNotfoundException("Clinic registrar not found with this national id."));
+                        () -> new ClinicRegistrarNotFoundException("Clinic registrar not found with this national id."));
 
         return clinicRegistrarMapper.responseDto(clinicRegistrar);
     }
@@ -100,7 +100,7 @@ public class ClinicRegistrarService {
         ClinicRegistrar clinicRegistrar =
                 clinicRegistrarRepository
                         .findByUniqueId(uniqueId)
-                        .orElseThrow(() -> new ClinicRegistrarNotfoundException("Clinic registrar could not be found."));
+                        .orElseThrow(() -> new ClinicRegistrarNotFoundException("Clinic registrar could not be found."));
 
         if (requestDto.email() != null) {
             clinicRegistrar.getStaff().getUser().updateEmail(requestDto.email());

@@ -12,6 +12,8 @@ public interface IAvailabilityRepository {
 
     Availability save(Availability availability);
 
+    List<Availability> getAvailabilities();
+
     Optional<Availability> findById(UUID availabilityId);
 
     List<Availability> findByClinicianId(UUID clinicianId);

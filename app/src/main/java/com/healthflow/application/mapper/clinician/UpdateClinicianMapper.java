@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface UpdateClinicianResponseMapper {
+public interface UpdateClinicianMapper {
 
     @Mapping(source = "staff.user.uniqueId", target = "id")
     @Mapping(source = "staff.user.name", target = "name")

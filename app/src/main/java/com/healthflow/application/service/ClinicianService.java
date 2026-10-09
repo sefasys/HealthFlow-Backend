@@ -6,7 +6,7 @@ import com.healthflow.application.exception.ClinicianNotFoundException;
 import com.healthflow.application.exception.InvalidSearchQueryException;
 import com.healthflow.application.exception.InvalidUpdateRequestException;
 import com.healthflow.application.mapper.clinician.ClinicianMapper;
-import com.healthflow.application.mapper.clinician.UpdateClinicianResponseMapper;
+import com.healthflow.application.mapper.clinician.UpdateClinicianMapper;
 import com.healthflow.domain.exception.InvalidNationalIdException;
 import com.healthflow.domain.exception.InvalidUniqueIdException;
 import com.healthflow.domain.factory.StaffFactory;
@@ -29,13 +29,13 @@ public class ClinicianService {
     private final UserFactory userFactory;
     private final StaffFactory staffFactory;
     private final ClinicianMapper clinicianMapper;
-    private final UpdateClinicianResponseMapper updateClinicianResponseMapper;
+    private final UpdateClinicianMapper updateClinicianMapper;
 
-    public ClinicianService(IClinicianRepository clinicianRepository, UserFactory userFactory, ClinicianMapper clinicianMapper, UpdateClinicianResponseMapper updateClinicianResponseMapper, StaffFactory staffFactory){
+    public ClinicianService(IClinicianRepository clinicianRepository, UserFactory userFactory, ClinicianMapper clinicianMapper, UpdateClinicianMapper updateClinicianMapper, StaffFactory staffFactory){
         this.clinicianRepository = clinicianRepository;
         this.userFactory = userFactory;
         this.clinicianMapper = clinicianMapper;
-        this.updateClinicianResponseMapper = updateClinicianResponseMapper;
+        this.updateClinicianMapper = updateClinicianMapper;
         this.staffFactory = staffFactory;
     }
 
@@ -116,7 +116,7 @@ public class ClinicianService {
         }
         clinicianRepository.update(clinician);
 
-        return updateClinicianResponseMapper.responseDto(clinician);
+        return updateClinicianMapper.responseDto(clinician);
 
 
     }

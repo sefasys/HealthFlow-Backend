@@ -94,6 +94,19 @@ public class User {
             throw new InvalidUserException("User role cannot be null.");
         }
 
+        boolean conflictingStaffRole =
+                (role == UserRole.CLINICIAN
+                        && userRoleList.contains(UserRole.CLINIC_REGISTRAR))
+                        ||
+                        (role == UserRole.CLINIC_REGISTRAR
+                                && userRoleList.contains(UserRole.CLINICIAN));
+
+        if (conflictingStaffRole) {
+            throw new IncompatibleUserRoleException(
+                    "A user cannot be both a clinician and a clinic registrar."
+            );
+        }
+
         if (!userRoleList.contains(role)) {
             userRoleList.add(role);
         }

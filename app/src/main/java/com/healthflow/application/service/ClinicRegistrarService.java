@@ -22,41 +22,55 @@ import java.util.UUID;
 public class ClinicRegistrarService {
 
     private final IClinicRegistrarRepository clinicRegistrarRepository;
-    private final UserFactory userFactory;
+    private final UserService userService;
     private final StaffFactory staffFactory;
     private final ClinicRegistrarMapper clinicRegistrarMapper;
 
 
-    public ClinicRegistrarService(IClinicRegistrarRepository clinicRegistrarRepository, UserFactory userFactory, StaffFactory staffFactory, ClinicRegistrarMapper clinicRegistrarMapper) {
+    public ClinicRegistrarService(IClinicRegistrarRepository clinicRegistrarRepository, UserService userService, StaffFactory staffFactory, ClinicRegistrarMapper clinicRegistrarMapper) {
         this.clinicRegistrarRepository = clinicRegistrarRepository;
-        this.userFactory = userFactory;
+        this.userService = userService;
         this.staffFactory = staffFactory;
         this.clinicRegistrarMapper = clinicRegistrarMapper;
 
     }
 
-    public ClinicRegistrarResponseDto createClinicRegistrar(CreateClinicRegistrarRequestDto requestDto) {
-        ClinicRegistrar clinicRegistrar;
+    public ClinicRegistrarResponseDto createClinicRegistrar(
+            CreateClinicRegistrarRequestDto requestDto
+    ) {
         NationalId nationalId = new NationalId(requestDto.nationalId());
-        if(clinicRegistrarRepository.findByNationalId(nationalId).isPresent()){
-            throw new ClinicianAlreadyExistsException("There is already a clinic registrar with the same National ID.");
+
+        if (clinicRegistrarRepository.findByNationalId(nationalId).isPresent()) {
+            throw new ClinicRegistrarAlreadyExistsException(
+                    "There is already a clinic registrar with the same national ID."
+            );
         }
-        User user = userFactory.createUser(
+
+        User user = userService.resolveUser(
                 nationalId,
                 requestDto.name(),
                 requestDto.surname(),
                 requestDto.birthDate(),
                 requestDto.email(),
                 requestDto.phoneNumber(),
-                UserRole.CLINIC_REGISTRAR);
+                UserRole.CLINIC_REGISTRAR
+        );
+
         Staff staff = staffFactory.createStaff(
                 requestDto.hireDate(),
                 requestDto.employmentStatus(),
-                user);
-        clinicRegistrar = new ClinicRegistrar(staff);//Buradaki hatayı nasıl handle edebiliriz bu kısımla ilgilenmek gerekiyor.
+                user
+        );
+
+        ClinicRegistrar clinicRegistrar = new ClinicRegistrar(staff);
+
+        user.addRole(UserRole.CLINIC_REGISTRAR);
+
+        userService.saveUser(user);
         clinicRegistrarRepository.addClinicRegistrar(clinicRegistrar);
+
         return clinicRegistrarMapper.responseDto(clinicRegistrar);
-    }//Global Exception kısmında clinician tarafını da ekle. Bir de Presentation - Application katmanı ayrımlarını nasıl yapmalıyız?
+    }
 
     public List<ClinicRegistrarResponseDto> getClinicRegistrars() {
         return clinicRegistrarRepository.getClinicRegistrars().stream().map(clinicRegistrarMapper::responseDto).toList();

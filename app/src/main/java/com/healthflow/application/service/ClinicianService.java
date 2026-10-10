@@ -25,40 +25,54 @@ import java.util.UUID;
 public class ClinicianService {
 
     private final IClinicianRepository clinicianRepository;
-    private final UserFactory userFactory;
+    private final UserService userService;
     private final StaffFactory staffFactory;
     private final ClinicianMapper clinicianMapper;
 
-    public ClinicianService(IClinicianRepository clinicianRepository, UserFactory userFactory, ClinicianMapper clinicianMapper, StaffFactory staffFactory){
+    public ClinicianService(IClinicianRepository clinicianRepository, UserService userService, ClinicianMapper clinicianMapper, StaffFactory staffFactory){
         this.clinicianRepository = clinicianRepository;
-        this.userFactory = userFactory;
+        this.userService = userService;
         this.clinicianMapper = clinicianMapper;
         this.staffFactory = staffFactory;
     }
 
 
-    public ClinicianResponseDto createClinician(CreateClinicianRequestDto requestDto) {
-        Clinician clinician;
+    public ClinicianResponseDto createClinician(
+            CreateClinicianRequestDto requestDto
+    ) {
         NationalId nationalId = new NationalId(requestDto.nationalId());
-        if(clinicianRepository.findByNationalId(nationalId).isPresent()){
-            throw new ClinicianAlreadyExistsException("There is already a clinician with the same National ID.");
+
+        if (clinicianRepository.findByNationalId(nationalId).isPresent()) {
+            throw new ClinicianAlreadyExistsException(
+                    "There is already a clinician with the same national ID."
+            );
         }
-        User user = userFactory.createUser(
+
+        User user = userService.resolveUser(
                 nationalId,
                 requestDto.name(),
                 requestDto.surname(),
                 requestDto.birthDate(),
                 requestDto.email(),
                 requestDto.phoneNumber(),
-                UserRole.CLINICIAN);
+                UserRole.CLINICIAN
+        );
+
         Staff staff = staffFactory.createStaff(
                 requestDto.hireDate(),
                 requestDto.employmentStatus(),
-                user);
-        clinician = new Clinician(staff);
+                user
+        );
+
+        Clinician clinician = new Clinician(staff);
+
+        user.addRole(UserRole.CLINICIAN);
+
+        userService.saveUser(user);
         clinicianRepository.addClinician(clinician);
+
         return clinicianMapper.responseDto(clinician);
-    }//Global Exception kısmında clinician tarafını da ekle. Bir de Presentation - Application katmanı ayrımlarını nasıl yapmalıyız?
+    }
 
 
 

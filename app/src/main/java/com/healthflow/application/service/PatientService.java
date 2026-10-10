@@ -8,7 +8,6 @@ import com.healthflow.application.exception.PatientNotFoundException;
 import com.healthflow.application.mapper.patient.PatientMapper;
 import com.healthflow.domain.exception.InvalidNationalIdException;
 import com.healthflow.domain.exception.InvalidUniqueIdException;
-import com.healthflow.domain.factory.UserFactory;
 import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.User;
 import com.healthflow.domain.model.user.UserRole;
@@ -24,36 +23,42 @@ public class PatientService {
 
     // Şu anlık @Autowired kullanmamıza gerek yok çünkü tek constructorlar üzerinden ilerliyoruz.
     private final IPatientRepository patientRepository;
-    private final UserFactory userFactory;
+    private final UserService userService;
     private final PatientMapper patientMapper;
 
 
-    public PatientService(IPatientRepository patientRepository, UserFactory userFactory, PatientMapper patientMapper){
+    public PatientService(IPatientRepository patientRepository, UserService userService, PatientMapper patientMapper){
         this.patientRepository = patientRepository;
-        this.userFactory = userFactory;
+        this.userService = userService;
         this.patientMapper = patientMapper;
     }
 
-    public PatientResponseDto createPatient(CreatePatientRequestDto requestDto){
-        Patient patient;
+    public PatientResponseDto createPatient(CreatePatientRequestDto requestDto) {
         NationalId nationalId = new NationalId(requestDto.nationalId());
+
         if (patientRepository.findByNationalId(nationalId).isPresent()) {
             throw new PatientAlreadyExistsException(
-                    "There is already a user with the same national identity number.");
+                    "There is already a patient with the same national ID."
+            );
         }
 
-            User user =
-                    userFactory.createUser(
-                            nationalId,
-                            requestDto.name(),
-                            requestDto.surname(),
-                            requestDto.birthDate(),
-                            requestDto.email(),
-                            requestDto.phoneNumber(),
-                            UserRole.PATIENT);
-            patient = new Patient(user);
+        User user = userService.resolveUser(
+                nationalId,
+                requestDto.name(),
+                requestDto.surname(),
+                requestDto.birthDate(),
+                requestDto.email(),
+                requestDto.phoneNumber(),
+                UserRole.PATIENT
+        );
 
+        Patient patient = new Patient(user);
+
+        user.addRole(UserRole.PATIENT);
+
+        userService.saveUser(user);
         patientRepository.addPatient(patient);
+
         return patientMapper.responseDto(patient);
     }
 

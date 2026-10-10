@@ -4,52 +4,64 @@ import com.healthflow.domain.model.appointment.Appointment;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.domain.model.user.staff.Clinician;
 import com.healthflow.port.repository.IAppointmentRepository;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.util.*;
+
+@Repository
 public class InMemoryAppointmentRepository implements IAppointmentRepository {
-  List<Appointment> appointments;
 
-  public InMemoryAppointmentRepository(List<Appointment> appointments) {
-    if (appointments == null) throw new IllegalArgumentException("Appointments can not be null");
+    private final Map<UUID, Appointment> appointmentMap = new HashMap<>();
 
-    this.appointments =
-        new ArrayList<>(
-            appointments); // Bu tarz işlemler de this.appointments = appointments; kullanılmaz bu
-    // tehlikelidir ve dışarıdan birisi falan değiştirebilir.
-    // Onun yerine this.appointments = new ArrayList<>(appointments); şeklinde yazılabilir.
-  }
+    @Override
+    public Appointment save(Appointment appointment) {
+        appointmentMap.put(appointment.getUniqueId(), appointment);
+        return appointment;
+    }
 
-  @Override
-  public void addAppointment(Appointment appointment) {
-    appointments.add(appointment);
-  }
+    @Override
+    public Optional<Appointment> findById(UUID appointmentId) {
+        return Optional.ofNullable(appointmentMap.get(appointmentId));
+    }
 
-  @Override
-  public Optional<Appointment> findByUniqueId(UUID uniqueId) {
-    return appointments.stream()
-        .filter(appointment -> appointment.getUniqueId().equals(uniqueId))
-        .findFirst();
-  }
+    @Override
+    public List<Appointment> findByPatientId(UUID patientUserId) {
+        return appointmentMap.values().stream()
+                .filter(appointment ->
+                        appointment.getPatient()
+                                .getUser()
+                                .getUniqueId()
+                                .equals(patientUserId)
+                )
+                .toList();
+    }
 
-  @Override
-  public List<Appointment> getAppointments() {
-    return appointments.stream().toList();
-  }
+    @Override
+    public List<Appointment> findByClinicianIdAndDate(
+            UUID clinicianUserId,
+            LocalDate date
+    ) {
+        return appointmentMap.values().stream()
+                .filter(appointment ->
+                        appointment.getClinician()
+                                .getStaff()
+                                .getUser()
+                                .getUniqueId()
+                                .equals(clinicianUserId)
+                )
+                .filter(appointment -> appointment.getDate().equals(date))
+                .toList();
+    }
 
-  @Override
-  public List<Appointment> findByPatient(Patient patient) {
-    return appointments.stream()
-        .filter(appointment -> appointment.getPatient().equals(patient))
-        .toList();
-  }
-
-  @Override
-  public List<Appointment> findByClinician(Clinician clinician) {
-    return appointments.stream()
-        .filter(appointment -> appointment.getClinician().equals(clinician))
-        .toList();
-  }
+    @Override
+    public List<Appointment> findByUserIdAndDate(
+            UUID userId,
+            LocalDate date
+    ) {
+        return appointmentMap.values().stream()
+                .filter(appointment -> appointment.getDate().equals(date))
+                .filter(appointment -> appointment.involvesUser(userId))
+                .toList();
+    }
 }

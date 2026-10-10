@@ -3,18 +3,26 @@ package com.healthflow.port.repository;
 import com.healthflow.domain.model.appointment.Appointment;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.domain.model.user.staff.Clinician;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface IAppointmentRepository {
-  void addAppointment(Appointment appointment);
+    Appointment save(Appointment appointment);
 
-  Optional<Appointment> findByUniqueId(UUID uniqueId);
+    Optional<Appointment> findById(UUID appointmentId);
 
-  List<Appointment> getAppointments();
+    List<Appointment> findByPatientId(UUID patientUserId);
 
-  List<Appointment> findByPatient(Patient patient);
+    List<Appointment> findByClinicianIdAndDate(
+            UUID clinicianUserId,
+            LocalDate date
+    );
 
-  List<Appointment> findByClinician(Clinician clinician);
+    List<Appointment> findByUserIdAndDate(
+            UUID userId,
+            LocalDate date
+    );
 }

@@ -104,12 +104,21 @@ public class PatientService {
 
     public UpdatePatientResponseDto updatePatient(UUID uniqueId, UpdatePatientRequestDto updatePatientRequestDto){
         if (uniqueId == null) {
-            throw new InvalidUniqueIdException("Unique id can not be null.");
+            throw new InvalidUniqueIdException("Unique ID cannot be null.");
         }
 
-        if (updatePatientRequestDto.email() == null && updatePatientRequestDto.phoneNumber() == null && updatePatientRequestDto.bloodType() == null) {
+        if (updatePatientRequestDto == null) {
+            throw new InvalidUpdateRequestException(
+                    "Update request cannot be null."
+            );
+        }
 
-            throw new InvalidUpdateRequestException("At least one field must be provided for update.");
+        if (updatePatientRequestDto.email() == null
+                && updatePatientRequestDto.phoneNumber() == null
+                && updatePatientRequestDto.bloodType() == null) {
+            throw new InvalidUpdateRequestException(
+                    "At least one field must be provided for update."
+            );
         }
 
         Patient patient =

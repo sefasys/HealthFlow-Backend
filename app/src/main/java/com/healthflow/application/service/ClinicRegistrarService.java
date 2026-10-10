@@ -105,6 +105,12 @@ public class ClinicRegistrarService {
             throw new InvalidUniqueIdException("Unique id can not be null.");
         }
 
+        if (requestDto == null) {
+            throw new InvalidUpdateRequestException(
+                    "Update request cannot be null."
+            );
+        }
+
         if (requestDto.email() == null && requestDto.phoneNumber() == null) {
 
             throw new InvalidUpdateRequestException("At least one field must be provided for update.");

@@ -8,10 +8,8 @@ import java.util.UUID;
 
 public record BookAppointmentRequestDto(
         @NotNull
-        @NotBlank
         UUID availabilityId,
         @NotNull
-        @NotBlank
         LocalTime startTime
 ) {
 }

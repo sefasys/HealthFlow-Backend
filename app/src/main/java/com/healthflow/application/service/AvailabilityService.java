@@ -166,7 +166,7 @@ public class AvailabilityService {
                 );
 
         requireFutureStart(availability);
-        availability.publish(registrar, Instant.now());
+        availability.publish(registrar, Instant.now(clock));
 
         Availability savedAvailability =
                 availabilityRepository.save(availability);

@@ -19,7 +19,8 @@ public class InMemoryAvailabilityRepository implements IAvailabilityRepository {
 
     @Override
     public Availability save(Availability availability) {
-        return availabilityMap.put(availability.getUniqueId(), availability);
+        availabilityMap.put(availability.getUniqueId(), availability);
+        return availability;
     }
 
     @Override

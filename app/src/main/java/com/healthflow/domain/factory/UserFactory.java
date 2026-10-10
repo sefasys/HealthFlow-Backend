@@ -31,7 +31,7 @@ public class UserFactory {
             email,
             phoneNumber,
             new ArrayList<>());
-    user.setUserRole(userRole);
+    user.addRole(userRole);
     return user;
   }
 }

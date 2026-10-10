@@ -2,6 +2,7 @@ package com.healthflow.domain.model.user;
 
 import com.healthflow.domain.exception.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,7 +58,11 @@ public class User {
     this.birthDate = birthDate;
     this.email = email;
     this.phoneNumber = phoneNumber;
-    this.userRoleList = userRoleList;
+      this.userRoleList = new ArrayList<>();
+
+      for (UserRole role : userRoleList) {
+          addRole(role);
+      }
   }
 
   public UUID getUniqueId() {
@@ -84,13 +89,19 @@ public class User {
     return email;
   }
 
-  public void setUserRole(UserRole role) {
-    userRoleList.add(role);
-  }
+    public void addRole(UserRole role) {
+        if (role == null) {
+            throw new InvalidUserException("User role cannot be null.");
+        }
 
-  public List<UserRole> getUserRoleList() {
-    return userRoleList;
-  }
+        if (!userRoleList.contains(role)) {
+            userRoleList.add(role);
+        }
+    }
+
+    public List<UserRole> getUserRoleList() {
+        return List.copyOf(userRoleList);
+    } //Ctrl + Shift + F 'yi unutma baya işlevsel bir şey.
 
   public String getPhoneNumber() {
     return phoneNumber;

@@ -3,6 +3,8 @@ package com.healthflow.application.dto.patient;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+
 import java.time.LocalDate;
 
 public record CreatePatientRequestDto(
@@ -12,6 +14,6 @@ public record CreatePatientRequestDto(
     // gönderir. Domain value object’i dış API contract’ına sızdırmayalım.
     @NotBlank String name,
     @NotBlank String surname,
-    @NotNull LocalDate birthDate,
+    @NotNull @PastOrPresent LocalDate birthDate,
     @NotBlank @Email String email,
     @NotBlank String phoneNumber) {}

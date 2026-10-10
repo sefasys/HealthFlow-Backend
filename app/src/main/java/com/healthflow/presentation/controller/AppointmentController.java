@@ -4,6 +4,7 @@ import com.healthflow.application.dto.appointment.AppointmentResponseDto;
 import com.healthflow.application.dto.appointment.AppointmentSlotResponseDto;
 import com.healthflow.application.dto.appointment.BookAppointmentRequestDto;
 import com.healthflow.application.service.AppointmentService;
+import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class AppointmentController {
     @ResponseStatus(HttpStatus.CREATED)
     public AppointmentResponseDto bookAppointment(
             @RequestParam("patientUserId") UUID patientUserId,
-            @RequestBody BookAppointmentRequestDto request
+            @RequestBody @Valid BookAppointmentRequestDto request
     ) {
         return appointmentService.bookAppointment(patientUserId, request);
     }

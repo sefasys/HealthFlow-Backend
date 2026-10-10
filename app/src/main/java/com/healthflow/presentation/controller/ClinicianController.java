@@ -33,7 +33,7 @@ public class ClinicianController {
 
     @GetMapping("/find-by-unique-id/{uniqueId}")
     @ResponseStatus(HttpStatus.OK)
-    public ClinicianResponseDto findClinicianByUniqueId(@Valid @PathVariable UUID uniqueId){
+    public ClinicianResponseDto findClinicianByUniqueId(@PathVariable UUID uniqueId){
         return clinicianService.findClinicianByUniqueId(uniqueId);
     }
 

@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.util.UUID;
 
 public record AppointmentResponseDto(
+        
         UUID uniqueId,
         UUID availabilityId,
         UUID patientId,

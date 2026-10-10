@@ -1,4 +1,6 @@
 package com.healthflow.application.dto.availability;
 
-public record RejectAvailabilityRequestDto(String reason) {
+import jakarta.validation.constraints.NotBlank;
+
+public record RejectAvailabilityRequestDto(@NotBlank String reason) {
 }

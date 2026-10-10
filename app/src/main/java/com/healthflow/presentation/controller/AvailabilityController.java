@@ -4,6 +4,7 @@ import com.healthflow.application.dto.availability.AvailabilityResponseDto;
 import com.healthflow.application.dto.availability.CreateAvailabilityRequestDto;
 import com.healthflow.application.dto.availability.RejectAvailabilityRequestDto;
 import com.healthflow.application.service.AvailabilityService;
+import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class AvailabilityController {
     @ResponseStatus(HttpStatus.CREATED)
     public AvailabilityResponseDto createAvailability(
             @RequestParam("clinicianId") UUID clinicianId,
-            @RequestBody CreateAvailabilityRequestDto request
+            @RequestBody @Valid CreateAvailabilityRequestDto request
     ) {
         return availabilityService.createAvailability(clinicianId, request);
     }
@@ -83,7 +84,7 @@ public class AvailabilityController {
     public AvailabilityResponseDto rejectAvailability(
             @PathVariable("availabilityId") UUID availabilityId,
             @RequestParam("registrarUserId") UUID registrarUserId,
-            @RequestBody RejectAvailabilityRequestDto request
+            @RequestBody @Valid RejectAvailabilityRequestDto request
     ) {
         return availabilityService.rejectAvailability(availabilityId, registrarUserId, request);
     }

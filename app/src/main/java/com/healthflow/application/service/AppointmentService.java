@@ -1,6 +1,7 @@
 package com.healthflow.application.service;
 
 import com.healthflow.application.dto.appointment.AppointmentResponseDto;
+import com.healthflow.application.dto.appointment.AppointmentSlotResponseDto;
 import com.healthflow.application.dto.appointment.BookAppointmentRequestDto;
 import com.healthflow.application.exception.AppointmentAccessDeniedException;
 import com.healthflow.application.exception.AppointmentNotFoundException;
@@ -10,9 +11,11 @@ import com.healthflow.application.mapper.appointment.AppointmentMapper;
 import com.healthflow.domain.exception.InvalidDateException;
 import com.healthflow.domain.exception.InvalidUniqueIdException;
 import com.healthflow.domain.model.appointment.Appointment;
+import com.healthflow.domain.model.appointment.AppointmentSlot;
 import com.healthflow.domain.model.appointment.Availability;
 import com.healthflow.domain.model.appointment.TimeRange;
 import com.healthflow.domain.model.user.patient.Patient;
+import com.healthflow.domain.model.user.staff.EmploymentStatus;
 import com.healthflow.domain.service.AppointmentScheduler;
 import com.healthflow.domain.service.SlotGenerator;
 import com.healthflow.port.repository.IAppointmentRepository;
@@ -21,6 +24,8 @@ import com.healthflow.port.repository.IPatientRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -214,5 +219,61 @@ public class AppointmentService {
                 appointmentRepository.save(appointment);
 
         return appointmentMapper.responseDto(savedAppointment);
+    }
+
+    public List<AppointmentSlotResponseDto> getAvailableSlots(
+            UUID availabilityId
+    ) {
+        if (availabilityId == null) {
+            throw new InvalidUniqueIdException(
+                    "Availability ID cannot be null."
+            );
+        }
+
+        Availability availability = availabilityRepository
+                .findById(availabilityId)
+                .orElseThrow(() ->
+                        new AvailabilityNotFoundException(
+                                "Availability could not be found."
+                        )
+                );
+
+        // Yayımlanmamış veya doktoru aktif olmayan kayıtları sunma.
+        if (!availability.isPublished()
+                || availability.getClinician().getStaff().getEmploymentStatus()
+                != EmploymentStatus.ACTIVE) {
+            return List.of();
+        }
+
+        UUID clinicianUserId = availability.getClinician()
+                .getStaff()
+                .getUser()
+                .getUniqueId();
+
+        // Doktorun hasta rolündeki randevularını da hesaba kat.
+        List<Appointment> appointments =
+                appointmentRepository.findByUserIdAndDate(
+                        clinicianUserId,
+                        availability.getDate()
+                );
+
+        List<AppointmentSlot> slots =
+                slotGenerator.generateSlots(availability, appointments);
+
+        LocalDateTime now = LocalDateTime.now(
+                ZoneId.of("Europe/Istanbul")
+        );
+
+        List<AppointmentSlot> availableSlots = slots.stream()
+                .filter(AppointmentSlot::isAvailable)
+                .filter(slot ->
+                        LocalDateTime.of(
+                                slot.date(),
+                                slot.timeRange().start()
+                        ).isAfter(now)
+                )
+                .toList();
+
+        return appointmentMapper.slotResponseDtoList(availableSlots);
     }
 }

@@ -1,22 +1,14 @@
 package com.healthflow.application.dto.clinicregistrar;
 
-import com.healthflow.domain.model.user.patient.BloodType;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record UpdateClinicRegistrarResponseDto(@NotBlank
-                                               UUID id,
-                                               @NotBlank
-                                               String name,
-                                               @NotBlank String surname,
-                                               @NotNull
-                                               LocalDate birthDate,
-                                               @NotBlank @Email
-                                               String email,
-                                               @NotBlank String phoneNumber,
-                                               @NotBlank BloodType bloodType) {
+public record UpdateClinicRegistrarResponseDto(
+        UUID id,
+        String name,
+        String surname,
+        LocalDate birthDate,
+        String email,
+        String phoneNumber
+) {
 }

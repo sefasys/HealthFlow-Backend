@@ -6,13 +6,15 @@ import com.healthflow.domain.exception.InvalidSlotException;
 import com.healthflow.domain.model.appointment.*;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.domain.model.user.staff.EmploymentStatus;
+import org.springframework.stereotype.Component;
+
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
-/** Pure booking policy. Does not load, save or mutate repository collections. */
+@Component
 public class AppointmentScheduler {
   public static final ZoneId BUSINESS_ZONE = ZoneId.of("Europe/Istanbul");
   private final Clock clock;

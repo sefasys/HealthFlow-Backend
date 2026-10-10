@@ -3,10 +3,12 @@ package com.healthflow.domain.service;
 import com.healthflow.domain.exception.InvalidAppointmentException;
 import com.healthflow.domain.exception.InvalidAvailabilityException;
 import com.healthflow.domain.model.appointment.*;
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 import java.util.UUID;
 
-/** Computes occupancy. Future-time/active-staff filtering belongs to the application query. */
+@Component
 public class SlotGenerator {
   public List<AppointmentSlot> generateSlots(Availability availability,
       List<Appointment> appointments) {

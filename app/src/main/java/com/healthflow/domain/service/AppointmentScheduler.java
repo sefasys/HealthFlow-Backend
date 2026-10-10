@@ -1,8 +1,8 @@
 package com.healthflow.domain.service;
 
+import com.healthflow.domain.exception.AppointmentConflictException;
 import com.healthflow.domain.exception.InvalidAppointmentException;
 import com.healthflow.domain.exception.InvalidAvailabilityException;
-import com.healthflow.domain.exception.InvalidSlotException;
 import com.healthflow.domain.model.appointment.*;
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.domain.model.user.staff.EmploymentStatus;
@@ -69,7 +69,7 @@ public class AppointmentScheduler {
       if (other.blocksSlot() && other.getDate().equals(candidate.getDate())
           && other.getTimeRange().overlaps(candidate.getTimeRange())
           && (other.involvesUser(patientId) || other.involvesUser(clinicianId))) {
-        throw new InvalidSlotException("Patient or clinician has an overlapping appointment.");
+        throw new AppointmentConflictException("Patient or clinician has an overlapping appointment.");
       }
     }
   }

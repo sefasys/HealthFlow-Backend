@@ -14,7 +14,6 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
-@Component
 public class AppointmentScheduler {
   public static final ZoneId BUSINESS_ZONE = ZoneId.of("Europe/Istanbul");
   private final Clock clock;

@@ -115,12 +115,11 @@ public class ClinicRegistrarService {
                         .findByUniqueId(uniqueId)
                         .orElseThrow(() -> new ClinicRegistrarNotFoundException("Clinic registrar could not be found."));
 
-        if (requestDto.email() != null) {
-            clinicRegistrar.getStaff().getUser().updateEmail(requestDto.email());
-        }
-        if (requestDto.phoneNumber() != null) {
-            clinicRegistrar.getStaff().getUser().updatePhoneNumber(requestDto.phoneNumber());
-        }
+        clinicRegistrar.getStaff().getUser().updateContactDetails(
+                requestDto.email(),
+                requestDto.phoneNumber()
+        );
+
         clinicRegistrarRepository.update(clinicRegistrar);
 
         return clinicRegistrarMapper.updateResponseDto(clinicRegistrar);

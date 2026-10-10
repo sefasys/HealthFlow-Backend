@@ -23,9 +23,9 @@ import com.healthflow.port.repository.IAvailabilityRepository;
 import com.healthflow.port.repository.IPatientRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +36,7 @@ public class AppointmentService {
 
     private final IAppointmentRepository appointmentRepository;
     private final IAvailabilityRepository availabilityRepository;
+    private final Clock clock;
     private final IPatientRepository patientRepository;
     private final AppointmentMapper appointmentMapper;
     private final AppointmentScheduler appointmentScheduler;
@@ -44,6 +45,7 @@ public class AppointmentService {
     public AppointmentService(
             IAppointmentRepository appointmentRepository,
             IAvailabilityRepository availabilityRepository,
+            Clock clock,
             IPatientRepository patientRepository,
             AppointmentMapper appointmentMapper,
             AppointmentScheduler appointmentScheduler,
@@ -51,6 +53,7 @@ public class AppointmentService {
     ) {
         this.appointmentRepository = appointmentRepository;
         this.availabilityRepository = availabilityRepository;
+        this.clock = clock;
         this.patientRepository = patientRepository;
         this.appointmentMapper = appointmentMapper;
         this.appointmentScheduler = appointmentScheduler;
@@ -260,9 +263,7 @@ public class AppointmentService {
         List<AppointmentSlot> slots =
                 slotGenerator.generateSlots(availability, appointments);
 
-        LocalDateTime now = LocalDateTime.now(
-                ZoneId.of("Europe/Istanbul")
-        );
+        LocalDateTime now = LocalDateTime.now(clock);
 
         List<AppointmentSlot> availableSlots = slots.stream()
                 .filter(AppointmentSlot::isAvailable)

@@ -119,12 +119,11 @@ public class ClinicianService {
                         .findByUniqueId(uniqueId)
                         .orElseThrow(() -> new ClinicianNotFoundException("Clinician could not be found."));
 
-        if (requestDto.email() != null) {
-            clinician.getStaff().getUser().updateEmail(requestDto.email());
-        }
-        if (requestDto.phoneNumber() != null) {
-            clinician.getStaff().getUser().updatePhoneNumber(requestDto.phoneNumber());
-        }
+        clinician.getStaff().getUser().updateContactDetails(
+                requestDto.email(),
+                requestDto.phoneNumber()
+        );
+
         clinicianRepository.update(clinician);
 
         return clinicianMapper.updateResponseDto(clinician);

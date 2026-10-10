@@ -117,12 +117,11 @@ public class PatientService {
                         .findByUniqueId(uniqueId)
                         .orElseThrow(() -> new PatientNotFoundException("Patient could not be found."));
 
-        if (updatePatientRequestDto.email() != null) {
-            patient.getUser().updateEmail(updatePatientRequestDto.email());
-        }
-        if (updatePatientRequestDto.phoneNumber() != null) {
-            patient.getUser().updatePhoneNumber(updatePatientRequestDto.phoneNumber());
-        }
+        patient.getUser().updateContactDetails(
+                updatePatientRequestDto.email(),
+                updatePatientRequestDto.phoneNumber()
+        );
+
         if (updatePatientRequestDto.bloodType() != null) {
             patient.updateBloodType(updatePatientRequestDto.bloodType());
         }

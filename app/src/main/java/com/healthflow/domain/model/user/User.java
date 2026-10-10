@@ -133,4 +133,25 @@ public class User {
     }
     this.phoneNumber = phoneNumber;
   }
+
+    public void updateContactDetails(String email, String phoneNumber) {
+        if (email != null && email.isBlank()) {
+            throw new InvalidEmailException("Email cannot be blank.");
+        }
+
+        if (phoneNumber != null && phoneNumber.isBlank()) {
+            throw new InvalidPhoneNumberException(
+                    "Phone number cannot be blank."
+            );
+        }
+
+        // Önce bütün kontroller, sonra atamalar.
+        if (email != null) {
+            this.email = email;
+        }
+
+        if (phoneNumber != null) {
+            this.phoneNumber = phoneNumber;
+        }
+    }
 }

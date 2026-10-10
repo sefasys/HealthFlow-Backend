@@ -8,19 +8,23 @@ import com.healthflow.application.exception.AvailabilityNotFoundException;
 import com.healthflow.application.exception.ClinicRegistrarNotFoundException;
 import com.healthflow.application.exception.ClinicianNotFoundException;
 import com.healthflow.application.mapper.availability.AvailabilityMapper;
+import com.healthflow.domain.exception.InvalidAvailabilityException;
 import com.healthflow.domain.exception.InvalidUniqueIdException;
 import com.healthflow.domain.model.appointment.Availability;
 import com.healthflow.domain.model.appointment.AvailabilityStatus;
 import com.healthflow.domain.model.appointment.TimeRange;
 import com.healthflow.domain.model.user.staff.ClinicRegistrar;
 import com.healthflow.domain.model.user.staff.Clinician;
+import com.healthflow.domain.model.user.staff.EmploymentStatus;
 import com.healthflow.port.repository.IAvailabilityRepository;
 import com.healthflow.port.repository.IClinicRegistrarRepository;
 import com.healthflow.port.repository.IClinicianRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,12 +33,14 @@ public class AvailabilityService {
 
     private final IAvailabilityRepository availabilityRepository;
     private final AvailabilityMapper availabilityMapper;
+    private final Clock clock;
     private final IClinicianRepository clinicianRepository;
     private final IClinicRegistrarRepository clinicRegistrarRepository;
 
-    public AvailabilityService(IAvailabilityRepository availabilityRepository, AvailabilityMapper availabilityMapper, IClinicianRepository clinicianRepository, IClinicRegistrarRepository clinicRegistrarRepository){
+    public AvailabilityService(IAvailabilityRepository availabilityRepository, AvailabilityMapper availabilityMapper, Clock clock, IClinicianRepository clinicianRepository, IClinicRegistrarRepository clinicRegistrarRepository){
         this.availabilityRepository = availabilityRepository;
         this.availabilityMapper = availabilityMapper;
+        this.clock = clock;
         this.clinicianRepository = clinicianRepository;
         this.clinicRegistrarRepository = clinicRegistrarRepository;
     }
@@ -48,6 +54,12 @@ public class AvailabilityService {
                 .orElseThrow(() ->
                         new ClinicianNotFoundException("Clinician could not be found.")
                 );
+        if (clinician.getStaff().getEmploymentStatus()
+                != EmploymentStatus.ACTIVE) {
+            throw new InvalidAvailabilityException(
+                    "Only active clinicians can create availability."
+            );
+        }
 
         // 2. İstenen zaman aralığını ve yeni availability'yi oluştur.
         TimeRange timeRange = new TimeRange(
@@ -61,6 +73,7 @@ public class AvailabilityService {
                 request.date(),
                 timeRange
         );
+        requireFutureStart(availability);
 
         // 3. Doktorun aynı günkü kayıtlarında çakışma ara.
         List<Availability> existingAvailabilities =
@@ -86,6 +99,19 @@ public class AvailabilityService {
                 availabilityRepository.save(availability);
 
         return availabilityMapper.responseDto(savedAvailability);
+    }
+
+    private void requireFutureStart(Availability availability) {
+        LocalDateTime start = LocalDateTime.of(
+                availability.getDate(),
+                availability.getTimeRange().start()
+        );
+
+        if (!start.isAfter(LocalDateTime.now(clock))) {
+            throw new InvalidAvailabilityException(
+                    "Availability start must be in the future."
+            );
+        }
     }
 
     public List<AvailabilityResponseDto> getAvailabilities(){
@@ -139,6 +165,7 @@ public class AvailabilityService {
                         )
                 );
 
+        requireFutureStart(availability);
         availability.publish(registrar, Instant.now());
 
         Availability savedAvailability =
@@ -170,7 +197,7 @@ public class AvailabilityService {
 
         availability.reject(
                 registrar,
-                Instant.now(),
+                Instant.now(clock),
                 request.reason()
         );
 

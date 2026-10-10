@@ -1,18 +1,20 @@
 package com.healthflow.application.dto.clinicregistrar;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 
 public record UpdateClinicRegistrarRequestDto(
-        @NotNull
+        @Email(message = "Email format is invalid.")
         @Pattern(
                 regexp = "(?s).*\\S.*",
-                message = "must not be blank"
+                message = "Email must not be blank."
         )
         String email,
-        @NotNull  @Pattern(
+
+        @Pattern(
                 regexp = "(?s).*\\S.*",
-                message = "must not be blank"
+                message = "Phone number must not be blank."
         )
-        String phoneNumber) {
+        String phoneNumber
+) {
 }

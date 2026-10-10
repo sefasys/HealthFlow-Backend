@@ -3,7 +3,6 @@ package com.healthflow.application.service;
 import com.healthflow.application.dto.clinicregistrar.*;
 import com.healthflow.application.exception.*;
 import com.healthflow.application.mapper.clinicregistrar.ClinicRegistrarMapper;
-import com.healthflow.application.mapper.clinicregistrar.UpdateClinicRegistrarMapper;
 import com.healthflow.domain.exception.InvalidNationalIdException;
 import com.healthflow.domain.exception.InvalidUniqueIdException;
 import com.healthflow.domain.factory.StaffFactory;
@@ -26,14 +25,14 @@ public class ClinicRegistrarService {
     private final UserFactory userFactory;
     private final StaffFactory staffFactory;
     private final ClinicRegistrarMapper clinicRegistrarMapper;
-    private final UpdateClinicRegistrarMapper updateClinicRegistrarMapper;
 
-    public ClinicRegistrarService(IClinicRegistrarRepository clinicRegistrarRepository, UserFactory userFactory, StaffFactory staffFactory, ClinicRegistrarMapper clinicRegistrarMapper, UpdateClinicRegistrarMapper updateClinicRegistrarMapper) {
+
+    public ClinicRegistrarService(IClinicRegistrarRepository clinicRegistrarRepository, UserFactory userFactory, StaffFactory staffFactory, ClinicRegistrarMapper clinicRegistrarMapper) {
         this.clinicRegistrarRepository = clinicRegistrarRepository;
         this.userFactory = userFactory;
         this.staffFactory = staffFactory;
         this.clinicRegistrarMapper = clinicRegistrarMapper;
-        this.updateClinicRegistrarMapper = updateClinicRegistrarMapper;
+
     }
 
     public ClinicRegistrarResponseDto createClinicRegistrar(CreateClinicRegistrarRequestDto requestDto) {
@@ -110,7 +109,7 @@ public class ClinicRegistrarService {
         }
         clinicRegistrarRepository.update(clinicRegistrar);
 
-        return updateClinicRegistrarMapper.responseDto(clinicRegistrar);
+        return clinicRegistrarMapper.updateResponseDto(clinicRegistrar);
 
     }
 

@@ -6,7 +6,6 @@ import com.healthflow.application.exception.InvalidUpdateRequestException;
 import com.healthflow.application.exception.PatientAlreadyExistsException;
 import com.healthflow.application.exception.PatientNotFoundException;
 import com.healthflow.application.mapper.patient.PatientMapper;
-import com.healthflow.application.mapper.patient.UpdatePatientResponseMapper;
 import com.healthflow.domain.exception.InvalidNationalIdException;
 import com.healthflow.domain.exception.InvalidUniqueIdException;
 import com.healthflow.domain.factory.UserFactory;
@@ -27,13 +26,12 @@ public class PatientService {
     private final IPatientRepository patientRepository;
     private final UserFactory userFactory;
     private final PatientMapper patientMapper;
-    private final UpdatePatientResponseMapper updatePatientResponseMapper;
 
-    public PatientService(IPatientRepository patientRepository, UserFactory userFactory, PatientMapper patientMapper, UpdatePatientResponseMapper updatePatientResponseMapper){
+
+    public PatientService(IPatientRepository patientRepository, UserFactory userFactory, PatientMapper patientMapper){
         this.patientRepository = patientRepository;
         this.userFactory = userFactory;
         this.patientMapper = patientMapper;
-        this.updatePatientResponseMapper = updatePatientResponseMapper;
     }
 
     public PatientResponseDto createPatient(CreatePatientRequestDto requestDto){
@@ -125,7 +123,7 @@ public class PatientService {
         }
         patientRepository.update(patient);
 
-        return updatePatientResponseMapper.responseDto(patient);
+        return patientMapper.updateResponseDto(patient);
     }
 
 

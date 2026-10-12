@@ -24,8 +24,10 @@ repositories {
 
 dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.0")
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
     // Use JUnit Jupiter for testing.
     testImplementation(libs.junit.jupiter)
+    runtimeOnly("org.postgresql:postgresql")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 

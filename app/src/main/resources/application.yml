@@ -10,3 +10,9 @@ management:
 
 server:
   port: 8081
+
+spring:
+  datasource:
+    url: jdbc:postgres://localhost:5432/healthflow
+    username: postgres
+    password: 123

@@ -37,7 +37,7 @@ public class Appointment {
         || timeRange.start().getSecond() != 0 || timeRange.start().getNano() != 0) {
       throw new InvalidAppointmentException("Appointment must be a whole 15-minute slot.");
     }
-    if (patient.getUser().getUniqueId().equals(clinician.getStaff().getUser().getUniqueId())) {
+    if (patient.getUniqueId().equals(clinician.getStaff().getUser().getUniqueId())) {
       throw new InvalidAppointmentException("A clinician cannot be the patient in the same appointment.");
     }
     this.uniqueId = uniqueId;
@@ -56,7 +56,7 @@ public class Appointment {
   }
 
   public boolean involvesUser(UUID userId) {
-    return patient.getUser().getUniqueId().equals(userId)
+    return patient.getUniqueId().equals(userId)
         || clinician.getStaff().getUser().getUniqueId().equals(userId);
   }
 

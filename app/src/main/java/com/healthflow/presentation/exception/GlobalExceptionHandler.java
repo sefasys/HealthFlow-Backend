@@ -33,7 +33,8 @@ public class GlobalExceptionHandler {
             ClinicianNotFoundException.class,
             ClinicRegistrarNotFoundException.class,
             AvailabilityNotFoundException.class,
-            AppointmentNotFoundException.class
+            AppointmentNotFoundException.class,
+            UserNotFoundException.class
     })
     public ResponseEntity<ErrorResponseDto> handleNotFound(
             RuntimeException exception

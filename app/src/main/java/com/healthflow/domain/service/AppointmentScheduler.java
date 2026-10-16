@@ -62,7 +62,7 @@ public class AppointmentScheduler {
         .isAfter(LocalDateTime.now(clock))) {
       throw new InvalidAppointmentException("Appointment start must be in the future.");
     }
-    UUID patientId = candidate.getPatient().getUser().getUniqueId();
+    UUID patientId = candidate.getPatient().getUniqueId();
     UUID clinicianId = candidate.getClinician().getStaff().getUser().getUniqueId();
     for (Appointment other : existing) {
       if (other.blocksSlot() && other.getDate().equals(candidate.getDate())

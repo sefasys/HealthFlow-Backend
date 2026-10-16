@@ -54,4 +54,6 @@ public class Staff {
     return user;
   }
 
+  public UUID getUserId() { return user.getUniqueId();}
+
 }

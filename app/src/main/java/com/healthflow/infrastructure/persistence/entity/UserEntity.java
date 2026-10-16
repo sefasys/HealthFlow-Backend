@@ -53,6 +53,7 @@ public class UserEntity {
 
       */
 
+    // burada patient entity mapped by tarzı bir işleme gerek duymadık çünkü user entity tarafının şu anda patient table tarafıyla bir işi yok.
 
     public UserEntity(
             UUID uniqueId,

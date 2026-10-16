@@ -588,7 +588,7 @@ class AppointmentServiceTest {
 
     private Patient savePatient(User user) {
         user.addRole(UserRole.PATIENT);
-        Patient result = new Patient(user);
+        Patient result = Patient.register(user);
         patientRepository.addPatient(result);
         return result;
     }

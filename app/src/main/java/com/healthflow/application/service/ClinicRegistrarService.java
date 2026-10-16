@@ -11,6 +11,7 @@ import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.User;
 import com.healthflow.domain.model.user.UserRole;
 import com.healthflow.domain.model.user.staff.ClinicRegistrar;
+import com.healthflow.domain.model.user.staff.Clinician;
 import com.healthflow.domain.model.user.staff.Staff;
 import com.healthflow.port.repository.IClinicRegistrarRepository;
 import org.springframework.stereotype.Service;
@@ -116,17 +117,17 @@ public class ClinicRegistrarService {
             throw new InvalidUpdateRequestException("At least one field must be provided for update.");
         }
 
-        ClinicRegistrar clinicRegistrar =
-                clinicRegistrarRepository
-                        .findByUniqueId(uniqueId)
-                        .orElseThrow(() -> new ClinicRegistrarNotFoundException("Clinic registrar could not be found."));
 
-        clinicRegistrar.getStaff().getUser().updateContactDetails(
+        // 2. E-posta ve telefon User'a ait: User üzerinden güncelle ve kaydet.
+        User user = userService.findByUniqueId(uniqueId);
+        user.updateContactDetails(
                 requestDto.email(),
-                requestDto.phoneNumber()
-        );
+                requestDto.phoneNumber());
+        userService.saveUser(user);
 
-        clinicRegistrarRepository.update(clinicRegistrar);
+
+        ClinicRegistrar clinicRegistrar = clinicRegistrarRepository.findByUniqueId(uniqueId)
+                .orElseThrow(() -> new ClinicRegistrarNotFoundException("Clinic registrar could not be found."));
 
         return clinicRegistrarMapper.updateResponseDto(clinicRegistrar);
 

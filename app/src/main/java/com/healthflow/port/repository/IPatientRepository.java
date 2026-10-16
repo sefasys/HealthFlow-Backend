@@ -12,7 +12,6 @@ public interface IPatientRepository {
 
   void addPatient(Patient patient);
 
-  List<Patient> sort(PatientSortType sortType);
 
   Optional<Patient> findByUniqueId(UUID uniqueId);
 

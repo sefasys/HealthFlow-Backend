@@ -52,7 +52,7 @@ public class PatientService {
                 UserRole.PATIENT
         );
 
-        Patient patient = new Patient(user);
+        Patient patient = Patient.register(user);
 
         user.addRole(UserRole.PATIENT);
 
@@ -102,39 +102,45 @@ public class PatientService {
     }
 
 
-    public UpdatePatientResponseDto updatePatient(UUID uniqueId, UpdatePatientRequestDto updatePatientRequestDto){
+    public UpdatePatientResponseDto updatePatient(
+            UUID uniqueId, UpdatePatientRequestDto updatePatientRequestDto) {
+
         if (uniqueId == null) {
             throw new InvalidUniqueIdException("Unique ID cannot be null.");
         }
 
         if (updatePatientRequestDto == null) {
-            throw new InvalidUpdateRequestException(
-                    "Update request cannot be null."
-            );
+            throw new InvalidUpdateRequestException("Update request cannot be null.");
         }
 
         if (updatePatientRequestDto.email() == null
                 && updatePatientRequestDto.phoneNumber() == null
                 && updatePatientRequestDto.bloodType() == null) {
             throw new InvalidUpdateRequestException(
-                    "At least one field must be provided for update."
-            );
+                    "At least one field must be provided for update.");
         }
 
-        Patient patient =
-                patientRepository
-                        .findByUniqueId(uniqueId)
-                        .orElseThrow(() -> new PatientNotFoundException("Patient could not be found."));
+        // 1. Bu id bir hasta mı? Değilse hiçbir şeye dokunmadan 404.
+        if (patientRepository.findByUniqueId(uniqueId).isEmpty()) {
+            throw new PatientNotFoundException("Patient could not be found.");
+        }
 
-        patient.getUser().updateContactDetails(
+        // 2. E-posta ve telefon User'a ait: User üzerinden güncelle ve kaydet.
+        User user = userService.findByUniqueId(uniqueId);
+        user.updateContactDetails(
                 updatePatientRequestDto.email(),
-                updatePatientRequestDto.phoneNumber()
-        );
+                updatePatientRequestDto.phoneNumber());
+        userService.saveUser(user);
 
+        // 3. Hastayı user kaydından SONRA yükle, response güncel e-postayı göstersin.
+        Patient patient = patientRepository.findByUniqueId(uniqueId)
+                .orElseThrow(() -> new PatientNotFoundException("Patient could not be found."));
+
+        // 4. Kan grubu hastaya ait: yalnızca geldiyse kaydet.
         if (updatePatientRequestDto.bloodType() != null) {
             patient.updateBloodType(updatePatientRequestDto.bloodType());
+            patientRepository.update(patient);
         }
-        patientRepository.update(patient);
 
         return patientMapper.updateResponseDto(patient);
     }

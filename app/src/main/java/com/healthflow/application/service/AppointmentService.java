@@ -206,9 +206,7 @@ public class AppointmentService {
                 );
 
         // Hasta yalnızca kendi randevusunu iptal edebilir.
-        UUID appointmentPatientId = appointment.getPatient()
-                .getUser()
-                .getUniqueId();
+        UUID appointmentPatientId = appointment.getPatient().getUniqueId();
 
         if (!appointmentPatientId.equals(patientUserId)) {
             throw new AppointmentAccessDeniedException(

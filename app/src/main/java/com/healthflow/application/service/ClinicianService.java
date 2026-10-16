@@ -1,10 +1,7 @@
 package com.healthflow.application.service;
 
 import com.healthflow.application.dto.clinician.*;
-import com.healthflow.application.exception.ClinicianAlreadyExistsException;
-import com.healthflow.application.exception.ClinicianNotFoundException;
-import com.healthflow.application.exception.InvalidSearchQueryException;
-import com.healthflow.application.exception.InvalidUpdateRequestException;
+import com.healthflow.application.exception.*;
 import com.healthflow.application.mapper.clinician.ClinicianMapper;
 import com.healthflow.domain.exception.InvalidNationalIdException;
 import com.healthflow.domain.exception.InvalidUniqueIdException;
@@ -13,6 +10,7 @@ import com.healthflow.domain.factory.UserFactory;
 import com.healthflow.domain.model.user.NationalId;
 import com.healthflow.domain.model.user.User;
 import com.healthflow.domain.model.user.UserRole;
+import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.domain.model.user.staff.Clinician;
 import com.healthflow.domain.model.user.staff.Staff;
 import com.healthflow.port.repository.IClinicianRepository;
@@ -120,21 +118,18 @@ public class ClinicianService {
             throw new InvalidUpdateRequestException("At least one field must be provided for update.");
         }
 
-        Clinician clinician =
-                clinicianRepository
-                        .findByUniqueId(uniqueId)
-                        .orElseThrow(() -> new ClinicianNotFoundException("Clinician could not be found."));
-
-        clinician.getStaff().getUser().updateContactDetails(
+        // 2. E-posta ve telefon User'a ait: User üzerinden güncelle ve kaydet.
+        User user = userService.findByUniqueId(uniqueId);
+        user.updateContactDetails(
                 requestDto.email(),
-                requestDto.phoneNumber()
-        );
+                requestDto.phoneNumber());
+        userService.saveUser(user);
 
-        clinicianRepository.update(clinician);
+
+        Clinician clinician = clinicianRepository.findByUniqueId(uniqueId)
+                .orElseThrow(() -> new ClinicianNotFoundException("Clinician could not be found."));
 
         return clinicianMapper.updateResponseDto(clinician);
-
-
     }
 
     public List<ClinicianResponseDto> searchClinician(String query) {

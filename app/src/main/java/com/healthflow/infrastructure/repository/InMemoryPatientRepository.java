@@ -27,41 +27,6 @@ public class InMemoryPatientRepository implements IPatientRepository {
     patients.add(patient);
   }
 
-  public List<Patient> sort(PatientSortType sortType) {
-    return switch (sortType) {
-      case NAME_ASC ->
-          patients.stream()
-              .sorted(Comparator.comparing(patient -> patient.getUser().getName()))
-              .toList();
-      case NAME_DESC ->
-          patients.stream()
-              .sorted(
-                  Comparator.comparing((Patient patient) -> patient.getUser().getName()).reversed())
-              .toList();
-      case BIRTH_DATE_ASC ->
-          patients.stream()
-              .sorted(Comparator.comparing(patient -> patient.getUser().getBirthDate()))
-              .toList();
-      case BIRTH_DATE_DESC ->
-          patients.stream()
-              .sorted(
-                  Comparator.comparing((Patient patient) -> patient.getUser().getBirthDate())
-                      .reversed())
-              .toList();
-      case SURNAME_ASC ->
-          patients.stream()
-              .sorted(Comparator.comparing(patient -> patient.getUser().getSurname()))
-              .toList();
-      case SURNAME_DESC ->
-          patients.stream()
-              .sorted(
-                  Comparator.comparing((Patient patient) -> patient.getUser().getSurname())
-                      .reversed())
-              .toList();
-    };
-  } // İlk olarak klasik switch ile yazdım sonrasında IntelliJ'in önerisi üzerine modern switch
-
-  // yapısına geçtim.
 
   // GPT güzel bir öneri verdi dönüş tipini optional yap bence dedi çünkü aradığın find metotlarında
   // aradığın kullanıcı bulunamayabilir de.

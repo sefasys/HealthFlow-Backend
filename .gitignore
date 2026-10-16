@@ -7,3 +7,10 @@ build/
 
 # Ignore Gradle build output directory
 build
+
+build.gradle.kts
+gradle.properties
+gradlew
+gradlew.bat
+settings-gradle.lockfile
+settings.gradle.kts

@@ -24,10 +24,10 @@ repositories {
 
 dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.0")
-    implementation("org.springframework.boot:spring-boot-starter-flyway")
     // Use JUnit Jupiter for testing.
     testImplementation(libs.junit.jupiter)
     runtimeOnly("org.postgresql:postgresql")
+
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
@@ -36,12 +36,14 @@ dependencies {
 
     // Spring Boot Dependencies
     implementation("org.springframework.boot:spring-boot-starter-web")
-    //implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.mapstruct:mapstruct:1.6.3")
+
+
 
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
 

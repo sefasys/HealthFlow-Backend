@@ -13,6 +13,6 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgres://localhost:5432/healthflow
+    url: jdbc:postgresql://localhost:5432/healthflow
     username: postgres
-    password: 123
+    password: "1907Mustafa*"

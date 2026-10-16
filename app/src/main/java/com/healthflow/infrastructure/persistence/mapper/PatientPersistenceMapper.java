@@ -2,32 +2,25 @@ package com.healthflow.infrastructure.persistence.mapper;
 
 import com.healthflow.domain.model.user.patient.Patient;
 import com.healthflow.infrastructure.persistence.entity.PatientEntity;
-import org.mapstruct.Mapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.healthflow.infrastructure.persistence.entity.UserEntity;
+import org.springframework.stereotype.Component;
 
-@Mapper(
-        componentModel = "spring",
-        uses = UserPersistenceMapper.class
-)
-public abstract class PatientPersistenceMapper {
+@Component
+public class PatientPersistenceMapper {
 
-    private UserPersistenceMapper userMapper;
+    private final UserPersistenceMapper userMapper;
 
-    @Autowired
-    public void setUserMapper(UserPersistenceMapper userMapper) {
+    public PatientPersistenceMapper(UserPersistenceMapper userMapper) {
         this.userMapper = userMapper;
     }
 
-    public abstract PatientEntity toEntity(Patient patient);
+    // PatientPersistenceMapper
+    public PatientEntity toEntity(Patient patient, UserEntity user) {
+        return new PatientEntity(user, patient.getUniqueId(), patient.getBloodType());
+    }
+// userMapper.toEntity çağrısı kalktı, toDomain aynı kalıyor
 
     public Patient toDomain(PatientEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-
-        return new Patient(
-                userMapper.toDomain(entity.getUser()),
-                entity.getBloodType()
-        ); // blood type ile alakalı domain modelde constructor sorunu olduğu için yapay zeka kodu bu şekilde değiştirmemi önerdi. ambiguous constructor hatası oldu
+        return new Patient(userMapper.toDomain(entity.getUser()), entity.getBloodType());
     }
 }

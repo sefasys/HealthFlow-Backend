@@ -48,4 +48,7 @@ public class PatientEntity {
     public BloodType getBloodType() {
         return bloodType;
     }
+
+    // PatientEntity
+    public void changeBloodType(BloodType bloodType) { this.bloodType = bloodType; }
 }

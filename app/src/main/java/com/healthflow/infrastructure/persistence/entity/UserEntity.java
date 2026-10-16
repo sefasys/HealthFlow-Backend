@@ -17,7 +17,7 @@ public class UserEntity {
     @Column(name = "unique_id")
     private UUID uniqueId;
 
-    @Column(name = "national_id")
+    @Column(name = "national_id", unique = true)
     private String nationalId; //bura bak
 
     @Column
@@ -110,6 +110,16 @@ public class UserEntity {
         return roles;
     }
 
+    // UserEntity
+    public void changeContact(String email, String phoneNumber) {
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void replaceRoles(Set<UserRole> newRoles) {
+        this.roles.retainAll(newRoles);
+        this.roles.addAll(newRoles);
+    }
 
 
 }

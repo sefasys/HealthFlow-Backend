@@ -7,7 +7,7 @@ import com.healthflow.infrastructure.persistence.mapper.AvailabilityPersistenceM
 import com.healthflow.infrastructure.persistence.repository.SpringDataAvailabilityRepository;
 import com.healthflow.infrastructure.persistence.repository.SpringDataStaffRepository;
 import com.healthflow.port.repository.IAvailabilityRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;

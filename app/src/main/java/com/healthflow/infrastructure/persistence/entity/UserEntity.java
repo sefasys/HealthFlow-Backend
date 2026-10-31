@@ -14,7 +14,7 @@ import java.util.UUID;
 public class UserEntity {
 
     @Id
-    @Column(name = "unique_id")
+    @Column(name = "unique_id", nullable = false)
     private UUID uniqueId;
 
     @Column(name = "national_id", nullable = false, unique = true, length = 11)

@@ -16,8 +16,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/healthflow
     username: postgres
     password: ${DB_PASSWORD}
-  main:
-    lazy-initialization: true
   jpa:
     hibernate:
       ddl-auto: update

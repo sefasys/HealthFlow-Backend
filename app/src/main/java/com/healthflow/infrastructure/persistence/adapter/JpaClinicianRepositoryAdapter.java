@@ -10,7 +10,7 @@ import com.healthflow.infrastructure.persistence.mapper.StaffPersistenceMapper;
 import com.healthflow.infrastructure.persistence.repository.SpringDataStaffRepository;
 import com.healthflow.infrastructure.persistence.repository.SpringDataUserRepository;
 import com.healthflow.port.repository.IClinicianRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

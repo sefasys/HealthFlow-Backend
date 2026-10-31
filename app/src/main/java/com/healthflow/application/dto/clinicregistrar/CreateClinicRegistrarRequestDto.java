@@ -23,6 +23,7 @@ public record CreateClinicRegistrarRequestDto(@NotBlank
                                               @NotBlank
                                               String phoneNumber,
                                               @NotNull
+                                              @PastOrPresent
                                               LocalDate hireDate,
                                               @NotNull
                                               EmploymentStatus employmentStatus) {

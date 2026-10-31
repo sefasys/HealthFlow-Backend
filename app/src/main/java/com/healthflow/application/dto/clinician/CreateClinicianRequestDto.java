@@ -26,6 +26,7 @@ public record CreateClinicianRequestDto(@NotBlank
                                         @NotBlank
                                         String phoneNumber,
                                         @NotNull
+                                        @PastOrPresent
                                         LocalDate hireDate,
                                         @NotNull
                                         EmploymentStatus employmentStatus//Bunda kararsızım

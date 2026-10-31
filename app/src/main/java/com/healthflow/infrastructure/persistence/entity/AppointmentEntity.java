@@ -18,7 +18,7 @@ public class AppointmentEntity {
     @Column(name = "unique_id")
     private UUID uniqueId;
 
-    @Column(name = "availability_id")
+    @Column(name = "availability_id", nullable = false)
     private UUID availabilityId;
 
 

@@ -32,6 +32,10 @@ public class Staff {
       throw new InvalidUserException("User can not be null.");
     }
 
+    if (hireDate.isBefore(user.getBirthDate())) {
+      throw new InvalidDateException("Hire date cannot be before birth date.");
+    }
+
     this.employeeId = employeeId;
     this.hireDate = hireDate;
     this.employmentStatus = employmentStatus;

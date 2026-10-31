@@ -42,6 +42,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.mapstruct:mapstruct:1.6.3")
 
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql")
+
 
 
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")

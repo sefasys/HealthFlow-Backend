@@ -9,7 +9,6 @@ import com.healthflow.infrastructure.persistence.mapper.PatientPersistenceMapper
 import com.healthflow.infrastructure.persistence.repository.SpringDataPatientRepository;
 import com.healthflow.infrastructure.persistence.repository.SpringDataUserRepository;
 import com.healthflow.port.repository.IPatientRepository;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +17,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-@Primary
 public class JpaPatientRepositoryAdapter implements IPatientRepository {
 
     //metotları önceden yazdığımız repository domain tarafındaki kontratlara göre alıyoruz.

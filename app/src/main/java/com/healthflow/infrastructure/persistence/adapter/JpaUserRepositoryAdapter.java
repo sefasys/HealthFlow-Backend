@@ -6,8 +6,6 @@ import com.healthflow.infrastructure.persistence.mapper.UserPersistenceMapper;
 import com.healthflow.infrastructure.persistence.repository.SpringDataUserRepository;
 import com.healthflow.port.repository.IUserRepository;
 
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +14,6 @@ import java.util.Set;
 import java.util.UUID;
 
 @Repository
-@Primary
-@Profile("jpa")
 public class JpaUserRepositoryAdapter implements IUserRepository {
 
     private final SpringDataUserRepository repository;
@@ -30,7 +26,7 @@ public class JpaUserRepositoryAdapter implements IUserRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public User save(User user) {                      // upsert, in-memory ile aynı davranış
         repository.findById(user.getUniqueId()).ifPresentOrElse(
                 entity -> {

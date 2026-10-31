@@ -14,7 +14,6 @@ import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 @Configuration
-@Profile("jpa")   // in-memory profilde TransactionManager yok, bu config yüklenmemeli
 public class TransactionConfiguration {
 
     @Bean

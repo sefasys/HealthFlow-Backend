@@ -17,23 +17,26 @@ public class UserEntity {
     @Column(name = "unique_id")
     private UUID uniqueId;
 
-    @Column(name = "national_id", unique = true)
+    @Column(name = "national_id", nullable = false, unique = true, length = 11)
     private String nationalId; //bura bak
 
-    @Column
+    @Column(nullable = false, length = 100)
     private String name;
 
-    @Column
+    @Column(nullable = false, length = 100)
     private String surname;
 
-    @Column(name = "birth_date")
+    @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
-    @Column
+    @Column(nullable = false, length = 254)
     private String email;
 
-    @Column(name = "phone_number")
+    @Column(name = "phone_number", nullable = false, length = 32)
     private String phoneNumber;
+
+    @Version
+    private Long version; //bu ne?
 
     @ElementCollection
     @CollectionTable(

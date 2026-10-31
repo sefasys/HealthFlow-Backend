@@ -15,4 +15,13 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/healthflow
     username: postgres
-    password: "1907Mustafa*"
+    password: ${DB_PASSWORD}
+  main:
+    lazy-initialization: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default_batch_fetch_size: 50
+    open-in-view: false

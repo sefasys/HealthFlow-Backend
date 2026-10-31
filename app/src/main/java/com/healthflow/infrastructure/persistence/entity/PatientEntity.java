@@ -11,23 +11,24 @@ import java.util.UUID;
 public class PatientEntity {
 
     @Id
-    @Column(name = "unique_id")
+    @Column(name = "user_id")
     private UUID uniqueId;
 
-    @OneToOne(optional = false) //optional ne anlama geliyor?
+    @OneToOne(fetch = FetchType.LAZY, optional = false) //optional ne anlama geliyor?
     @MapsId // Bu ne anlama geliyor
-    @JoinColumn(name = "unique_id") // bu ne anlama geliyor?
+    @JoinColumn(name = "user_id") // bu ne anlama geliyor?
     private UserEntity user;
 
     @Enumerated(EnumType.STRING) // bunu bil.
-    @Column(name = "blood_type", nullable = false)
+    @Column(name = "blood_type", nullable = false, length = 16)
     private BloodType bloodType;
 
+    @Version
+    private Long version;
+
     public PatientEntity(UserEntity user,
-                         UUID uniqueId,
                          BloodType bloodType){
         this.user = user;
-        this.uniqueId = uniqueId;
         this.bloodType = bloodType;
 
     } // Bizim mapper’da mevcut verilerle entity oluşturabilmemiz için.

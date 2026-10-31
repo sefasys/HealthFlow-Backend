@@ -16,7 +16,7 @@ public class PatientPersistenceMapper {
 
     // PatientPersistenceMapper
     public PatientEntity toEntity(Patient patient, UserEntity user) {
-        return new PatientEntity(user, patient.getUniqueId(), patient.getBloodType());
+        return new PatientEntity(user, patient.getBloodType());
     }
 // userMapper.toEntity çağrısı kalktı, toDomain aynı kalıyor
 

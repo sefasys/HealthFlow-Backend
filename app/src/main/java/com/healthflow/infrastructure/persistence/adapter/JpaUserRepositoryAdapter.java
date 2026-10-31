@@ -9,6 +9,7 @@ import com.healthflow.port.repository.IUserRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -47,5 +48,11 @@ public class JpaUserRepositoryAdapter implements IUserRepository {
     @Transactional(readOnly = true)
     public Optional<User> findByNationalId(NationalId nationalId) {
         return repository.findByNationalId(nationalId.getValue()).map(mapper::toDomain);
+    }
+
+    @Override
+    @Transactional
+    public void lockForScheduling(Collection<UUID> userIds) {
+        repository.lockAllByIds(userIds);
     }
 }

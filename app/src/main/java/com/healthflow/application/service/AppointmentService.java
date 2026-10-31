@@ -21,6 +21,7 @@ import com.healthflow.domain.service.SlotGenerator;
 import com.healthflow.port.repository.IAppointmentRepository;
 import com.healthflow.port.repository.IAvailabilityRepository;
 import com.healthflow.port.repository.IPatientRepository;
+import com.healthflow.port.repository.IUserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -41,6 +42,7 @@ public class AppointmentService {
     private final AppointmentMapper appointmentMapper;
     private final AppointmentScheduler appointmentScheduler;
     private final SlotGenerator slotGenerator;
+    private final IUserRepository userRepository;
 
     public AppointmentService(
             IAppointmentRepository appointmentRepository,
@@ -49,7 +51,9 @@ public class AppointmentService {
             IPatientRepository patientRepository,
             AppointmentMapper appointmentMapper,
             AppointmentScheduler appointmentScheduler,
-            SlotGenerator slotGenerator
+            SlotGenerator slotGenerator,
+            IUserRepository userRepository
+
     ) {
         this.appointmentRepository = appointmentRepository;
         this.availabilityRepository = availabilityRepository;
@@ -58,6 +62,7 @@ public class AppointmentService {
         this.appointmentMapper = appointmentMapper;
         this.appointmentScheduler = appointmentScheduler;
         this.slotGenerator = slotGenerator;
+        this.userRepository = userRepository;
     }
 
     public AppointmentResponseDto bookAppointment(
@@ -89,6 +94,8 @@ public class AppointmentService {
                 .getStaff()
                 .getUser()
                 .getUniqueId();
+
+        userRepository.lockForScheduling(List.of(patientUserId, clinicianUserId));
 
         // 4. Her iki kişinin o günkü bütün rollerindeki randevularını getir.
         List<Appointment> patientAppointments =

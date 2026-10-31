@@ -1,6 +1,6 @@
 package com.healthflow.presentation.exception;
 
-import com.healthflow.application.dto.common.ErrorResponseDto;
+
 import com.healthflow.application.exception.*;
 import com.healthflow.domain.exception.AppointmentConflictException;
 import com.healthflow.domain.exception.DomainValidationException;
@@ -8,7 +8,11 @@ import com.healthflow.domain.exception.IncompatibleUserRoleException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.ConcurrencyFailureException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.Instant;
 
@@ -36,7 +41,7 @@ public class GlobalExceptionHandler {
             AppointmentNotFoundException.class,
             UserNotFoundException.class
     })
-    public ResponseEntity<ErrorResponseDto> handleNotFound(
+    public ResponseEntity<ProblemDetail> handleNotFound(
             RuntimeException exception
     ) {
         return createErrorResponse(
@@ -53,7 +58,7 @@ public class GlobalExceptionHandler {
             ClinicRegistrarAlreadyExistsException.class,
             UserAlreadyExistsException.class
     })
-    public ResponseEntity<ErrorResponseDto> handleConflict(
+    public ResponseEntity<ProblemDetail> handleConflict(
             RuntimeException exception
     ) {
         return createErrorResponse(
@@ -64,7 +69,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IncompatibleUserRoleException.class)
-    public ResponseEntity<ErrorResponseDto> handleIncompatibleUserRole(
+    public ResponseEntity<ProblemDetail> handleIncompatibleUserRole(
             IncompatibleUserRoleException exception
     ) {
         return createErrorResponse(
@@ -78,7 +83,7 @@ public class GlobalExceptionHandler {
             AvailabilityConflictException.class,
             AppointmentConflictException.class
     })
-    public ResponseEntity<ErrorResponseDto> handleSchedulingConflict(
+    public ResponseEntity<ProblemDetail> handleSchedulingConflict(
             RuntimeException exception
     ) {
         return createErrorResponse(
@@ -90,7 +95,7 @@ public class GlobalExceptionHandler {
 
     // 403 — İşlem için erişim izni yok
     @ExceptionHandler(AppointmentAccessDeniedException.class)
-    public ResponseEntity<ErrorResponseDto> handleAccessDenied(
+    public ResponseEntity<ProblemDetail> handleAccessDenied(
             AppointmentAccessDeniedException exception
     ) {
         return createErrorResponse(
@@ -105,7 +110,7 @@ public class GlobalExceptionHandler {
             InvalidSearchQueryException.class,
             InvalidUpdateRequestException.class
     })
-    public ResponseEntity<ErrorResponseDto> handleInvalidApplicationRequest(
+    public ResponseEntity<ProblemDetail> handleInvalidApplicationRequest(
             RuntimeException exception
     ) {
         return createErrorResponse(
@@ -116,7 +121,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DomainValidationException.class)
-    public ResponseEntity<ErrorResponseDto> handleDomainValidation(
+    public ResponseEntity<ProblemDetail> handleDomainValidation(
             DomainValidationException exception
     ) {
         return createErrorResponse(
@@ -133,7 +138,7 @@ public class GlobalExceptionHandler {
             MethodArgumentTypeMismatchException.class,
             MissingServletRequestParameterException.class
     })
-    public ResponseEntity<ErrorResponseDto> handleInvalidRequest(
+    public ResponseEntity<ProblemDetail> handleInvalidRequest(
             Exception exception
     ) {
         return createErrorResponse(
@@ -145,26 +150,22 @@ public class GlobalExceptionHandler {
 
     // 405 — Endpoint bu HTTP metodunu desteklemiyor
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<ErrorResponseDto> handleMethodNotSupported(
+    public ResponseEntity<ProblemDetail> handleMethodNotSupported(
             HttpRequestMethodNotSupportedException exception
     ) {
-        ErrorResponseDto response = new ErrorResponseDto(
-                HttpStatus.METHOD_NOT_ALLOWED.value(),
-                "METHOD_NOT_ALLOWED",
-                "This HTTP method is not supported for this endpoint.",
-                Instant.now()
-        );
-
-        return new ResponseEntity<>(
-                response,
-                exception.getHeaders(),
-                HttpStatus.METHOD_NOT_ALLOWED
-        );
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+                .headers(exception.getHeaders())
+                .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+                .body(createProblem(
+                        HttpStatus.METHOD_NOT_ALLOWED,
+                        "METHOD_NOT_ALLOWED",
+                        "This HTTP method is not supported for this endpoint."
+                ));
     }
 
     // 415 — Gönderilen içerik türü desteklenmiyor
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public ResponseEntity<ErrorResponseDto> handleUnsupportedMediaType(
+    public ResponseEntity<ProblemDetail> handleUnsupportedMediaType(
             HttpMediaTypeNotSupportedException exception
     ) {
         return createErrorResponse(
@@ -176,7 +177,7 @@ public class GlobalExceptionHandler {
 
     // 500 — Beklenmeyen uygulama hatası
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDto> handleUnexpectedError(
+    public ResponseEntity<ProblemDetail> handleUnexpectedError(
             Exception exception
     ) {
         logger.error("Unexpected error occurred", exception);
@@ -189,18 +190,58 @@ public class GlobalExceptionHandler {
     }
 
 
-    private ResponseEntity<ErrorResponseDto> createErrorResponse(
+    private ResponseEntity<ProblemDetail> createErrorResponse(
             HttpStatus status,
             String code,
             String message
     ) {
-        ErrorResponseDto response = new ErrorResponseDto(
-                status.value(),
-                code,
-                message,
-                Instant.now()
-        );
-
-        return ResponseEntity.status(status).body(response);
+        return ResponseEntity.status(status)
+                .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+                .body(createProblem(status, code, message));
     }
+
+    private ProblemDetail createProblem(HttpStatus status, String code, String message) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(status, message);
+        problem.setProperty("code", code);
+        problem.setProperty("timestamp", Instant.now());
+        return problem;
+    }
+
+    // 409 — Veritabanı kısıtına takılan kayıt
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ProblemDetail> handleDataIntegrityViolation(
+            DataIntegrityViolationException exception
+    ) {
+        return createErrorResponse(
+                HttpStatus.CONFLICT,
+                "DATA_CONFLICT",
+                "The request conflicts with existing data."
+        );
+    }
+
+    // 409 — Aynı kaydın eşzamanlı güncellenmesi
+    @ExceptionHandler(ConcurrencyFailureException.class)
+    public ResponseEntity<ProblemDetail> handleConcurrencyFailure(
+            ConcurrencyFailureException exception
+    ) {
+        return createErrorResponse(
+                HttpStatus.CONFLICT,
+                "CONCURRENT_UPDATE",
+                "The resource was changed by another request. Please retry."
+        );
+    }
+
+    // 404 — Eşleşen endpoint yok
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ProblemDetail> handleNoResourceFound(
+            NoResourceFoundException exception
+    ) {
+        return createErrorResponse(
+                HttpStatus.NOT_FOUND,
+                "RESOURCE_NOT_FOUND",
+                "The requested resource could not be found."
+        );
+    }
+
+
 }

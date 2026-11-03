@@ -15,7 +15,7 @@ public class Patient {
     @Id
     private UUID id;
 
-    @OneToOne(optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false, unique = true) // örnekte lazy fetch var ama niye bilmiyorum.
     private User user;
 

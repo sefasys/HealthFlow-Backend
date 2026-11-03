@@ -15,21 +15,25 @@ public class Staff {
     @Id
     private UUID id;
 
-    @OneToOne(optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @MapsId
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "hire_date", nullable = false)
     private LocalDate hireDate;
 
+    @Column(name = "employee_number", nullable = false, unique = true)
+    private String employeeNumber;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "employment_status", nullable = false, length = 16)
     private EmploymentStatus employmentStatus;
 
-    public Staff(User user, LocalDate hireDate) {
+    public Staff(User user, LocalDate hireDate, String employeeNumber) {
         this.user = user;
         this.hireDate = hireDate;
+        this.employeeNumber = employeeNumber;
         this.employmentStatus = EmploymentStatus.ACTIVE;
     }
 
@@ -45,6 +49,10 @@ public class Staff {
 
     public LocalDate getHireDate() {
         return hireDate;
+    }
+
+    public String getEmployeeNumber(){
+        return employeeNumber;
     }
 
     public EmploymentStatus getEmploymentStatus() {

@@ -31,6 +31,10 @@ public class User {
     @Column(nullable = false, length = 50)
     private String surname;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
+    private Gender gender;
+
     @Column(nullable = false)
     private LocalDate birthDate;
 
@@ -47,13 +51,14 @@ public class User {
     @Column(name = "role", nullable = false)
     private  Set<UserRole> userRoleSet = new HashSet<>();
 
-    public User(String nationalId, String name, String surname, LocalDate birthDate, String email, String phoneNumber, Set<UserRole> userRoleSet) {
+    public User(String nationalId, String name, String surname, Gender gender, LocalDate birthDate, String phoneNumber, String email, Set<UserRole> userRoleSet) {
         this.nationalId = nationalId;
         this.name = name;
         this.surname = surname;
+        this.gender = gender;
         this.birthDate = birthDate;
-        this.email = email;
         this.phoneNumber = phoneNumber;
+        this.email = email;
         this.userRoleSet = new HashSet<>(userRoleSet);
     }
 

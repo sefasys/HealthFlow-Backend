@@ -1,0 +1,24 @@
+package com.healthflow.repository;
+
+import com.healthflow.entity.user.NationalId;
+import com.healthflow.entity.user.patient.Patient;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+public interface IPatientRepository {
+
+  List<Patient> getPatients();
+
+  void addPatient(Patient patient);
+
+  List<Patient> sort(PatientSortType sortType);
+
+  Optional<Patient> findByUniqueId(UUID uniqueId);
+
+  Optional<Patient> findByNationalId(NationalId nationalId);
+
+  List<Patient> search(String query);
+
+  void update(Patient patient);
+}

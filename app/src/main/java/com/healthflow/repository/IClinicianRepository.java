@@ -1,6 +1,5 @@
 package com.healthflow.repository;
 
-import com.healthflow.entity.user.NationalId;
 import com.healthflow.entity.user.staff.Clinician;
 
 import java.util.List;

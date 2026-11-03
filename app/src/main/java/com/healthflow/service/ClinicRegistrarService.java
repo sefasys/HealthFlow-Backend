@@ -5,17 +5,8 @@ import com.healthflow.mapper.clinicregistrar.ClinicRegistrarMapper;
 import com.healthflow.domain.exception.InvalidNationalIdException;
 import com.healthflow.domain.exception.InvalidUniqueIdException;
 import com.healthflow.entity.factory.StaffFactory;
-import com.healthflow.entity.user.NationalId;
-import com.healthflow.entity.user.User;
-import com.healthflow.entity.user.UserRole;
-import com.healthflow.entity.user.staff.ClinicRegistrar;
-import com.healthflow.entity.user.staff.Staff;
-import com.healthflow.dto.clinicregistrar.*;
 import com.healthflow.repository.IClinicRegistrarRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.UUID;
 
 @Service
 public class ClinicRegistrarService {

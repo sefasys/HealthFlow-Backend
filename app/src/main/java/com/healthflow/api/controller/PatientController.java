@@ -21,7 +21,7 @@ public class PatientController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public PatientResponseDto createPatient(@Valid @RequestBody CreatePatientRequestDto requestDto) {
+  public PatientResponseDto createPatient(@Valid @RequestBody PatientRegistrationRequest requestDto) {
     return patientService.createPatient(requestDto);
   }
 

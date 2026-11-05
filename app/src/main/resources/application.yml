@@ -16,3 +16,5 @@ spring:
     url: jdbc:postgres://localhost:5432/healthflow
     username: postgres
     password: 123
+  jpa:
+    open-in-view: false

@@ -21,31 +21,31 @@ public class PatientController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public PatientResponseDto createPatient(@Valid @RequestBody PatientRegistrationRequest requestDto) {
+  public PatientResponse createPatient(@Valid @RequestBody PatientRegistrationRequest requestDto) {
     return patientService.createPatient(requestDto);
   }
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public List<PatientResponseDto> getPatients() {
+  public List<PatientResponse> getPatients() {
     return patientService.getPatients();
   }//bunda sorun var.
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/{uniqueId}")
-  public PatientResponseDto findPatientByUniqueId(@PathVariable UUID uniqueId) {
+  public PatientResponse findPatientByUniqueId(@PathVariable UUID uniqueId) {
     return patientService.findPatientByUniqueId(uniqueId);
   }
 
   @ResponseStatus(HttpStatus.OK)
   @PostMapping("/search-by-national-id")
-  public PatientResponseDto findPatientByNationalId(@Valid @RequestBody FindPatientByNationalIdRequestDto findPatientByNationalIdRequestDto) {
+  public PatientResponse findPatientByNationalId(@Valid @RequestBody FindPatientByNationalIdRequestDto findPatientByNationalIdRequestDto) {
       return patientService.findPatientByNationalId(findPatientByNationalIdRequestDto);
   }
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/search")
-  public List<PatientResponseDto> searchPatients(@RequestParam String query) { // Request Param'dan ayrıca bahsetmek gerekiyor.
+  public List<PatientResponse> searchPatients(@RequestParam String query) { // Request Param'dan ayrıca bahsetmek gerekiyor.
    return patientService.searchPatient(query);
   }//bunda da sorun var.
 

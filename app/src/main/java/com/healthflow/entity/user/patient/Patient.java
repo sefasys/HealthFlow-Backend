@@ -4,9 +4,7 @@ package com.healthflow.entity.user.patient;
 import com.healthflow.entity.user.User;
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "patients")
@@ -39,7 +37,7 @@ public class Patient {
     }
 
     public Set<String> getAllergies() {
-        return allergies;
+        return Collections.unmodifiableSet(allergies);
     }
 
     public BloodType getBloodType() {

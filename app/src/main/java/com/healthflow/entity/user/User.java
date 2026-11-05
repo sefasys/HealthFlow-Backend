@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Pattern;
 
 import java.time.LocalDate;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -92,6 +93,14 @@ public class User {
     }
 
     public Set<UserRole> getUserRoleSet() {
-        return userRoleSet;
+        return Collections.unmodifiableSet(userRoleSet);
+    }// Bu metot dışarıdan birinin user.getUserRoleSet().add(...) diyerek addRole’u atlamaması için salt okunur hale getirdik. o yüzden unmodifiable set yaptık.
+
+    public void addRole(UserRole role) {
+        userRoleSet.add(role);
+    }
+
+    public void removeRole(UserRole role) {
+        userRoleSet.remove(role);
     }
 }

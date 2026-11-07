@@ -1,26 +1,21 @@
 package com.healthflow.mapper.clinicregistrar;
 
+import com.healthflow.dto.clinicregistrar.ClinicRegistrarRegistrationRequest;
 import com.healthflow.dto.clinicregistrar.ClinicRegistrarResponseDto;
 import com.healthflow.dto.clinicregistrar.UpdateClinicRegistrarResponseDto;
+import com.healthflow.entity.user.User;
 import com.healthflow.entity.user.staff.ClinicRegistrar;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface ClinicRegistrarMapper {
-    @Mapping(source = "staff.user.uniqueId", target = "id")
-    @Mapping(source = "staff.user.name", target = "name")
-    @Mapping(source = "staff.user.surname", target = "surname")
-    @Mapping(source = "staff.user.birthDate", target = "birthDate")
-    @Mapping(source = "staff.hireDate", target = "hireDate")
-    @Mapping(source = "staff.employmentStatus", target = "employmentStatus")
-    ClinicRegistrarResponseDto responseDto(ClinicRegistrar clinicRegistrar);
+public interface ClinicRegistrarMapper{
 
-    @Mapping(source = "staff.user.uniqueId", target = "id")
-    @Mapping(source = "staff.user.name", target = "name")
-    @Mapping(source = "staff.user.surname", target = "surname")
-    @Mapping(source = "staff.user.birthDate", target = "birthDate")
-    @Mapping(source = "staff.user.email", target = "email")
-    @Mapping(source = "staff.user.phoneNumber", target = "phoneNumber")
-    UpdateClinicRegistrarResponseDto updateResponseDto(ClinicRegistrar clinicRegistrar);
+        @Mapping(target = ".", source = "staff.user")
+        @Mapping(target = "employeeNumber", source = "staff.employeeNumber")
+        @Mapping(target = "hireDate", source = "staff.hireDate")
+        @Mapping(target = "employmentStatus", source = "staff.employmentStatus")
+        ClinicRegistrarResponseDto toResponse(ClinicRegistrar registrar);
+
+        User toUser(ClinicRegistrarRegistrationRequest request);
 }

@@ -3,10 +3,11 @@ package com.healthflow.entity.user.staff;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "clinic_registrar")
+@Table(name = "clinic_registrars")
 public class ClinicRegistrar {
 
     @Id
@@ -18,8 +19,8 @@ public class ClinicRegistrar {
     private Staff staff;
 
 
-    public ClinicRegistrar(Staff staff, String licenseNumber) {
-        this.staff = staff;
+    public ClinicRegistrar(Staff staff) {
+        this.staff = Objects.requireNonNull(staff);
     }
 
     protected ClinicRegistrar() {}

@@ -5,5 +5,7 @@ import com.healthflow.entity.user.staff.EmploymentStatus;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record ClinicRegistrarResponseDto(UUID id, String name, String surname, LocalDate birthDate, LocalDate hireDate, EmploymentStatus employmentStatus) {
-}
+public record ClinicRegistrarResponseDto(
+        UUID id, String name, String surname, String email, String phoneNumber,
+        String employeeNumber, LocalDate hireDate, EmploymentStatus employmentStatus
+) {}

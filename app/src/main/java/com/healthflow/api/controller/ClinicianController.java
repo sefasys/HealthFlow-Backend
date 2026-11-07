@@ -18,29 +18,29 @@ public class ClinicianController {
     private ClinicianService clinicianService;
 
     @PostMapping("/api/clinicians")
-    public ResponseEntity<ClinicianResponseDto> register(
+    public ResponseEntity<ClinicianResponse> register(
             @Valid @RequestBody ClinicianRegistrationRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(clinicianService.register(request));
     }
 
     @GetMapping("/{id}")
-    public ClinicianResponseDto getById(@PathVariable UUID id) {
+    public ClinicianResponse getById(@PathVariable UUID id) {
         return clinicianService.getById(id);
     }
 
     @GetMapping
-    public List<ClinicianResponseDto> getBySpecialty(@RequestParam Specialty specialty) {
+    public List<ClinicianResponse> getBySpecialty(@RequestParam Specialty specialty) {
         return clinicianService.getActiveBySpecialty(specialty);
     }
 
     @GetMapping(params = "licenseNumber")
-    public ClinicianResponseDto getByLicenseNumber(@RequestParam String licenseNumber) {
+    public ClinicianResponse getByLicenseNumber(@RequestParam String licenseNumber) {
         return clinicianService.getByLicenseNumber(licenseNumber);
     }
 
     @GetMapping(params = "employeeNumber")
-    public ClinicianResponseDto getByEmployeeNumber(@RequestParam String employeeNumber) {
+    public ClinicianResponse getByEmployeeNumber(@RequestParam String employeeNumber) {
         return clinicianService.getByEmployeeNumber(employeeNumber);
     }
 

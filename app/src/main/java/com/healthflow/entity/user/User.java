@@ -103,4 +103,9 @@ public class User {
     public void removeRole(UserRole role) {
         userRoleSet.remove(role);
     }
+
+    public void updateContactInfo(String email, String phoneNumber) {
+        this.email = email.toLowerCase();
+        this.phoneNumber = phoneNumber;
+    }
 }

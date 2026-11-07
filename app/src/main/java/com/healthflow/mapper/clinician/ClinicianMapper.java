@@ -1,9 +1,9 @@
 package com.healthflow.mapper.clinician;
 
 import com.healthflow.dto.clinician.ClinicianRegistrationRequest;
+import com.healthflow.dto.clinician.ClinicianResponse;
 import com.healthflow.entity.user.User;
 import com.healthflow.entity.user.staff.Clinician;
-import com.healthflow.dto.clinician.ClinicianResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -14,7 +14,7 @@ public interface ClinicianMapper {
     @Mapping(target = "employeeNumber", source = "staff.employeeNumber")
     @Mapping(target = "hireDate", source = "staff.hireDate")
     @Mapping(target = "employmentStatus", source = "staff.employmentStatus")
-    ClinicianResponseDto toResponse(Clinician clinician);
+    ClinicianResponse toResponse(Clinician clinician);
 
     User toUser(ClinicianRegistrationRequest request);
 

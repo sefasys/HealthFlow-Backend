@@ -2,7 +2,7 @@ package com.healthflow.service;
 
 
 import com.healthflow.dto.clinicregistrar.ClinicRegistrarRegistrationRequest;
-import com.healthflow.dto.clinicregistrar.ClinicRegistrarResponseDto;
+import com.healthflow.dto.clinicregistrar.ClinicRegistrarResponse;
 import com.healthflow.entity.user.User;
 import com.healthflow.entity.user.UserRole;
 import com.healthflow.entity.user.staff.ClinicRegistrar;
@@ -27,7 +27,7 @@ public class ClinicRegistrarService {
     }
 
     @Transactional
-    public ClinicRegistrarResponseDto register(ClinicRegistrarRegistrationRequest request) {
+    public ClinicRegistrarResponse register(ClinicRegistrarRegistrationRequest request) {
         User user = registrarMapper.toUser(request);
         Staff staff = staffService.createStaff(user, UserRole.CLINIC_REGISTRAR,
                 request.employeeNumber(), request.hireDate());
@@ -39,7 +39,7 @@ public class ClinicRegistrarService {
     }
 
     @Transactional(readOnly = true)
-    public ClinicRegistrarResponseDto getById(UUID id) {
+    public ClinicRegistrarResponse getById(UUID id) {
         return registrarRepository.findWithDetailsById(id)
                 .map(registrarMapper::toResponse)
                 .orElseThrow(() -> new ClinicRegistrarNotFoundException("Clinic registrar with the " + id));

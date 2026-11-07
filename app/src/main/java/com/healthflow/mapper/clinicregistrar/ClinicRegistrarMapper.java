@@ -1,8 +1,7 @@
 package com.healthflow.mapper.clinicregistrar;
 
 import com.healthflow.dto.clinicregistrar.ClinicRegistrarRegistrationRequest;
-import com.healthflow.dto.clinicregistrar.ClinicRegistrarResponseDto;
-import com.healthflow.dto.clinicregistrar.UpdateClinicRegistrarResponseDto;
+import com.healthflow.dto.clinicregistrar.ClinicRegistrarResponse;
 import com.healthflow.entity.user.User;
 import com.healthflow.entity.user.staff.ClinicRegistrar;
 import org.mapstruct.Mapper;
@@ -15,7 +14,7 @@ public interface ClinicRegistrarMapper{
         @Mapping(target = "employeeNumber", source = "staff.employeeNumber")
         @Mapping(target = "hireDate", source = "staff.hireDate")
         @Mapping(target = "employmentStatus", source = "staff.employmentStatus")
-        ClinicRegistrarResponseDto toResponse(ClinicRegistrar registrar);
+        ClinicRegistrarResponse toResponse(ClinicRegistrar registrar);
 
         User toUser(ClinicRegistrarRegistrationRequest request);
 }

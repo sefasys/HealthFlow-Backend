@@ -13,11 +13,12 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgres://localhost:5432/healthflow
+    url: jdbc:postgresql://localhost:5432/healthflow
     username: postgres
-    password: 123
+    password: ${DB_PASSWORD}
   jpa:
     open-in-view: false
     hibernate:
       default_batch_fetch_size: 50 # bunu user'ların eager yüklenmesinden ötürü oluşabilecek n+1 probleminin ortadan kalkması için kullandık.
+      ddl-auto: create
 

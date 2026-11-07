@@ -1,10 +1,6 @@
 package com.healthflow.api.handler;
 
 import com.healthflow.dto.common.ErrorResponseDto;
-import com.healthflow.domain.exception.AppointmentConflictException;
-import com.healthflow.domain.exception.DomainValidationException;
-import com.healthflow.domain.exception.IncompatibleUserRoleException;
-
 import com.healthflow.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,30 +58,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(IncompatibleUserRoleException.class)
-    public ResponseEntity<ErrorResponseDto> handleIncompatibleUserRole(
-            IncompatibleUserRoleException exception
-    ) {
-        return createErrorResponse(
-                HttpStatus.CONFLICT,
-                "INCOMPATIBLE_USER_ROLE",
-                exception.getMessage()
-        );
-    }
 
-    @ExceptionHandler({
-            AvailabilityConflictException.class,
-            AppointmentConflictException.class
-    })
-    public ResponseEntity<ErrorResponseDto> handleSchedulingConflict(
-            RuntimeException exception
-    ) {
-        return createErrorResponse(
-                HttpStatus.CONFLICT,
-                "SCHEDULING_CONFLICT",
-                exception.getMessage()
-        );
-    }
 
     // 403 — İşlem için erişim izni yok
     @ExceptionHandler(AppointmentAccessDeniedException.class)
@@ -114,16 +87,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(DomainValidationException.class)
-    public ResponseEntity<ErrorResponseDto> handleDomainValidation(
-            DomainValidationException exception
-    ) {
-        return createErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                "DOMAIN_VALIDATION_ERROR",
-                exception.getMessage()
-        );
-    }
+
 
     // 400 — HTTP isteğinin okunması veya doğrulanması sırasında oluşan hatalar
     @ExceptionHandler({

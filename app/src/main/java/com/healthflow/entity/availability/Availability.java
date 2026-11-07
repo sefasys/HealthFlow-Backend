@@ -17,10 +17,10 @@ public class Availability {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "availability_id")
-    private UUID availabilityId;
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @Column(name = "clinician_id", nullable = false)
+    @JoinColumn(name = "clinician_id", nullable = false)
     private Clinician clinician;//ilişkilerde optional kullanıyoruz peki diğer fieldlarda neden kullanmıyoruz?
 
     @Column(name = "start_time", nullable = false)
@@ -58,8 +58,8 @@ public class Availability {
     protected Availability() {
     }
 
-    public UUID getAvailabilityId() {
-        return availabilityId;
+    public UUID getId() {
+        return id;
     }
 
     public Clinician getClinician() {

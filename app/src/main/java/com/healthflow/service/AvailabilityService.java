@@ -71,5 +71,7 @@ public class AvailabilityService {
                 .map(availabilityMapper::toResponse)
                 .orElseThrow(() -> new AvailabilityNotFoundException("Availability not found with ID: " + availabilityId));
     }
+
+
 }
 

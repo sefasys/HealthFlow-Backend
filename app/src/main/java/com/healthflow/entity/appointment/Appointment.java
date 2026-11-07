@@ -19,18 +19,18 @@ public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "appointment_id")
-    private UUID appointmentId;
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @Column(name = "availability_id", nullable = false)
+    @JoinColumn(name = "availability_id", nullable = false)
     private Availability availability;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @Column(name = "registrar_id", nullable = false)
+    @JoinColumn(name = "registrar_id", nullable = false)
     private ClinicRegistrar clinicRegistrar;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "patient_id")
+    @JoinColumn(name = "patient_id")
     private Patient patient;
 
     @Column(name = "start_time", nullable = false)
@@ -43,10 +43,10 @@ public class Appointment {
     @Column(nullable = false, length = 20)
     private AppointmentStatus status;
 
-    public Appointment(Availability availability, ClinicRegistrar clinicRegistrar, Patient patient, LocalDateTime startTime, LocalDateTime endTime, AppointmentStatus status) {
+    public Appointment(Availability availability, ClinicRegistrar clinicRegistrar,
+                       LocalDateTime startTime, LocalDateTime endTime) {
         this.availability = availability;
         this.clinicRegistrar = clinicRegistrar;
-        this.patient = patient;
         this.startTime = startTime;
         this.endTime = endTime;
         this.status = AppointmentStatus.AVAILABLE;
@@ -54,8 +54,8 @@ public class Appointment {
 
     protected Appointment(){}
 
-    public UUID getAppointmentId() {
-        return appointmentId;
+    public UUID getId() {
+        return id;
     }
 
     public Availability getAvailability() {

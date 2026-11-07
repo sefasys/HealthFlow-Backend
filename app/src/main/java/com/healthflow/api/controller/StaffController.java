@@ -31,19 +31,19 @@ public class StaffController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/return")
+    @PostMapping("/suspend")
     public ResponseEntity<Void> suspend(@PathVariable UUID id) {
         staffService.suspend(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/return")
+    @PostMapping("/reinstate")
     public ResponseEntity<Void> reinstate(@PathVariable UUID id) {
         staffService.reinstate(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/return")
+    @PostMapping("/terminate")
     public ResponseEntity<Void> terminate(@PathVariable UUID id) {
         staffService.terminate(id);
         return ResponseEntity.noContent().build();

@@ -2,9 +2,12 @@ package com.healthflow.entity.availability;
 
 
 import com.healthflow.entity.user.staff.Clinician;
+import com.healthflow.exception.InvalidAvailabilityException;
 import jakarta.persistence.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -34,8 +37,18 @@ public class Availability {
     @Column(nullable = false, length = 20)
     private AvailabilityStatus status;
 
-    public Availability(Clinician clinician, LocalDateTime startTime, LocalDateTime endTime, SlotDuration slotDuration, AvailabilityStatus status) {
-        this.clinician = clinician;
+    public Availability(Clinician clinician, LocalDateTime startTime,
+                        LocalDateTime endTime, SlotDuration slotDuration) {
+        if (!endTime.isAfter(startTime)) {
+            throw new InvalidAvailabilityException("End time must be after start time");
+        }
+        long minutes = Duration.between(startTime, endTime).toMinutes();
+        if (minutes % slotDuration.getMinutes() != 0) {
+            throw new InvalidAvailabilityException(
+                    "Availability length must be a multiple of " + slotDuration.getMinutes() + " minutes");
+        }
+
+        this.clinician = Objects.requireNonNull(clinician);
         this.startTime = startTime;
         this.endTime = endTime;
         this.slotDuration = slotDuration;

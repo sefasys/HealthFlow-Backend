@@ -12,11 +12,13 @@ import com.healthflow.exception.ClinicianAlreadyExistsException;
 import com.healthflow.exception.ClinicianNotFoundException;
 import com.healthflow.mapper.clinician.ClinicianMapper;
 import com.healthflow.repository.IClinicianRepository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class ClinicianService {
 
     private final IClinicianRepository clinicianRepository;

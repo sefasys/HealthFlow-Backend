@@ -10,10 +10,12 @@ import com.healthflow.entity.user.staff.Staff;
 import com.healthflow.exception.ClinicRegistrarNotFoundException;
 import com.healthflow.mapper.clinicregistrar.ClinicRegistrarMapper;
 import com.healthflow.repository.IClinicRegistrarRepository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+@Service
 public class ClinicRegistrarService {
 
     private final IClinicRegistrarRepository registrarRepository;

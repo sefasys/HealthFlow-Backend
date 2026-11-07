@@ -15,7 +15,11 @@ import java.util.UUID;
 @RequestMapping("/api/clinician")
 public class ClinicianController {
 
-    private ClinicianService clinicianService;
+    private final ClinicianService clinicianService;
+
+    public ClinicianController(ClinicianService clinicianService) {
+        this.clinicianService = clinicianService;
+    }
 
     @PostMapping("/api/clinicians")
     public ResponseEntity<ClinicianResponse> register(

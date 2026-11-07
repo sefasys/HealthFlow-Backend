@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,39 +20,26 @@ public class PatientController {
     this.patientService = patientService;
   }
 
-  @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  public PatientResponse createPatient(@Valid @RequestBody PatientRegistrationRequest requestDto) {
-    return patientService.createPatient(requestDto);
-  }
+    @PostMapping
+    public ResponseEntity<PatientResponse> register(
+            @Valid @RequestBody PatientRegistrationRequest request) {
+        PatientResponse response = patientService.register(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 
-  @GetMapping
-  @ResponseStatus(HttpStatus.OK)
-  public List<PatientResponse> getPatients() {
-    return patientService.getPatients();
-  }//bunda sorun var.
+    @GetMapping("/{id}")
+    public PatientResponse getById(@PathVariable UUID id) {
+        return patientService.getById(id);
+    }
 
-  @ResponseStatus(HttpStatus.OK)
-  @GetMapping("/{uniqueId}")
-  public PatientResponse findPatientByUniqueId(@PathVariable UUID uniqueId) {
-    return patientService.findPatientByUniqueId(uniqueId);
-  }
+    @PatchMapping("/{id}/update-medical-info")
+    public PatientResponse updateMedicalInfo(@PathVariable UUID id,
+                                             @Valid @RequestBody UpdatePatientMedicalInfoRequest request) {
+        return patientService.updateMedicalInfo(id, request);
+    }
 
-  @ResponseStatus(HttpStatus.OK)
-  @PostMapping("/search-by-national-id")
-  public PatientResponse findPatientByNationalId(@Valid @RequestBody FindPatientByNationalIdRequestDto findPatientByNationalIdRequestDto) {
-      return patientService.findPatientByNationalId(findPatientByNationalIdRequestDto);
-  }
-
-  @ResponseStatus(HttpStatus.OK)
-  @GetMapping("/search")
-  public List<PatientResponse> searchPatients(@RequestParam String query) { // Request Param'dan ayrıca bahsetmek gerekiyor.
-   return patientService.searchPatient(query);
-  }//bunda da sorun var.
-
-  @ResponseStatus(HttpStatus.OK)
-  @PatchMapping("/{uniqueId}")
-  public UpdatePatientResponseDto updatePatient(@PathVariable UUID uniqueId, @Valid @RequestBody UpdatePatientRequestDto requestDto) {
-    return patientService.updatePatient(uniqueId, requestDto);
-  }
+    @GetMapping(params = "nationalId")
+    public PatientResponse getByNationalId(@RequestParam String nationalId) {
+        return patientService.getByNationalId(nationalId);
+    }
 }

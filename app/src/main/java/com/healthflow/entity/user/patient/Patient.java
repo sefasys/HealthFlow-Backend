@@ -14,7 +14,7 @@ public class Patient {
     private UUID id;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false, unique = true) // örnekte lazy fetch var ama niye bilmiyorum.
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ElementCollection
@@ -26,11 +26,14 @@ public class Patient {
     @Column(name = "blood_type", length = 16)
     private BloodType bloodType;
 
-    public Patient(User user, Set<String> allergies) {
+    public Patient(User user) {
         this.user = user;
-        this.allergies = new HashSet<>(allergies);
     }
     protected Patient(){}
+
+    public UUID getId() {
+        return id;
+    }
 
     public User getUser() {
         return user;
@@ -44,7 +47,15 @@ public class Patient {
         return bloodType;
     }
 
+    public void updateBloodType(BloodType bloodType) {
+        this.bloodType = Objects.requireNonNull(bloodType);
+    }
+
     public void addAllergy(String allergy) { allergies.add(allergy); }
-    public void removeAllergy(String allergy) { allergies.remove(allergy); }
+    public void replaceAllergies(Set<String> newAllergies) {
+        allergies.clear();
+        allergies.addAll(newAllergies);
+    }
+    public void removeAllergy(String allergy) { allergies.remove(allergy);}
 
 }

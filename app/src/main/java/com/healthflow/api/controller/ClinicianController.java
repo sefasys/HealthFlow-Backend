@@ -1,9 +1,11 @@
 package com.healthflow.api.controller;
 
+import com.healthflow.entity.user.staff.Specialty;
 import com.healthflow.service.ClinicianService;
 import com.healthflow.dto.clinician.*;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,45 +15,33 @@ import java.util.UUID;
 @RequestMapping("/api/clinician")
 public class ClinicianController {
 
-    private final ClinicianService clinicianService;
+    private ClinicianService clinicianService;
 
-    public ClinicianController(ClinicianService clinicianService){
-        this.clinicianService = clinicianService;
+    @PostMapping("/api/clinicians")
+    public ResponseEntity<ClinicianResponseDto> register(
+            @Valid @RequestBody ClinicianRegistrationRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(clinicianService.register(request));
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ClinicianResponseDto createClinician(@Valid @RequestBody CreateClinicianRequestDto requestDto){
-        return clinicianService.createClinician(requestDto);
+    @GetMapping("/{id}")
+    public ClinicianResponseDto getById(@PathVariable UUID id) {
+        return clinicianService.getById(id);
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<ClinicianResponseDto> getClinicians(){
-        return clinicianService.getClinicians();
+    public List<ClinicianResponseDto> getBySpecialty(@RequestParam Specialty specialty) {
+        return clinicianService.getActiveBySpecialty(specialty);
     }
 
-    @GetMapping("/find-by-unique-id/{uniqueId}")
-    @ResponseStatus(HttpStatus.OK)
-    public ClinicianResponseDto findClinicianByUniqueId(@PathVariable UUID uniqueId){
-        return clinicianService.findClinicianByUniqueId(uniqueId);
+    @GetMapping(params = "licenseNumber")
+    public ClinicianResponseDto getByLicenseNumber(@RequestParam String licenseNumber) {
+        return clinicianService.getByLicenseNumber(licenseNumber);
     }
 
-    @PostMapping("/find-by-national-id")
-    @ResponseStatus(HttpStatus.OK)
-    public ClinicianResponseDto findClinicianByNationalId(@Valid @RequestBody FindClinicianByNationalIdRequestDto requestDto){
-        return clinicianService.findClinicianByNationalId(requestDto);
+    @GetMapping(params = "employeeNumber")
+    public ClinicianResponseDto getByEmployeeNumber(@RequestParam String employeeNumber) {
+        return clinicianService.getByEmployeeNumber(employeeNumber);
     }
 
-    @PatchMapping("/update/{uniqueId}")
-    @ResponseStatus(HttpStatus.OK)
-    public UpdateClinicianResponseDto updateClinician(@PathVariable UUID uniqueId, @Valid @RequestBody UpdateClinicianRequestDto requestDto){
-        return clinicianService.updateClinician(uniqueId, requestDto);
-    }
-
-    @GetMapping("/search")
-    @ResponseStatus(HttpStatus.OK)
-    public List<ClinicianResponseDto> searchClinician(@RequestParam String query){
-        return clinicianService.searchClinician(query);
-    }
 }

@@ -20,8 +20,6 @@ public class User {
     @Column(name = "user_id", nullable = false, unique = true)
     private UUID userId;
 
-    @NotBlank(message = "National ID cannot be empty")
-    @Pattern(regexp = "\\d{10}[02468]", message = "National ID must be 11 digits and end with an even digit")
     @Column(name = "national_id", nullable = false, unique = true, length = 11)
     private String nationalId;
 
@@ -49,17 +47,16 @@ public class User {
     @ElementCollection
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role", nullable = false)
-    private  Set<UserRole> userRoleSet = new HashSet<>();
+    private Set<UserRole> userRoleSet = new HashSet<>();
 
-    public User(String nationalId, String name, String surname, Gender gender, LocalDate birthDate, String phoneNumber, String email, Set<UserRole> userRoleSet) {
+    public User(String nationalId, String name, String surname, Gender gender, LocalDate birthDate, String phoneNumber, String email) {
         this.nationalId = nationalId;
         this.name = name;
         this.surname = surname;
         this.gender = gender;
         this.birthDate = birthDate;
         this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.userRoleSet = new HashSet<>(userRoleSet);
+        this.email = email.toLowerCase();
     }
 
     protected User(){}
@@ -74,6 +71,10 @@ public class User {
 
     public String getName() {
         return name;
+    }
+
+    public Gender getGender() {
+        return gender;
     }
 
     public String getSurname() {

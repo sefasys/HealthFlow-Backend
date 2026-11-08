@@ -32,7 +32,7 @@ public class PatientController {
         return patientService.getById(id);
     }
 
-    @PatchMapping("/{id}/update-medical-info")
+    @PatchMapping("/{id}/medical-info")
     public PatientResponse updateMedicalInfo(@PathVariable UUID id,
                                              @Valid @RequestBody UpdatePatientMedicalInfoRequest request) {
         return patientService.updateMedicalInfo(id, request);

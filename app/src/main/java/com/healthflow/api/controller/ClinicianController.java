@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/clinician")
+@RequestMapping("/api/clinicians")
 public class ClinicianController {
 
     private final ClinicianService clinicianService;
@@ -21,7 +21,7 @@ public class ClinicianController {
         this.clinicianService = clinicianService;
     }
 
-    @PostMapping("/api/clinicians")
+    @PostMapping
     public ResponseEntity<ClinicianResponse> register(
             @Valid @RequestBody ClinicianRegistrationRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)

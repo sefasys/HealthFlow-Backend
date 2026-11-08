@@ -14,6 +14,7 @@ public class Patient {
     private UUID id;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @MapsId
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -24,7 +25,7 @@ public class Patient {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "blood_type", length = 16)
-    private BloodType bloodType;
+    private BloodType bloodType = BloodType.UNKNOWN;
 
     public Patient(User user) {
         this.user = user;

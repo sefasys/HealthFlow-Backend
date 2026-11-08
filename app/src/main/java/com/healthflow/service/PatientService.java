@@ -1,17 +1,21 @@
 package com.healthflow.service;
 
+import com.healthflow.dto.common.PageResponse;
 import com.healthflow.dto.patient.PatientRegistrationRequest;
 import com.healthflow.dto.patient.PatientResponse;
 import com.healthflow.dto.patient.UpdatePatientMedicalInfoRequest;
+import com.healthflow.entity.user.Gender;
 import com.healthflow.entity.user.User;
 import com.healthflow.entity.user.UserRole;
+import com.healthflow.entity.user.patient.BloodType;
 import com.healthflow.entity.user.patient.Patient;
 import com.healthflow.exception.PatientNotFoundException;
 import com.healthflow.exception.UserAlreadyExistsException;
 import com.healthflow.mapper.patient.PatientMapper;
 import com.healthflow.repository.IPatientRepository;
 import com.healthflow.repository.IUserRepository;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional; // Bu arkadaş daha çok tercih ediliyormuş çünkü daha fazla ayar sunuyor ama spring boot iki transactional anotasyonunu da tanıyormuş.
 
@@ -89,5 +93,16 @@ public class PatientService {
                 .orElseThrow(() -> new PatientNotFoundException("Patient not found with this national ID."));
     }
 
+    @Transactional(readOnly = true)
+    public PageResponse<PatientResponse> search(String query, Gender gender,
+                                                BloodType bloodType, Pageable pageable) {
+        String normalizedQuery = (query == null) ? "" : query.trim();
+
+        Page<PatientResponse> page = patientRepository
+                .search(normalizedQuery, gender, bloodType, pageable)
+                .map(patientMapper::toResponse);
+
+        return PageResponse.from(page);
+    }
 
 }

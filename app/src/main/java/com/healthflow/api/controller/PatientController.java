@@ -1,10 +1,16 @@
 package com.healthflow.api.controller;
 
+import com.healthflow.dto.common.PageResponse;
+import com.healthflow.entity.user.Gender;
+import com.healthflow.entity.user.patient.BloodType;
 import com.healthflow.service.PatientService;
 import com.healthflow.dto.patient.*;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,5 +47,14 @@ public class PatientController {
     @GetMapping(params = "nationalId")
     public PatientResponse getByNationalId(@RequestParam String nationalId) {
         return patientService.getByNationalId(nationalId);
+    }
+
+    @GetMapping
+    public PageResponse<PatientResponse> search(
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false) Gender gender,
+            @RequestParam(required = false) BloodType bloodType,
+            @PageableDefault(size = 20, sort = "user.surname") Pageable pageable) {
+        return patientService.search(query, gender, bloodType, pageable);
     }
 }

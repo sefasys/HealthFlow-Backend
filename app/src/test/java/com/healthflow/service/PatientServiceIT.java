@@ -8,6 +8,9 @@ import com.healthflow.entity.user.Gender;
 import com.healthflow.exception.UserAlreadyExistsException;
 import com.healthflow.repository.IPatientRepository;
 import com.healthflow.repository.IUserRepository;
+import jakarta.persistence.EntityManagerFactory;
+import org.hibernate.SessionFactory;
+import org.hibernate.stat.Statistics;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +35,7 @@ class PatientServiceIT extends IntegrationTestBase {
     @Autowired
     IUserRepository userRepository;
 
-    @AfterEach
-    void cleanUp() {
-        patientRepository.deleteAll();
-        userRepository.deleteAll();
-    }
+
     // Bu class IntelliJ üzerinden çalışmıyor çünkü docker üzerinden çalıştırıyoruz bağlanamadığı için terminal üzerinden integration test yapıyoruz
     // o aşamada 4 metotta başarılı şekilde çalıştı bu da demek oluyor ki rollback mekanizması doğru şekilde çalıştı.
     @Test
@@ -115,6 +114,30 @@ class PatientServiceIT extends IntegrationTestBase {
 
         assertThat(lastPage.content()).hasSize(5);
         assertThat(lastPage.content().get(4).surname()).isEqualTo("Soyad25");
+    }
+
+    @Test
+    void search_doesNotCauseNPlusOne() {
+        for (int i = 1; i <= 20; i++) {
+            patientService.register(new PatientRegistrationRequest(
+                    "7654321" + String.format("%03d", i) + "4",
+                    "Hasta",
+                    "Soyad" + String.format("%02d", i),
+                    LocalDate.of(1990, 1, 1),
+                    "nplus" + i + "@test.com",
+                    null, Gender.MALE, null,
+                    Set.of("Penisilin", "Fıstık")));
+        }
+
+        Statistics statistics = statistics();
+        statistics.clear();
+
+        PageResponse<PatientResponse> page = patientService.search(
+                null, null, null, PageRequest.of(0, 20, Sort.by("user.surname")));
+
+        assertThat(page.content()).hasSize(20);
+        assertThat(page.content()).allSatisfy(p -> assertThat(p.allergies()).hasSize(2));
+        assertThat(statistics.getPrepareStatementCount()).isLessThanOrEqualTo(3);
     }
 
 

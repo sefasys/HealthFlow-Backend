@@ -30,7 +30,7 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        default_batch_fetch_size: 50 # bunu user'ların eager yüklenmesinden ötürü oluşabilecek n+1 probleminin ortadan kalkması için kullandık.
+        default_batch_fetch_size: 50 # patient search tarafında alerjileri batch fetch ile çekmek daha doğruymuş. arkasındaki sebebi öğreneceğim.
         format_sql: true
   data:
     web:

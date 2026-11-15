@@ -1,31 +1,21 @@
 package com.healthflow.repository.availability;
 
-
 import com.healthflow.entity.availability.Availability;
-import com.healthflow.entity.availability.AvailabilityStatus;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-public interface IAvailabilityRepository extends JpaRepository<Availability, UUID> {
+public interface IAvailabilityRepository {
 
-    @Query("""
-        select count(a) > 0 from Availability a
-        where a.clinician.id = :clinicianId
-          and a.status = :status
-          and a.startTime < :endTime
-          and a.endTime > :startTime
-        """)
-    boolean existsOverlapping(UUID clinicianId, LocalDateTime startTime,
-                              LocalDateTime endTime, AvailabilityStatus status);
+    Availability save(Availability availability);
 
-    List<Availability> findByClinicianIdAndStatusOrderByStartTime(
-            UUID clinicianId, AvailabilityStatus status);
+    Optional<Availability> findById(UUID id);
 
-    List<Availability> findByClinicianIdAndStatusAndEndTimeAfterOrderByStartTime(
-            UUID clinicianId, AvailabilityStatus status, LocalDateTime now);
+    boolean existsById(UUID id);
 
+    boolean existsActiveOverlapping(UUID clinicianId, LocalDateTime startTime, LocalDateTime endTime);
+
+    List<Availability> findUpcomingActiveByClinician(UUID clinicianId, LocalDateTime now);
 }

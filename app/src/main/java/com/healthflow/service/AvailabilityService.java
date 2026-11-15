@@ -42,8 +42,8 @@ public class AvailabilityService {
             throw new InvalidAvailabilityException("Only active clinicians can create availability");
         }
 
-        if (availabilityRepository.existsOverlapping(clinicianId,
-                request.startTime(), request.endTime(), AvailabilityStatus.ACTIVE)) {
+        if (availabilityRepository.existsActiveOverlapping(clinicianId,
+                request.startTime(), request.endTime())) {
             throw new AvailabilityConflictException("Overlaps with an existing availability");
         }
 
@@ -58,8 +58,7 @@ public class AvailabilityService {
         if (!clinicianRepository.existsById(clinicianId)) {
             throw new ClinicianNotFoundException("Clinician not found with the ID: " + clinicianId);
         }
-        return availabilityRepository.findByClinicianIdAndStatusAndEndTimeAfterOrderByStartTime(
-                        clinicianId, AvailabilityStatus.ACTIVE, LocalDateTime.now())
+        return availabilityRepository.findUpcomingActiveByClinician(clinicianId, LocalDateTime.now())
                 .stream()
                 .map(availabilityMapper::toResponse)
                 .toList();

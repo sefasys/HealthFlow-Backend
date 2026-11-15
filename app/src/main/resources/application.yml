@@ -16,6 +16,14 @@ spring:
     url: jdbc:postgresql://localhost:5432/healthflow
     username: postgres
     password: ${DB_PASSWORD}
+    hikari:
+      pool-name: HealthFlowPool
+      maximum-pool-size: 10
+      minimum-idle: 10
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
   jpa:
     open-in-view: false
     hibernate:
@@ -28,6 +36,7 @@ spring:
     web:
       pageable:
         max-page-size: 100
+
 
 logging:
   level:

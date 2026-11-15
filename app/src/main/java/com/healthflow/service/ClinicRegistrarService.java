@@ -42,7 +42,7 @@ public class ClinicRegistrarService {
 
     @Transactional(readOnly = true)
     public ClinicRegistrarResponse getById(UUID id) {
-        return registrarRepository.findWithDetailsById(id)
+        return registrarRepository.findDetailedById(id)
                 .map(registrarMapper::toResponse)
                 .orElseThrow(() -> new ClinicRegistrarNotFoundException("Clinic registrar with the " + id));
     }

@@ -83,7 +83,7 @@ public class AppointmentService {
             throw new InvalidAvailabilityException("Availability is not active");
         }
 
-        ClinicRegistrar registrar = registrarRepository.findWithDetailsById(request.registrarId())
+        ClinicRegistrar registrar = registrarRepository.findDetailedById(request.registrarId())
                 .orElseThrow(() -> new ClinicRegistrarNotFoundException("Clinic registrar not found with ID: " + request.registrarId()));
 
         if (!registrar.getStaff().isActive()) {

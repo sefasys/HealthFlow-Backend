@@ -49,7 +49,7 @@ public class ClinicianService {
 
     @Transactional(readOnly = true)
     public ClinicianResponse getById(UUID id) {
-        return clinicianRepository.findWithDetailsById(id)
+        return clinicianRepository.findDetailedById(id)
                 .map(clinicianMapper::toResponse)
                 .orElseThrow(() -> new ClinicianNotFoundException("Clinician not found with the unique id: "+ id));
     }
@@ -70,7 +70,7 @@ public class ClinicianService {
 
     @Transactional(readOnly = true)
     public ClinicianResponse getByEmployeeNumber(String employeeNumber) {
-        return clinicianRepository.findByStaffEmployeeNumber(employeeNumber)
+        return clinicianRepository.findByEmployeeNumber(employeeNumber)
                 .map(clinicianMapper::toResponse)
                 .orElseThrow(() -> new ClinicianNotFoundException("Clinician not found"));
     }

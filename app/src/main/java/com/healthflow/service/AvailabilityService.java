@@ -35,7 +35,7 @@ public class AvailabilityService {
 
     @Transactional
     public AvailabilityResponse create(UUID clinicianId, CreateAvailabilityRequest request) {
-        Clinician clinician = clinicianRepository.findWithDetailsById(clinicianId)
+        Clinician clinician = clinicianRepository.findDetailedById(clinicianId)
                 .orElseThrow(() -> new ClinicianNotFoundException("Clinician not found with id: " + clinicianId));
 
         if (!clinician.getStaff().isActive()) {

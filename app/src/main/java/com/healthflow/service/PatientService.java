@@ -83,14 +83,14 @@ public class PatientService {
     }
 
     private Patient findPatient(UUID id) {
-        return patientRepository.findWithDetailsById(id)
+        return patientRepository.findDetailedById(id)
                 .orElseThrow(() -> new PatientNotFoundException("Patient not found with: " + id));
     }
 
 
     @Transactional(readOnly = true)
     public PatientResponse getByNationalId(String nationalId) {
-        return patientRepository.findByUserNationalId(nationalId)
+        return patientRepository.findByNationalId(nationalId)
                 .map(patientMapper::toResponse)
                 .orElseThrow(() -> new PatientNotFoundException("Patient not found with this national ID."));
     }

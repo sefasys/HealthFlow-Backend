@@ -2,15 +2,19 @@ package com.healthflow.service;
 
 
 import com.healthflow.dto.appointment.AppointmentResponse;
+import com.healthflow.dto.appointment.BookAppointmentRequest;
 import com.healthflow.dto.appointment.OpenSlotsRequest;
 import com.healthflow.entity.appointment.Appointment;
+import com.healthflow.entity.appointment.AppointmentStatus;
 import com.healthflow.entity.availability.Availability;
+import com.healthflow.entity.patient.Patient;
 import com.healthflow.entity.staff.ClinicRegistrar;
 import com.healthflow.exception.*;
 import com.healthflow.mapper.appointment.AppointmentMapper;
 import com.healthflow.repository.IAppointmentRepository;
 import com.healthflow.repository.IAvailabilityRepository;
 import com.healthflow.repository.IClinicRegistrarRepository;
+import com.healthflow.repository.IPatientRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,14 +29,50 @@ public class AppointmentService {
     private final IAppointmentRepository appointmentRepository;
     private final IAvailabilityRepository availabilityRepository;
     private final IClinicRegistrarRepository registrarRepository;
+    private final IPatientRepository patientRepository;
     private final AppointmentMapper appointmentMapper;
 
-    public AppointmentService(IAppointmentRepository appointmentRepository, IAvailabilityRepository availabilityRepository, IClinicRegistrarRepository registrarRepository, AppointmentMapper appointmentMapper) {
+    public AppointmentService(IAppointmentRepository appointmentRepository, IAvailabilityRepository availabilityRepository, IClinicRegistrarRepository registrarRepository, IPatientRepository patientRepository, AppointmentMapper appointmentMapper) {
         this.appointmentRepository = appointmentRepository;
         this.availabilityRepository = availabilityRepository;
         this.registrarRepository = registrarRepository;
+        this.patientRepository = patientRepository;
         this.appointmentMapper = appointmentMapper;
     }
+
+    @Transactional
+    public AppointmentResponse book(UUID appointmentId, BookAppointmentRequest request) {
+        Appointment appointment = findAppointment(appointmentId);
+
+        if (!appointment.getStartTime().isAfter(LocalDateTime.now())) {
+            throw new InvalidAppointmentException("Cannot book a slot in the past");
+        }
+
+        Patient patient = patientRepository.findById(request.patientId())
+                .orElseThrow(() -> new PatientNotFoundException(
+                        "Patient not found with ID: " + request.patientId()));
+
+        if (appointmentRepository.existsPatientOverlap(patient.getId(),
+                appointment.getStartTime(), appointment.getEndTime(), AppointmentStatus.BOOKED)) {
+            throw new AppointmentConflictException("Patient already has an appointment at this time");
+        }
+
+        appointment.book(patient);
+        return appointmentMapper.toResponse(appointment);
+    }
+
+    @Transactional
+    public AppointmentResponse release(UUID appointmentId) {
+        Appointment appointment = findAppointment(appointmentId);
+        appointment.release();
+        return appointmentMapper.toResponse(appointment);
+    }
+
+    private Appointment findAppointment(UUID id) {
+        return appointmentRepository.findById(id)
+                .orElseThrow(() -> new AppointmentNotFoundException("Appointment not found with ID: " + id));
+    }
+
 
     @Transactional
     public List<AppointmentResponse> openSlots(UUID availabilityId, OpenSlotsRequest request) {

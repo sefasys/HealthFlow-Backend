@@ -1,0 +1,44 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+  endpoint:
+    health:
+      show-details: always
+
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/healthflow
+    username: postgres
+    password: ${DB_PASSWORD}
+    hikari:
+      pool-name: HealthFlowPool
+      maximum-pool-size: 10
+      minimum-idle: 10
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default_batch_fetch_size: 50 # patient search tarafında alerjileri batch fetch ile çekmek daha doğruymuş. arkasındaki sebebi öğreneceğim.
+        format_sql: true
+  data:
+    web:
+      pageable:
+        max-page-size: 100
+
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE

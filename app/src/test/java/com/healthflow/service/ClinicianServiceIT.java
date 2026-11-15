@@ -8,9 +8,6 @@ import com.healthflow.entity.staff.EmploymentStatus;
 import com.healthflow.entity.staff.Specialty;
 import com.healthflow.exception.ClinicianAlreadyExistsException;
 import com.healthflow.exception.StaffAlreadyExistsException;
-import com.healthflow.repository.clinician.IClinicianRepository;
-import com.healthflow.repository.staff.IStaffRepository;
-import com.healthflow.repository.user.IUserRepository;
 import org.hibernate.stat.Statistics;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +23,6 @@ class ClinicianServiceIT extends IntegrationTestBase {
     @Autowired
     ClinicianService clinicianService;
 
-    @Autowired
-    IClinicianRepository clinicianRepository;
-
-    @Autowired
-    IStaffRepository staffRepository;
-
-    @Autowired
-    IUserRepository userRepository;
-
     @Test
     void register_createsUserStaffAndClinician() {
         ClinicianResponse response = clinicianService.register(
@@ -42,13 +30,10 @@ class ClinicianServiceIT extends IntegrationTestBase {
 
         assertThat(response.id()).isNotNull();
         assertThat(response.employmentStatus()).isEqualTo(EmploymentStatus.ACTIVE);
-        assertThat(userRepository.count()).isEqualTo(1);
-        assertThat(staffRepository.count()).isEqualTo(1);
-        assertThat(clinicianRepository.count()).isEqualTo(1);
-
-        Integer roleCount = jdbcTemplate.queryForObject(
-                "select count(*) from user_roles where role = 'CLINICIAN'", Integer.class);
-        assertThat(roleCount).isEqualTo(1);
+        assertThat(countRows("users")).isEqualTo(1);
+        assertThat(countRows("staff")).isEqualTo(1);
+        assertThat(countRows("clinicians")).isEqualTo(1);
+        assertThat(countRowsWhere("user_roles", "role = 'CLINICIAN'")).isEqualTo(1);
     }
 
     @Test
@@ -59,8 +44,8 @@ class ClinicianServiceIT extends IntegrationTestBase {
                 request("23456780036", "b@test.com", "EMP-2", "LIC-SAME")))
                 .isInstanceOf(ClinicianAlreadyExistsException.class);
 
-        assertThat(userRepository.count()).isEqualTo(1);
-        assertThat(clinicianRepository.count()).isEqualTo(1);
+        assertThat(countRows("users")).isEqualTo(1);
+        assertThat(countRows("clinicians")).isEqualTo(1);
     }
 
     @Test
@@ -71,8 +56,8 @@ class ClinicianServiceIT extends IntegrationTestBase {
                 request("23456780056", "d@test.com", "EMP-SAME", "LIC-2")))
                 .isInstanceOf(StaffAlreadyExistsException.class);
 
-        assertThat(userRepository.count()).isEqualTo(1);
-        assertThat(staffRepository.count()).isEqualTo(1);
+        assertThat(countRows("users")).isEqualTo(1);
+        assertThat(countRows("staff")).isEqualTo(1);
     }
 
     @Test

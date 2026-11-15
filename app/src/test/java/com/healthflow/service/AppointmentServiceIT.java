@@ -68,6 +68,7 @@ class AppointmentServiceIT extends IntegrationTestBase {
             assertThat(slot.patientId()).isNull();
             assertThat(slot.clinicianId()).isEqualTo(clinicianId);
         });
+        assertThat(countRows("appointments")).isEqualTo(3);
     }
 
     @Test
@@ -76,6 +77,8 @@ class AppointmentServiceIT extends IntegrationTestBase {
 
         assertThatThrownBy(() -> openSlots(availabilityId))
                 .isInstanceOf(AppointmentConflictException.class);
+
+        assertThat(countRows("appointments")).isEqualTo(3);
     }
 
     @Test

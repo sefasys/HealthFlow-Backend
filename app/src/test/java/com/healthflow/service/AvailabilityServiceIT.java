@@ -10,7 +10,6 @@ import com.healthflow.entity.user.Gender;
 import com.healthflow.entity.staff.Specialty;
 import com.healthflow.exception.AvailabilityConflictException;
 import com.healthflow.exception.InvalidAvailabilityException;
-import com.healthflow.repository.availability.IAvailabilityRepository;
 import org.hibernate.stat.Statistics;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,9 +34,6 @@ class AvailabilityServiceIT extends IntegrationTestBase {
     @Autowired
     StaffService staffService;
 
-    @Autowired
-    IAvailabilityRepository availabilityRepository;
-
     UUID clinicianId;
     LocalDate tomorrow;
 
@@ -59,7 +55,7 @@ class AvailabilityServiceIT extends IntegrationTestBase {
 
         assertThat(response.status()).isEqualTo(AvailabilityStatus.ACTIVE);
         assertThat(response.clinicianId()).isEqualTo(clinicianId);
-        assertThat(availabilityRepository.count()).isEqualTo(1);
+        assertThat(countRows("availabilities")).isEqualTo(1);
     }
 
     @Test
@@ -70,7 +66,7 @@ class AvailabilityServiceIT extends IntegrationTestBase {
                 request(at(11), at(13), SlotDuration.MIN_20)))
                 .isInstanceOf(AvailabilityConflictException.class);
 
-        assertThat(availabilityRepository.count()).isEqualTo(1);
+        assertThat(countRows("availabilities")).isEqualTo(1);
     }
 
     @Test
@@ -78,7 +74,7 @@ class AvailabilityServiceIT extends IntegrationTestBase {
         availabilityService.create(clinicianId, request(at(9), at(10), SlotDuration.MIN_20));
         availabilityService.create(clinicianId, request(at(10), at(11), SlotDuration.MIN_20));
 
-        assertThat(availabilityRepository.count()).isEqualTo(2);
+        assertThat(countRows("availabilities")).isEqualTo(2);
     }
 
     @Test
@@ -89,7 +85,7 @@ class AvailabilityServiceIT extends IntegrationTestBase {
                 request(at(9), at(10), SlotDuration.MIN_20)))
                 .isInstanceOf(InvalidAvailabilityException.class);
 
-        assertThat(availabilityRepository.count()).isZero();
+        assertThat(countRows("availabilities")).isZero();
     }
 
     @Test
@@ -98,7 +94,7 @@ class AvailabilityServiceIT extends IntegrationTestBase {
                 request(at(9), at(9).plusMinutes(50), SlotDuration.MIN_20)))
                 .isInstanceOf(InvalidAvailabilityException.class);
 
-        assertThat(availabilityRepository.count()).isZero();
+        assertThat(countRows("availabilities")).isZero();
     }
 
     @Test

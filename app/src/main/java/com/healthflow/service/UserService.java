@@ -5,7 +5,7 @@ import com.healthflow.dto.user.UpdateContactInfoRequest;
 import com.healthflow.entity.user.User;
 import com.healthflow.exception.UserAlreadyExistsException;
 import com.healthflow.exception.UserNotFoundException;
-import com.healthflow.repository.IUserRepository;
+import com.healthflow.repository.user.IUserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

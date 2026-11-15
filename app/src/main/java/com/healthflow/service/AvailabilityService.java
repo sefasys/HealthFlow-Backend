@@ -11,8 +11,8 @@ import com.healthflow.exception.AvailabilityNotFoundException;
 import com.healthflow.exception.ClinicianNotFoundException;
 import com.healthflow.exception.InvalidAvailabilityException;
 import com.healthflow.mapper.availability.AvailabilityMapper;
-import com.healthflow.repository.IAvailabilityRepository;
-import com.healthflow.repository.IClinicianRepository;
+import com.healthflow.repository.availability.IAvailabilityRepository;
+import com.healthflow.repository.clinician.IClinicianRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

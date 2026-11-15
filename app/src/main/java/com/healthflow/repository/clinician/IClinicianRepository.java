@@ -1,4 +1,4 @@
-package com.healthflow.repository;
+package com.healthflow.repository.clinician;
 
 
 import com.healthflow.entity.staff.Clinician;

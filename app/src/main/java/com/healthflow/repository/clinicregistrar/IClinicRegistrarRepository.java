@@ -1,4 +1,4 @@
-package com.healthflow.repository;
+package com.healthflow.repository.clinicregistrar;
 
 
 import com.healthflow.entity.staff.ClinicRegistrar;

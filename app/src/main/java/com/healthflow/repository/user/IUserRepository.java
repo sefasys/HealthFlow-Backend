@@ -1,4 +1,4 @@
-package com.healthflow.repository;
+package com.healthflow.repository.user;
 
 
 import com.healthflow.entity.user.User;

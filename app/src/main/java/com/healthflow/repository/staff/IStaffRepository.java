@@ -1,4 +1,4 @@
-package com.healthflow.repository;
+package com.healthflow.repository.staff;
 
 import com.healthflow.entity.staff.Staff;
 import org.springframework.data.jpa.repository.JpaRepository;

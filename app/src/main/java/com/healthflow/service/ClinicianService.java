@@ -11,7 +11,7 @@ import com.healthflow.entity.staff.Staff;
 import com.healthflow.exception.ClinicianAlreadyExistsException;
 import com.healthflow.exception.ClinicianNotFoundException;
 import com.healthflow.mapper.clinician.ClinicianMapper;
-import com.healthflow.repository.IClinicianRepository;
+import com.healthflow.repository.clinician.IClinicianRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

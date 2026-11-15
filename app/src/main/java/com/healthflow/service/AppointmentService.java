@@ -11,10 +11,10 @@ import com.healthflow.entity.patient.Patient;
 import com.healthflow.entity.staff.ClinicRegistrar;
 import com.healthflow.exception.*;
 import com.healthflow.mapper.appointment.AppointmentMapper;
-import com.healthflow.repository.IAppointmentRepository;
-import com.healthflow.repository.IAvailabilityRepository;
-import com.healthflow.repository.IClinicRegistrarRepository;
-import com.healthflow.repository.IPatientRepository;
+import com.healthflow.repository.appointment.IAppointmentRepository;
+import com.healthflow.repository.availability.IAvailabilityRepository;
+import com.healthflow.repository.clinicregistrar.IClinicRegistrarRepository;
+import com.healthflow.repository.patient.IPatientRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

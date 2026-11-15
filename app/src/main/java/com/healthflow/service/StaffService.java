@@ -5,8 +5,8 @@ import com.healthflow.entity.user.UserRole;
 import com.healthflow.entity.staff.Staff;
 import com.healthflow.exception.StaffAlreadyExistsException;
 import com.healthflow.exception.StaffNotFoundException;
-import com.healthflow.repository.IStaffRepository;
-import com.healthflow.repository.IUserRepository;
+import com.healthflow.repository.staff.IStaffRepository;
+import com.healthflow.repository.user.IUserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

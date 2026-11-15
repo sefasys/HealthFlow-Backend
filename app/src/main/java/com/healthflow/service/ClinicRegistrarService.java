@@ -9,7 +9,7 @@ import com.healthflow.entity.staff.ClinicRegistrar;
 import com.healthflow.entity.staff.Staff;
 import com.healthflow.exception.ClinicRegistrarNotFoundException;
 import com.healthflow.mapper.clinicregistrar.ClinicRegistrarMapper;
-import com.healthflow.repository.IClinicRegistrarRepository;
+import com.healthflow.repository.clinicregistrar.IClinicRegistrarRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,4 +1,4 @@
-package com.healthflow.repository;
+package com.healthflow.repository.appointment;
 
 
 import com.healthflow.entity.appointment.Appointment;

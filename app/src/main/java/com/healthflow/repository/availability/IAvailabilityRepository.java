@@ -1,4 +1,4 @@
-package com.healthflow.repository;
+package com.healthflow.repository.availability;
 
 
 import com.healthflow.entity.availability.Availability;

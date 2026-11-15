@@ -10,7 +10,7 @@ import com.healthflow.entity.user.Gender;
 import com.healthflow.entity.staff.Specialty;
 import com.healthflow.exception.AvailabilityConflictException;
 import com.healthflow.exception.InvalidAvailabilityException;
-import com.healthflow.repository.IAvailabilityRepository;
+import com.healthflow.repository.availability.IAvailabilityRepository;
 import org.hibernate.stat.Statistics;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

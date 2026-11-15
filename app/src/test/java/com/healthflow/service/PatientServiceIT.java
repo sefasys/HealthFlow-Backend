@@ -1,16 +1,19 @@
 package com.healthflow.service;
 
 import com.healthflow.IntegrationTestBase;
-
+import com.healthflow.dto.common.PageResponse;
 import com.healthflow.dto.patient.PatientRegistrationRequest;
 import com.healthflow.dto.patient.PatientResponse;
 import com.healthflow.entity.user.Gender;
+import com.healthflow.exception.UserAlreadyExistsException;
 import com.healthflow.repository.IPatientRepository;
 import com.healthflow.repository.IUserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -34,7 +37,8 @@ class PatientServiceIT extends IntegrationTestBase {
         patientRepository.deleteAll();
         userRepository.deleteAll();
     }
-
+    // Bu class IntelliJ üzerinden çalışmıyor çünkü docker üzerinden çalıştırıyoruz bağlanamadığı için terminal üzerinden integration test yapıyoruz
+    // o aşamada 4 metotta başarılı şekilde çalıştı bu da demek oluyor ki rollback mekanizması doğru şekilde çalıştı.
     @Test
     void register_savesPatientToDatabase() {
         var request = new PatientRegistrationRequest(
@@ -65,5 +69,59 @@ class PatientServiceIT extends IntegrationTestBase {
         assertThat(patientRepository.count()).isZero();
     }
 
+    @Test
+    void register_rejectsDuplicateNationalId() {
+        patientService.register(request("12345678906", "first@test.com"));
 
+        assertThatThrownBy(() -> patientService.register(request("12345678906", "second@test.com")))
+                .isInstanceOf(UserAlreadyExistsException.class);
+
+        assertThat(userRepository.count()).isEqualTo(1);
+        assertThat(patientRepository.count()).isEqualTo(1);
+    }
+
+    @Test
+    void register_rejectsDuplicateEmail_ignoringCase() {
+        patientService.register(request("12345678908", "same@test.com"));
+
+        assertThatThrownBy(() -> patientService.register(request("12345678900", "SAME@test.com")))
+                .isInstanceOf(UserAlreadyExistsException.class);
+
+        assertThat(userRepository.count()).isEqualTo(1);
+    }
+
+    @Test
+    void search_returnsCorrectPage_andTotals() {
+        for (int i = 1; i <= 25; i++) {
+            patientService.register(new PatientRegistrationRequest(
+                    "1234567" + String.format("%03d", i) + "2",
+                    "Hasta",
+                    "Soyad" + String.format("%02d", i),
+                    LocalDate.of(1990, 1, 1),
+                    "hasta" + i + "@test.com",
+                    null, Gender.FEMALE, null, null));
+        }
+
+        PageResponse<PatientResponse> firstPage = patientService.search(
+                null, null, null, PageRequest.of(0, 10, Sort.by("user.surname")));
+
+        assertThat(firstPage.content()).hasSize(10);
+        assertThat(firstPage.totalElements()).isEqualTo(25);
+        assertThat(firstPage.totalPages()).isEqualTo(3);
+        assertThat(firstPage.content().get(0).surname()).isEqualTo("Soyad01");
+
+        PageResponse<PatientResponse> lastPage = patientService.search(
+                null, null, null, PageRequest.of(2, 10, Sort.by("user.surname")));
+
+        assertThat(lastPage.content()).hasSize(5);
+        assertThat(lastPage.content().get(4).surname()).isEqualTo("Soyad25");
+    }
+
+
+
+    private PatientRegistrationRequest request(String nationalId, String email) {
+        return new PatientRegistrationRequest(
+                nationalId, "Ayşe", "Yılmaz", LocalDate.of(1990, 5, 12),
+                email, "+905551112233", Gender.FEMALE, null, null);
+    }
 }

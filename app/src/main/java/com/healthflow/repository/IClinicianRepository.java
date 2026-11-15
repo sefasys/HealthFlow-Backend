@@ -1,8 +1,8 @@
 package com.healthflow.repository;
 
 
-import com.healthflow.entity.user.staff.Clinician;
-import com.healthflow.entity.user.staff.Specialty;
+import com.healthflow.entity.staff.Clinician;
+import com.healthflow.entity.staff.Specialty;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,7 +22,7 @@ public interface IClinicianRepository extends JpaRepository<Clinician, UUID> {
     join fetch c.staff s
     join fetch s.user
     where c.specialty = :specialty
-      and s.employmentStatus = com.healthflow.entity.user.staff.EmploymentStatus.ACTIVE
+      and s.employmentStatus = com.healthflow.entity.staff.EmploymentStatus.ACTIVE
     """)
     List<Clinician> findActiveBySpecialty(Specialty specialty);
 

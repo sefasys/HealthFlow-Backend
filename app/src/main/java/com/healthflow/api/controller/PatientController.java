@@ -2,11 +2,11 @@ package com.healthflow.api.controller;
 
 import com.healthflow.dto.common.PageResponse;
 import com.healthflow.entity.user.Gender;
-import com.healthflow.entity.user.patient.BloodType;
+import com.healthflow.entity.patient.BloodType;
 import com.healthflow.service.PatientService;
 import com.healthflow.dto.patient.*;
 import jakarta.validation.Valid;
-import java.util.List;
+
 import java.util.UUID;
 
 import org.springframework.data.domain.Pageable;

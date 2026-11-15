@@ -1,6 +1,6 @@
 package com.healthflow.repository;
 
-import com.healthflow.entity.user.staff.Staff;
+import com.healthflow.entity.staff.Staff;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

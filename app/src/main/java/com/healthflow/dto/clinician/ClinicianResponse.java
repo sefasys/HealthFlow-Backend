@@ -1,7 +1,7 @@
 package com.healthflow.dto.clinician;
 
-import com.healthflow.entity.user.staff.EmploymentStatus;
-import com.healthflow.entity.user.staff.Specialty;
+import com.healthflow.entity.staff.EmploymentStatus;
+import com.healthflow.entity.staff.Specialty;
 
 import java.time.LocalDate;
 import java.util.UUID;

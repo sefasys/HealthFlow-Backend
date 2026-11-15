@@ -2,7 +2,7 @@ package com.healthflow.service;
 
 import com.healthflow.entity.user.User;
 import com.healthflow.entity.user.UserRole;
-import com.healthflow.entity.user.staff.Staff;
+import com.healthflow.entity.staff.Staff;
 import com.healthflow.exception.StaffAlreadyExistsException;
 import com.healthflow.exception.StaffNotFoundException;
 import com.healthflow.repository.IStaffRepository;

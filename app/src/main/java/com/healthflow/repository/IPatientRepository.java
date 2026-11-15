@@ -2,8 +2,8 @@ package com.healthflow.repository;
 
 
 import com.healthflow.entity.user.Gender;
-import com.healthflow.entity.user.patient.BloodType;
-import com.healthflow.entity.user.patient.Patient;
+import com.healthflow.entity.patient.BloodType;
+import com.healthflow.entity.patient.Patient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;

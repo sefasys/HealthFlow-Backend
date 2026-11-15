@@ -5,7 +5,7 @@ import com.healthflow.dto.appointment.AppointmentResponse;
 import com.healthflow.dto.appointment.OpenSlotsRequest;
 import com.healthflow.entity.appointment.Appointment;
 import com.healthflow.entity.availability.Availability;
-import com.healthflow.entity.user.staff.ClinicRegistrar;
+import com.healthflow.entity.staff.ClinicRegistrar;
 import com.healthflow.exception.*;
 import com.healthflow.mapper.appointment.AppointmentMapper;
 import com.healthflow.repository.IAppointmentRepository;

@@ -1,4 +1,4 @@
-package com.healthflow.entity.user.patient;
+package com.healthflow.entity.patient;
 
 
 import com.healthflow.entity.user.User;

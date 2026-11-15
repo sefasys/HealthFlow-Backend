@@ -1,4 +1,4 @@
-package com.healthflow.entity.user.patient;
+package com.healthflow.entity.patient;
 
 public enum BloodType {
   A_POSITIVE,

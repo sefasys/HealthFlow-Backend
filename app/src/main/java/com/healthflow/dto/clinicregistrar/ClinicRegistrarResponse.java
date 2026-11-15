@@ -1,6 +1,6 @@
 package com.healthflow.dto.clinicregistrar;
 
-import com.healthflow.entity.user.staff.EmploymentStatus;
+import com.healthflow.entity.staff.EmploymentStatus;
 
 import java.time.LocalDate;
 import java.util.UUID;

@@ -2,8 +2,8 @@ package com.healthflow.entity.appointment;
 
 
 import com.healthflow.entity.availability.Availability;
-import com.healthflow.entity.user.patient.Patient;
-import com.healthflow.entity.user.staff.ClinicRegistrar;
+import com.healthflow.entity.patient.Patient;
+import com.healthflow.entity.staff.ClinicRegistrar;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

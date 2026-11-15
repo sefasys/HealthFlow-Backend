@@ -3,7 +3,7 @@ package com.healthflow.mapper.clinician;
 import com.healthflow.dto.clinician.ClinicianRegistrationRequest;
 import com.healthflow.dto.clinician.ClinicianResponse;
 import com.healthflow.entity.user.User;
-import com.healthflow.entity.user.staff.Clinician;
+import com.healthflow.entity.staff.Clinician;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

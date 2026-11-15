@@ -1,6 +1,6 @@
 package com.healthflow.api.controller;
 
-import com.healthflow.entity.user.staff.Specialty;
+import com.healthflow.entity.staff.Specialty;
 import com.healthflow.service.ClinicianService;
 import com.healthflow.dto.clinician.*;
 import jakarta.validation.Valid;

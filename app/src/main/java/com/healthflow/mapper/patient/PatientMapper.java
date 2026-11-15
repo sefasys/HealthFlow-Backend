@@ -2,7 +2,7 @@ package com.healthflow.mapper.patient;
 
 import com.healthflow.dto.patient.PatientRegistrationRequest;
 import com.healthflow.entity.user.User;
-import com.healthflow.entity.user.patient.Patient;
+import com.healthflow.entity.patient.Patient;
 import com.healthflow.dto.patient.PatientResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

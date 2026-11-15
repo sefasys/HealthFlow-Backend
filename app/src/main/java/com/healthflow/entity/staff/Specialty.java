@@ -1,4 +1,4 @@
-package com.healthflow.entity.user.staff;
+package com.healthflow.entity.staff;
 
 public enum Specialty {
     EMERGENCY,

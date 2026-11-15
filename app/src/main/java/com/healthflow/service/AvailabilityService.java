@@ -5,7 +5,7 @@ import com.healthflow.dto.availability.AvailabilityResponse;
 import com.healthflow.dto.availability.CreateAvailabilityRequest;
 import com.healthflow.entity.availability.Availability;
 import com.healthflow.entity.availability.AvailabilityStatus;
-import com.healthflow.entity.user.staff.Clinician;
+import com.healthflow.entity.staff.Clinician;
 import com.healthflow.exception.AvailabilityConflictException;
 import com.healthflow.exception.AvailabilityNotFoundException;
 import com.healthflow.exception.ClinicianNotFoundException;

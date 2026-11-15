@@ -1,7 +1,7 @@
 package com.healthflow.entity.availability;
 
 
-import com.healthflow.entity.user.staff.Clinician;
+import com.healthflow.entity.staff.Clinician;
 import com.healthflow.exception.InvalidAvailabilityException;
 import jakarta.persistence.*;
 

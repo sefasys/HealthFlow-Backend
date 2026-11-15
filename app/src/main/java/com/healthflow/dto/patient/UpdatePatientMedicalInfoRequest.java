@@ -1,9 +1,7 @@
 package com.healthflow.dto.patient;
 
-import com.healthflow.entity.user.patient.BloodType;
-import jakarta.validation.constraints.Email;
+import com.healthflow.entity.patient.BloodType;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import java.util.Set;

@@ -1,7 +1,7 @@
 package com.healthflow.dto.patient;
 
 import com.healthflow.entity.user.Gender;
-import com.healthflow.entity.user.patient.BloodType;
+import com.healthflow.entity.patient.BloodType;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;

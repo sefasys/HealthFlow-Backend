@@ -6,8 +6,6 @@ import com.healthflow.dto.patient.PatientRegistrationRequest;
 import com.healthflow.dto.patient.PatientResponse;
 import com.healthflow.entity.user.Gender;
 import com.healthflow.exception.UserAlreadyExistsException;
-import com.healthflow.repository.patient.IPatientRepository;
-import com.healthflow.repository.user.IUserRepository;
 import org.hibernate.stat.Statistics;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,33 +17,20 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PatientServiceIT extends IntegrationTestBase {
 
     @Autowired
     PatientService patientService;
 
-    @Autowired
-    IPatientRepository patientRepository;
-
-    @Autowired
-    IUserRepository userRepository;
-
-
-    // Bu class IntelliJ üzerinden çalışmıyor çünkü docker üzerinden çalıştırıyoruz bağlanamadığı için terminal üzerinden integration test yapıyoruz
-    // o aşamada 4 metotta başarılı şekilde çalıştı bu da demek oluyor ki rollback mekanizması doğru şekilde çalıştı.
     @Test
     void register_savesPatientToDatabase() {
-        var request = new PatientRegistrationRequest(
-                "12345678902", "Ayşe", "Yılmaz", LocalDate.of(1990, 5, 12),
-                "ayse@test.com", "+905551112233", Gender.FEMALE, null, null);
-
-        PatientResponse response = patientService.register(request);
+        PatientResponse response = patientService.register(request("12345678902", "ayse@test.com"));
 
         assertThat(response.id()).isNotNull();
-        assertThat(patientRepository.count()).isEqualTo(1);
-        assertThat(userRepository.existsByNationalId("12345678902")).isTrue();
+        assertThat(countRows("patients")).isEqualTo(1);
+        assertThat(countRowsWhere("users", "national_id = '12345678902'")).isEqualTo(1);
     }
 
     @Test
@@ -60,9 +45,8 @@ class PatientServiceIT extends IntegrationTestBase {
         assertThatThrownBy(() -> patientService.register(request))
                 .isInstanceOf(DataAccessException.class);
 
-        assertThat(userRepository.existsByNationalId("12345678904")).isFalse();
-        assertThat(userRepository.count()).isZero();
-        assertThat(patientRepository.count()).isZero();
+        assertThat(countRows("users")).isZero();
+        assertThat(countRows("patients")).isZero();
     }
 
     @Test
@@ -72,8 +56,8 @@ class PatientServiceIT extends IntegrationTestBase {
         assertThatThrownBy(() -> patientService.register(request("12345678906", "second@test.com")))
                 .isInstanceOf(UserAlreadyExistsException.class);
 
-        assertThat(userRepository.count()).isEqualTo(1);
-        assertThat(patientRepository.count()).isEqualTo(1);
+        assertThat(countRows("users")).isEqualTo(1);
+        assertThat(countRows("patients")).isEqualTo(1);
     }
 
     @Test
@@ -83,7 +67,7 @@ class PatientServiceIT extends IntegrationTestBase {
         assertThatThrownBy(() -> patientService.register(request("12345678900", "SAME@test.com")))
                 .isInstanceOf(UserAlreadyExistsException.class);
 
-        assertThat(userRepository.count()).isEqualTo(1);
+        assertThat(countRows("users")).isEqualTo(1);
     }
 
     @Test
@@ -136,8 +120,6 @@ class PatientServiceIT extends IntegrationTestBase {
         assertThat(page.content()).allSatisfy(p -> assertThat(p.allergies()).hasSize(2));
         assertThat(statistics.getPrepareStatementCount()).isLessThanOrEqualTo(3);
     }
-
-
 
     private PatientRegistrationRequest request(String nationalId, String email) {
         return new PatientRegistrationRequest(

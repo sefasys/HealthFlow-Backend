@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.jdbc.JdbcTestUtils;
 
 @SpringBootTest(properties = "spring.jpa.properties.hibernate.generate_statistics=true")
 @Import(TestcontainersConfiguration.class)
 public abstract class IntegrationTestBase {
+
     @Autowired
     protected JdbcTemplate jdbcTemplate;
 
@@ -29,5 +31,13 @@ public abstract class IntegrationTestBase {
 
     protected Statistics statistics() {
         return entityManagerFactory.unwrap(SessionFactory.class).getStatistics();
+    }
+
+    protected int countRows(String table) {
+        return JdbcTestUtils.countRowsInTable(jdbcTemplate, table);
+    }
+
+    protected int countRowsWhere(String table, String whereClause) {
+        return JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, table, whereClause);
     }
 }
